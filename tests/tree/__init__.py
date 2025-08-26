@@ -255,11 +255,17 @@ class TestTree(unittest.TestCase):
         )
 
         _t = self._tree_factory(_test_odict)
-        self.assertEqual(list(_t.keys()),['a','b'])
+
         self.assertEqual(list(_t.get('b').keys()),['b'])
         self.assertEqual(list(_t.get('b/').keys()),['c','d'])
         self.assertEqual(list(_t.get('b/d').keys()),['d'])
         self.assertEqual(list(_t.get('b/d/').keys()),['e','f'])
+
+        self.assertEqual(list(_t.keys()),['a','b'])
+        self.assertEqual(list(_t.keys('b')),['c','d'])
+        self.assertEqual(list(_t.keys('b/')),['c','d'])
+        self.assertEqual(list(_t.keys('b/d/')),['e','f'])
+        self.assertEqual(list(_t.keys('b/d')),['e','f'])
 
     @debug_on(Exception)
     def test_pop(self):
@@ -588,16 +594,42 @@ class TestTree(unittest.TestCase):
             j='/b/h/j'
         )
 
+
         _results_odict = OrderedDict(
             a='A',
+            b = OrderedDict(
+                c='BC',
+                d=OrderedDict(
+                    e='BDE',
+                    f='BDF',
+                ),
+                g='BG',
+                h=OrderedDict(
+                    i='BHI',
+                    j='BHJ',
+                ),
+            ),
             c='BC',
+            d=OrderedDict(
+                e='BDE',
+                f='BDF',
+            ),
             e='BDE',
-            f='BDF'
+            f='BDF',
+            g='BG',
+            h = OrderedDict(
+                i='BHI',
+                j='BHJ',
+            ),
+            i='BHI',
+            j='BHJ'
         )
-        for _key,_keychain in _keychains_odict.items():
+
+        for _key, _keychain in _keychains_odict.items():
             _t1 = self._tree_factory(_test_odict_1)
-            __keychain,__value = _t1.dfs(_key)
-            self.assertEqual(__keychain,_keychain.split('/'))
+            __keychain, __value = _t1.dfs(_key)
+            self.assertEqual(__keychain, _keychain.split('/'))
+            self.assertEqual(__value,_results_odict.get(_key))
 
         self.assertRaises(KeyError,_t1.dfs,'x')
 
@@ -925,6 +957,7 @@ class TestTree(unittest.TestCase):
         _tree.get('a','A')
         self.assertFalse(_tree.is_empty())
 
+    @debug_on(Exception)
     def test_reset(self):
         # Test resetting an already empty tree
         tree = self._tree_factory()
@@ -948,6 +981,28 @@ class TestTree(unittest.TestCase):
             )
         )
         self.assertEqual(tree.odict, expected_odict)
+
+        _test_odict_reset = OrderedDict(
+            a=OrderedDict(
+                b='AB',
+                c='AC'
+            ),
+            b=OrderedDict(
+                d=OrderedDict(
+                    c='BDC'
+                )
+            )
+        )
+        _result_odict = OrderedDict(
+            b=OrderedDict(
+                d=OrderedDict(
+                    c='BDC'
+                )
+            )
+        )
+        tree = self._tree_factory(_test_odict_reset)
+        tree.reset('c')
+        self.assertEqual(tree.odict, _result_odict)
 
     def test_uget(self):
         tree = self._tree_factory(_test_odict_0)
