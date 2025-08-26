@@ -930,7 +930,7 @@ class Tree:
             if isinstance(value,list):
                 _data_tree.get([''] + keychain, list(map(str, value.decode() if isinstance(value,bytes) else value)))
             else:
-                _data_tree.get([''] + keychain, str(value.decode() if isinstance(value,bytes) else value)))
+                _data_tree.get([''] + keychain, str(value.decode() if isinstance(value,bytes) else value))
 
         self.visit(value_process=_stringify)
         return _data_tree
