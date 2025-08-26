@@ -503,15 +503,6 @@ class Tree:
               c:
                 d: value2
         """
-
-        # TODO test this
-        # get() will actually accept OrderedDicts and convert silently to a Tree
-        # get() will (seemingly) set dicts and values and not recurse into them...
-        # dicts will probably not serialize correctly though
-
-        # if isinstance(value,dict) or isinstance(value,OrderedDict):
-        #     raise TreeException('dict or OrderedDict not allowed as values; use Tree object instead')
-
         # it should be passed in as a list to avoid splitting
         _keychain = copy(keychain_or_keychain_str) if isinstance(keychain_or_keychain_str,list) \
                                                                 else keychain_or_keychain_str.split('/')
