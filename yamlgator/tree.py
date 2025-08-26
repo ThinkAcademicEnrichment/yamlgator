@@ -114,19 +114,12 @@ class Tree:
               c: 2
         """
         _old_tree = self.copy()
-        _new_keys_to_preserve = []
-        for _key_to_preserve in keys_to_preserve:
-            if not _key_to_preserve.endswith('/'):
-                _key_to_preserve += '/'
-            _new_keys_to_preserve.append(_key_to_preserve)
-        keys_to_preserve = _new_keys_to_preserve
 
         if _DEBUG.RESET:
             ic()
             ic(keys_to_preserve)
             ic(_old_tree.print())
 
-        '''empty the tree'''
         # preserve refs!
         _keys = list(self.odict.keys())
         _keys.reverse()
@@ -138,9 +131,13 @@ class Tree:
 
         for _key_to_preserve in keys_to_preserve:
             try:
+                _dfs_keychain,_dfs_value = _old_tree.dfs(_key_to_preserve)
+                if isinstance(_dfs_value,Tree) and _dfs_keychain[-1] != '':
+                    _dfs_keychain.append('')
                 if _DEBUG.RESET:
-                    ic(_old_tree.dfs(_key_to_preserve))
-                self.get(*_old_tree.dfs(_key_to_preserve))
+                    ic(_dfs_keychain)
+                    ic(_dfs_value)
+                self.get(_dfs_keychain,_old_tree.get(_dfs_keychain))
             except KeyError:
                 if _DEBUG.RESET:
                     _msg = f'{_key_to_preserve} not found in state'
