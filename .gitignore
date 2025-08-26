@@ -51,3 +51,4 @@ __javascript__/
 .idea
 tmp*.yaml
 tests/YAMLator/tmp
+old
