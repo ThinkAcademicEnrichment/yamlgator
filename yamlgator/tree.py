@@ -87,7 +87,32 @@ class Tree:
         '''return a copy of the tree'''
         return Tree(deepcopy(self.odict))
 
-    def reset(self,*keys_to_preserve):
+    def reset(self, *keys_to_preserve):
+        """Clears all contents of the tree, with an option to preserve branches.
+
+        The tree is modified in-place.
+
+        Args:
+            *keys_to_preserve (str): A variable number of keychain strings.
+                If no arguments are provided, the entire tree is emptied.
+                If one or more keychains are provided, only those branches
+                will remain in the tree.
+
+        Returns:
+            None
+
+        Examples:
+            >>> tree = Tree({'a': 1, 'b': {'c': 2}})
+            >>> tree.reset()
+            >>> tree.is_empty()
+            True
+
+            >>> tree = Tree({'a': 1, 'b': {'c': 2}, 'd': 3})
+            >>> tree.reset('b/')
+            >>> print(tree.dump())
+            b:
+              c: 2
+        """
         _old_tree = self.copy()
         _new_keys_to_preserve = []
         for _key_to_preserve in keys_to_preserve:
@@ -169,7 +194,27 @@ class Tree:
         else:
             value_process(node,keychain)
 
-    def keys(self,keychain_or_keychain_str=None):
+    def keys(self, keychain_or_keychain_str=None):
+        """Returns the keys of a node, behaving like dict.keys().
+
+        Args:
+            keychain_or_keychain_str (typing.Union[str, list[str]], optional):
+                A keychain string or list of strings specifying the target node.
+                If omitted, returns the keys of the root node. Defaults to None.
+
+        Returns:
+            dict_keys: A view object containing the keys of the specified node.
+
+        Raises:
+            KeyError: If the keychain is invalid or points to a leaf node.
+
+        Examples:
+            >>> tree = Tree({'a': {'b': 'B_VAL'}, 'c': 'C_VAL'})
+            >>> list(tree.keys())
+            ['a', 'c']
+            >>> list(tree.keys('a/'))
+            ['b']
+        """
         if keychain_or_keychain_str:
             _keychain = copy(keychain_or_keychain_str) if isinstance(keychain_or_keychain_str,list) else keychain_or_keychain_str.split('/')
             # never do this
@@ -181,7 +226,29 @@ class Tree:
         except AttributeError:
             raise KeyError
 
-    def dfs(self,keychain_or_keychain_str,keychain_or_keychain_str_context=None):
+    def dfs(self, keychain_or_keychain_str, keychain_or_keychain_str_context=None):
+        """Performs a depth-first search (DFS) to locate a node in the tree.
+
+        The search is performed for the first key in the provided keychain. If
+        multiple nodes with the same key exist, the search prioritizes and
+        returns the one that is nested deepest within the tree structure.
+
+        Args:
+            keychain_or_keychain_str (typing.Union[str, list[str]]): The keychain
+                to search for.
+            keychain_or_keychain_str_context (typing.Union[str, list[str]], optional):
+                An optional keychain that defines a starting branch for the search.
+                If provided, the search is restricted to descendants of this node.
+                Defaults to None.
+
+        Returns:
+            tuple[list[str], typing.Any]: A tuple containing the full, absolute
+            keychain (as a list of strings) of the found node and the value at
+            that node.
+
+        Raises:
+            KeyError: If the keychain cannot be found in the tree.
+        """
         _keychain = copy(keychain_or_keychain_str) if isinstance(keychain_or_keychain_str,list) \
                                                                 else keychain_or_keychain_str.split('/')
 
@@ -880,12 +947,13 @@ class Tree:
         return self
 
     def print(self):
-        '''
-        Make a simple printable string of the tree.
+        """Construct a printable string representation of the tree.
 
-        :return: A printable indented string representing the tree
-        '''
-        TAB=' '
+        Returns:
+            String: A printable indented string representing the tree
+        """
+
+        TAB='  '
         _n = 0
         _output = []
         def _pre(node,keychain):
@@ -920,6 +988,11 @@ class Tree:
         return '\n'.join(_output)
 
     def stringify(self):
+        """Ensure the leaf values in the tree are strings.
+
+        Returns:
+            String: A Tree object with all leaf values guaranteed to be stings.
+        """
         if _DEBUG.STRINGIFY:
             ic()
         _data_tree = Tree()
@@ -936,8 +1009,26 @@ class Tree:
         return _data_tree
 
     def dump(self,stream=None,Dumper=yaml.Dumper,**kwds):
-        '''serializer'''
+        """Serializes the Tree object into a YAML formatted string.
 
+        This method preserves the order of keys from the original tree in the
+        YAML output. It also ensures that all values within the tree are
+        converted to their string representation before being serialized.
+
+        Args:
+            stream (typing.IO, optional): A file-like object (e.g., a file
+                handle opened in write mode). If provided, the YAML output
+                will be written to this stream. Defaults to None.
+            Dumper (yaml.Dumper): The yaml.Dumper class to be used for the
+                serialization process.
+            **kwds: Additional keyword arguments that will be passed directly
+                to the underlying yaml.dump function.
+
+        Returns:
+            str or None: If `stream` is None (the default), the method
+            returns the YAML output as a string. If `stream` is provided,
+            the method writes to the stream and returns None.
+        """
         _data_tree = self.stringify()
 
         class OrderedDumper(Dumper):
@@ -965,4 +1056,17 @@ class Tree:
 
     @classmethod
     def load(cls,stream):
+        """Constructs a new Tree instance from a YAML source.
+
+        This factory @classmethod parses a YAML source, preserving the order of
+        keys from the input.
+
+        Args:
+            stream (typing.Union[typing.IO, str]): The source of the YAML data.
+                This can be a file-like object (e.g., from an open file) or a
+                string containing YAML markup.
+
+        Returns:
+            Tree: A new Tree instance populated with the data from the stream.
+        """
         return Tree(Tree._load(stream))
