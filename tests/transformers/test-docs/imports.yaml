@@ -1,0 +1,50 @@
+test-1:
+  input:
+    config:
+      ))+some-data:
+        ./data/tree-data.yaml#
+  output:
+    config:
+      u:
+        v: V
+        w: W
+      x:
+        y: Y
+        z: Z
+
+      uu:
+        vv: VV
+        ww: VV
+test-2:
+  input:
+    config:
+      ))+some-data:
+        ./data/tree-data.yaml#uu
+  output:
+    config:
+      uu:
+        vv: VV
+        ww: VV
+test-3:
+  input:
+    config:
+      ))+some-data:
+        ./data/tree-data.yaml#uu/
+  output:
+    config:
+      vv: VV
+      ww: VV
+# this demos the automatic ValueTransformation of path values in an import key
+test-4:
+  input:
+    config:
+      import-path:
+        ./data/tree-data.yaml
+      ))+some-import-data:
+        ))import-path#uu/
+  output:
+    config:
+      import-path:
+        ./data/tree-data.yaml
+      vv: VV
+      ww: VV

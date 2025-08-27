@@ -1,0 +1,42 @@
+# Don't put ats in ifs !!!
+test-1:
+  input:
+    config:
+      use-ccache: y
+      ccache-conf: |-
+        CCACHE_DIR=))container-prefix//ccache
+        CCACHE_SIZE=))ccache-size
+      path: |-
+        DONT_MOUNT_BOOT=1
+        FEATURES="))?{ use-ccache :'ccache'} ))features"
+        PKGDIR=))portage-pkgdir
+        MAKEOPTS="))make-opts"
+        EMERGE_DEFAULT_OPTS="))emerge-default-opts"
+        QEMU_SOFTMMU_TARGETS="))qemu-softmmu-targets"
+        QEMU_USER_TARGETS="))qemu-user-targets"
+        #------------------------------------------
+        ))?{use-ccache :ccache-conf}
+        #------------------------------------------
+        ))?{use-ccache :))@[-1]/ccache-conf}
+        #------------------------------------------
+  output:
+    config:
+      use-ccache: y
+      ccache-conf: |-
+        CCACHE_DIR=))container-prefix//ccache
+        CCACHE_SIZE=))ccache-size
+      path: |-
+        DONT_MOUNT_BOOT=1
+        FEATURES="ccache ))features"
+        PKGDIR=))portage-pkgdir
+        MAKEOPTS="))make-opts"
+        EMERGE_DEFAULT_OPTS="))emerge-default-opts"
+        QEMU_SOFTMMU_TARGETS="))qemu-softmmu-targets"
+        QEMU_USER_TARGETS="))qemu-user-targets"
+        #------------------------------------------
+        CCACHE_DIR=))container-prefix//ccache
+        CCACHE_SIZE=))ccache-size
+        #------------------------------------------
+        CCACHE_DIR=))container-prefix//ccache
+        CCACHE_SIZE=))ccache-size
+        #------------------------------------------

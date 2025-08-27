@@ -1,0 +1,58 @@
+# tests of order dependence for transformers
+list-of-included-trees:
+  transformer:
+    - transform_yaml
+    - transform_values
+  skip: n
+  input:
+    a:
+      - ./data/tree-data.yaml#u
+      - ./data/tree-data.yaml#x
+    b:
+      - ./data/config.yaml#config
+      - ./data/sub-config.yaml#/config
+  output:
+    a:
+      u:
+        v: V
+        w: W
+      x:
+        y: Y
+        z: Z
+    b:
+      config:
+        a: A
+        b: BB
+        c: C
+        d: D
+
+if-at-test-1:
+  transformer:
+    - transform_ats
+    - transform_ifs
+  input:
+    is-transformed: y
+    a:
+      b: Transformed
+      c: Not Transformed
+    b:
+      ))?{is-transformed :))@[-1]/a/b}
+#    c:
+#      ))?{!is-transformed :))@[-1]/a/c}
+  output:
+    b: Transformed
+#    c: Not Transformed
+
+secret-keys:
+  transformer:
+    - transform_values
+    - transform_ats
+
+  input:
+    a: A
+    _project-name-template: ))@-project
+    super-project-name: )){_project-name-template}
+  output:
+    a: A
+    _project-name-template: ))@-project
+    super-project-name: super-project-name-project

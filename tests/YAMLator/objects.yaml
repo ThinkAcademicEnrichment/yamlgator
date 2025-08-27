@@ -1,0 +1,64 @@
+objects:
+  skip: n
+  input:
+    tmp-dir:
+      /tmp/yamlator-tests
+    example-dir:
+      /tmp/yamlator-tests/example
+    example-path:
+      /tmp/yamlator-tests/example/hello.txt
+    example-url:
+      https://build.funtoo.org
+    use-example:
+      True
+    is-an-option:
+      False
+    example-tree:
+      example-url:
+        https://build.funtoo.org
+      is-fun:
+        y
+      is-not-fun:
+        OFF
+  output:
+    tmp-dir:
+      - pathlib.Path
+      - /tmp/yamlator-tests
+    example-dir:
+      - pathlib.Path
+      - /tmp/yamlator-tests/example
+    example-path:
+      - pathlib.Path
+      - /tmp/yamlator-tests/example/hello.txt
+    example-url:
+      - urlpath.URL
+      - https://build.funtoo.org
+    use-example:
+      - bool
+      - True
+    is-an-option:
+      - bool
+      - False
+    example-tree:
+      example-url:
+        - urlpath.URL
+        - https://build.funtoo.org
+      is-fun:
+        - bool
+        - True
+      is-not-fun:
+        - bool
+        - False
+
+dfs-objects:
+  skip: n
+  input:
+    tmp-dir:
+      /tmp/yamlator-tests
+    sub-config:
+      tmp-dir:
+        /tmp/yamlator-tests-dfs
+  output:
+    tmp-dir:
+      - pathlib.Path
+      - /tmp/yamlator-tests-dfs

@@ -1,0 +1,74 @@
+all-test:
+  input:
+    a-key:
+      A_VALUE
+    )){a-key}-key:
+      A_VALUE_2
+    )){A_VALUE-key}-key:
+      A_VALUE_3
+    b-key:
+      c-key:
+        C_VALUE
+    )){b-key/c-key}-key:
+      C_VALUE_2
+    )){C_VALUE-key}-holds-a-dict:
+      dict-key-1:
+        DICT_VAL_1
+      dict-key-2:
+        DICt_VAL_2
+    key-d:
+      key-e:
+        ))a-key:
+          A Deep Value
+    key-f:
+      key-g:
+        ))c-key:
+          A Deeper Value
+    key-h:
+      key-i:
+        )){b-key/c-key}:
+          A Deeper Value by keychain
+    key-j:
+      ))a-key:
+        key-x:
+          X
+        key-y:
+          Y
+
+  output:
+    a-key:
+      A_VALUE
+    A_VALUE-key:
+      A_VALUE_2
+    A_VALUE_2-key:
+      A_VALUE_3
+
+    b-key:
+      c-key:
+        C_VALUE
+    C_VALUE-key:
+      C_VALUE_2
+    C_VALUE_2-holds-a-dict:
+      dict-key-1:
+        DICT_VAL_1
+      dict-key-2:
+        DICt_VAL_2
+    key-d:
+      key-e:
+        A_VALUE:
+          A Deep Value
+    key-f:
+      key-g:
+        C_VALUE:
+          A Deeper Value
+    key-h:
+      key-i:
+        C_VALUE:
+          A Deeper Value by keychain
+    key-j:
+      A_VALUE:
+        key-x:
+          X
+        key-y:
+          Y
+

@@ -1,0 +1,15 @@
+test-1:
+  input:
+    config:
+      some-plaintext-data:
+        ./data/a-plain-file#
+  output:
+    config:
+      some-plaintext-data: |
+        Here is some plain text.
+
+        # its structure should be preserved as a multi-line value under a key in a YAML file
+        a_key = 1000
+
+
+        /dev/nvme0n1p1          /boot           vfat            noauto,noatime  1 2

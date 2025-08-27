@@ -1,0 +1,60 @@
+# remember it's not possible to over-ride a root level key; thus the ''config' node so config/key-a is over-ridden
+# by config/key-c/key-a
+
+#test-restrictions:
+#  input:
+#    key-a:
+#      A
+#    key-b:
+#      ))key-a
+
+# this is going away; use the ContextSubValTransformer instead
+basic-restrictions:
+  input:
+    key-a:
+      A
+    key-b:
+      ./some-file.txt#))key-a/B/C
+    key-c:
+      key-a:
+        CA
+    key-e:
+      ./some-file.txt#))key-a/B/C
+    key-f:
+      F
+    key-g:
+      key-h:
+        ./some-file.txt#))key-f/B/C
+    key-j:
+      J
+    key-i:
+      key-j:
+        IJ
+    key-k:
+      ./some-file.txt#))(key-i/key-j)/B/C
+    key-l:
+      ))key-j
+
+  output:
+    key-a:
+      key-b:
+        ./some-file.txt#CA/B/C
+      key-e:
+        ./some-file.txt#CA/B/C
+
+    key-f:
+      key-g:
+        key-h:
+          ./some-file.txt#F/B/C
+
+    key-i/key-j:
+      key-k:
+        ./some-file.txt#IJ/B/C
+      key-l:
+        ))key-j
+
+    key-j:
+      key-k:
+        ./some-file.txt#))(key-i/key-j)/B/C
+      key-l:
+        IJ
