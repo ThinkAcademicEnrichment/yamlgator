@@ -84,7 +84,11 @@ class Tree:
             return True
 
     def copy(self):
-        '''return a copy of the tree'''
+        """Copies the Tree object.
+
+        Returns:
+             Tree: A deepcopy of the Tree object.
+        """
         return Tree(deepcopy(self.odict))
 
     def reset(self, *keys_to_preserve):
