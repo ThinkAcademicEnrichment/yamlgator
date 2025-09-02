@@ -429,6 +429,33 @@ class YAMLator(YAMLatorObjectDB,Tree):
             _data.update({_config_datum:str(getattr(self,_config_datum))})
         return _data
 
+    def validate(self, context_tree=None) -> list:
+        """Runs all available pre-flight validation checks.
+
+        This method orchestrates the validation process by calling the `validate()`
+        method on its registered transformer utilities. It is designed to support
+        a gradual rollout of the validation framework, safely ignoring any
+        utilities that have not yet implemented the `validate()` method.
+
+        Args:
+            context_tree (YAMLator, optional): An external context tree to be
+                used for cross-file validation. Defaults to None.
+
+        Returns:
+            list: A consolidated list of all warning and error strings found
+                by the validators.
+        """
+        all_issues = []
+        for utility_name in DEFAULT_UTILITIES.keys():
+            utility = getattr(self, utility_name)(context_tree=context_tree)
+            if hasattr(utility, 'validate'):
+                if _DEBUG.VALIDATE:
+                    _msg = f"running {utility_name} validation"
+                    ic(_msg)
+                issues = utility.validate()
+                all_issues.extend(issues)
+        return all_issues
+
     def check_subs(self):
         _unsubbed = Tree()
 
