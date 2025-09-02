@@ -83,4 +83,3 @@ class BangTransformer(ValueTransformer):
 class BangTransformerUtility(BangTransformer):
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
-        self.evaluate()

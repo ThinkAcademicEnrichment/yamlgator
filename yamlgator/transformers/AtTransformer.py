@@ -87,4 +87,3 @@ class AtTransformer(ValueTransformer):
 class AtTransformerUtility(AtTransformer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.evaluate()

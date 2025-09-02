@@ -130,9 +130,3 @@ class ValueTransformer(KeyChainTransformer):
             value = '\n'.join(_transformed_values)
 
         self.get([''] + keychain, value)
-
-
-class ValueTransformerUtility(ValueTransformer):
-    def __init__(self,*args,**kwargs):
-        super().__init__(*args,**kwargs)
-        self.evaluate()

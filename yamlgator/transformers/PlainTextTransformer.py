@@ -121,4 +121,3 @@ class PlainTextTransformer(PathValueTransformer):
 class PlainTextTransformerUtility(PlainTextTransformer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.evaluate()
