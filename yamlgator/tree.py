@@ -738,7 +738,10 @@ class Tree:
                 _current_node_parent[_key] = _current_node
 
         if not isinstance(_current_node,OrderedDict):
-            _ret = _current_node
+            if isinstance(_current_node,list) and not _trim_root:
+                _ret = Tree(OrderedDict({_key: _current_node}))
+            else:
+                _ret = _current_node
         else:
             if not _trim_root:
                 _ret = Tree(OrderedDict({_key:_current_node}) if _key != _ROOT_KEY else Tree(_current_node))
