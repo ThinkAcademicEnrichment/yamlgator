@@ -396,17 +396,27 @@ class Tree:
             return
         if not isinstance(value,list):
             value = [value]
+
+        # always trim the root on aget, but we call self.get on not trimmed root
+        _keychain = copy(keychain_or_keychain_str) if isinstance(keychain_or_keychain_str, list) \
+            else keychain_or_keychain_str.split('/')
+        if not _keychain[-1] == '':
+            _keychain.append('')
+        else:
+            keychain_or_keychain_str = keychain_or_keychain_str[:-1]
+
         try:
-            _value = self.get(keychain_or_keychain_str)
+            _value = self.get(_keychain)
             if not isinstance(_value,list):
                 _value = [_value]
-            # _value.append(value)
             _value += value
         except KeyError:
             _value = value
-            # _value = [value] # like a regular get() wth the key just created
 
-        return self.get(keychain_or_keychain_str,_value)
+        # call get() on the root of the keychain
+        self.get(keychain_or_keychain_str,_value)
+        # but return the value
+        return _value
 
     def daget(self,keychain_or_keychain_str, value=None):
         """Updates a dictionary at a specified keychain.
