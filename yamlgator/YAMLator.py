@@ -20,6 +20,7 @@ DEFAULT_UTILITIES= {
 class _DEBUG:
     YAMLator = False
     CONFIG_ATTRS = False
+    VALIDATE = False
 
 
 class YAMLatorException(Exception):
@@ -69,7 +70,7 @@ class YAMLatorObjectDB(ObjectDB):
     def register(self,object_class,attribute_name,*args,**kwargs):
         self._register(attribute_name,object_class,self,*args,**kwargs)
 
-class YAMLator(YAMLatorObjectDB,Tree):
+class YAMLator(YAMLatorObjectDB, Tree):
     """A powerful, high-level configuration processing engine.
 
     YAMLator provides a robust framework for managing and processing complex
