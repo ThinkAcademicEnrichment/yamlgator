@@ -200,10 +200,10 @@ class YAMLator(YAMLatorObjectDB,Tree):
         for _method in methods:
             _methods.append(getattr(self, _method))
         _old_odict = self.copy().odict
-        [_method(context_tree=context_tree,allow_tree_subs=allow_tree_subs) for _method in _methods]
+        [_method(context_tree=context_tree,allow_tree_subs=allow_tree_subs).evaluate() for _method in _methods]
         while self.odict != _old_odict:
             _old_odict = self.copy().odict
-            [_method(context_tree=context_tree,allow_tree_subs=allow_tree_subs) for _method in _methods]
+            [_method(context_tree=context_tree,allow_tree_subs=allow_tree_subs).evaluate() for _method in _methods]
 
     def get(self,keychain_or_keychain_str,value=None):
         """
