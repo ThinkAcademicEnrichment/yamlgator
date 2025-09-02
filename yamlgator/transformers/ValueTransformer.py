@@ -3,10 +3,8 @@ from ..tree import Tree,TreeCreationException
 from . import DEBUG
 from .KeyChainTransformer import KeyChainTransformer
 
-
 class ValueTransformerException(Exception):
     pass
-
 
 class ValueTransformer(KeyChainTransformer):
 
