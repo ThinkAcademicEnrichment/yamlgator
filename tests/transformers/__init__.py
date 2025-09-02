@@ -20,7 +20,7 @@ class TestTransformer(unittest.TestCase):
             _test_tree = _tests_tree.get(['',_test_name])
             _skip = _test_tree.uget('skip', 'n')
             if not _skip == 'y':
-                _transformer_class_names = _test_tree.get('transformer')
+                _transformer_class_names = _test_tree.get('transformer/')
                 if not isinstance(_transformer_class_names,list):
                     _transformer_class_names = [_transformer_class_names]
 
@@ -248,7 +248,7 @@ class TestTransformer(unittest.TestCase):
                 _output_tree = _test_tree.get('input/').copy()
                 _output_tree.overlay(_test_tree.get('output/'))
 
-                _test_results = self._is_confluent_with(_input_tree,_output_tree,transforms=_test_tree.get('transformer'))
+                _test_results = self._is_confluent_with(_input_tree,_output_tree,transforms=_test_tree.get('transformer/'))
                 print(f"\n{_test_name}")
                 for _permuted_transforms, _result in _test_results.items():
                     print(f"\n\t{_permuted_transforms} : {_result}")
