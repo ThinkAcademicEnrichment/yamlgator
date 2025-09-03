@@ -1,6 +1,36 @@
+keychains:
+  transformer:
+   - transform_values
+  skip: n
+  input:
+    config:
+      key-a:
+        key-b:
+          value_b
+      key-c:
+        )){config/key-a/key-b} is a keychain sub
+      key-d:
+        key-e:
+          key-f:
+            )){config/key-c} again
+# An undefined variable
+      key-g:
+        )){config/key-x/key-y/key-z}
+  output:
+    config:
+      key-a:
+        key-b:
+          value_b
+      key-c:
+        value_b is a keychain sub
+      key-d:
+        key-e:
+          key-f:
+            value_b is a keychain sub again
+
 single-key:
   transformer:
-    - ValueTransformer
+   - transform_values
   skip: n
   input:
     a:
@@ -39,7 +69,7 @@ single-key:
 
 list-of-trees:
   transformer:
-    - ValueTransformer
+   - transform_values
   skip: n
   input:
     a:
@@ -88,8 +118,8 @@ list-of-trees:
 
 list-of-included-trees:
   transformer:
-    - YAMLTransformer
-    - ValueTransformer
+    - transform_yaml
+    - transform_values
   skip: n
   input:
     a:
@@ -114,7 +144,7 @@ list-of-included-trees:
         d: D
 deep-trees:
   transformer:
-    - YAMLTransformer
+    - transform_yaml
   skip: n
   input:
     a:
@@ -131,8 +161,8 @@ deep-trees:
 
 deep-var-trees:
   transformer:
-    - ValueTransformer
-    - YAMLTransformer
+    - transform_values
+    - transform_yaml
   skip: n
   input:
     my-choice: uu
@@ -150,7 +180,7 @@ deep-var-trees:
 
 basic:
   transformer:
-    - ValueTransformer
+   - transform_values
   skip: n
   input:
     key-a:
@@ -179,7 +209,7 @@ basic:
 
 dashes:
   transformer:
-    - ValueTransformer
+   - transform_values
   skip: n
   input:
     key-a:
@@ -226,7 +256,7 @@ dashes:
 
 hierarchical-substitutions:
   transformer:
-    - ValueTransformer
+   - transform_values
   skip: n
   input:
     config:
@@ -290,42 +320,10 @@ hierarchical-substitutions:
 #        /tmp/))key-a/keith
 # tries to get('key-a/keith') and fails without // in path
 
-keychains:
-  transformer:
-    - ValueTransformer
-  skip: n
-  input:
-    config:
-      key-a:
-        key-b:
-          value_b
-      key-c:
-        )){config/key-a/key-b} is a keychain sub
-      key-d:
-        key-e:
-          key-f:
-            )){config/key-c} again
-  # this doesn't work by design
-  #    key-g:
-  #      ))(key-e/key-f) is a dfs relative keychain
-
-  output:
-    config:
-      key-a:
-        key-b:
-          value_b
-      key-c:
-        value_b is a keychain sub
-      key-d:
-        key-e:
-          key-f:
-            value_b is a keychain sub again
-  #    key-g:
-  #      value_b is a keychain sub again is a dfs relative key
 
 lists:
   transformer:
-    - ValueTransformer
+   - transform_values
   skip: n
   input:
     key-a:
@@ -378,7 +376,7 @@ lists:
 
 pathvalue-list:
   transformer:
-    - YAMLTransformer
+   - transform_yaml
   skip: n
   input:
     pathvalue-list:
@@ -411,7 +409,7 @@ pathvalue-list:
 
 missing-keys:
   transformer:
-    - ValueTransformer
+   - transform_values
   skip: n
   input:
     config:
@@ -483,7 +481,7 @@ missing-keys:
 
 dfs-sub:
   transformer:
-    - ValueTransformer
+   - transform_values
   skip: n
   input:
     config:
@@ -501,7 +499,7 @@ dfs-sub:
 
 dfs-sub-2:
   transformer:
-    - ValueTransformer
+   - transform_values
   skip: n
   input:
     a-key:
@@ -517,8 +515,8 @@ dfs-sub-2:
 
 at-list-vars:
   transformer:
-    - AtTransformer
-    - ValueTransformer
+    - transform_ats
+    - transform_values
   skip: n
   input:
     config:
@@ -535,11 +533,10 @@ at-list-vars:
         ))@
       b2:
         )){@}
-#      Notice the slice index must follow a slash for lists!
       g:
-        )){a/}[0]
+        )){a}[0]
       h:
-        )){))@[-1]/a/}[1]
+        )){))@[-1]/a}[1]
       i:
         ))x[23]
       j:
@@ -561,7 +558,7 @@ at-list-vars:
 
 at-vars:
   transformer:
-    - AtTransformer
+   - transform_ats
   skip: n
   input:
     config:
@@ -646,8 +643,8 @@ at-vars:
 # ORDER DEPENDENT
 at-dependencies:
   transformer:
-    - AtTransformer
-    - ValueTransformer
+    - transform_ats
+    - transform_values
   input:
     work-dir:
       ))))@/
@@ -662,8 +659,8 @@ at-dependencies:
 
 at-bad-order-dependencies:
   transformer:
-    - ValueTransformer
-    - AtTransformer
+    - transform_values
+    - transform_ats
   input:
     work-dir:
       ))))@/
@@ -678,8 +675,8 @@ at-bad-order-dependencies:
 
 at-bugs:
   transformer:
-    - ValueTransformer
-    - AtTransformer
+    - transform_values
+    - transform_ats
   input:
     a-list:
       - item0
@@ -743,7 +740,7 @@ at-bugs:
         # bug in ebuild: workdir uses MarkupSafe instead of markupsafe 
         emerge --noreplace --oneshot ))x-emerge-default-opts \=dev-python/markupsafe-3.0.2-r99
 
-        TO_BUILD="))pkgs-to-build/"
+        TO_BUILD="))pkgs-to-build"
         emerge --noreplace --oneshot ))x-emerge-default-opts $TO_BUILD
 
         gcc-config 1
@@ -766,7 +763,7 @@ at-bugs:
 
 path-strings:
   transformer:
-    - ValueTransformer
+   - transform_values
   input:
     project-name: xtoo-simple-project
     work-dir: /mnt/xtoo2
@@ -798,8 +795,8 @@ path-strings:
 
 secret-keys:
   transformer:
-    - ValueTransformer
-    - AtTransformer
+    - transform_values
+    - transform_ats
 
   input:
     a: A
@@ -812,7 +809,7 @@ secret-keys:
 
 plaintext:
   transformer:
-    - PlainTextTransformer
+    - transform_plaintext
   input:
     a: ./../../YAMLator/plaintext#
   output:
@@ -821,56 +818,4 @@ plaintext:
 
 
       All formatting should be preserved.
-#forward-slash:
-#  transformer:
-#    - ValueTransformer
-#
-#  input:
-#    a: A
-#    b:
-#      c: C
-#      d:
-#        e: E
-#        f: F
-#    g/:
-#      ))d
-#  output:
-#    a: A
-#    b:
-#      c: C
-#      d: A
-#    d:
-#      e: E
-#      f: a
-#  This needs its own framework with 'driver' type YAMLator objects
-#bang-expressions:
-#  transformer:
-#    BangTransformer
-#  input:
-#    my-bang:
-#      ))!call_me()
-#    my-band-2:
-#      ))!call_me(1001,kw1='A',kw2=1.2)
-#  output:
-#    my-bang:
-#      called!
-#    my-band-2:
-#      called!
 
-
-# do at keys work?
-#at-keys:
-#  transformer: AtKeyTransformer
-#  input:
-#    config:
-#      a: A
-#      ))@[-1]/a:
-#        AA
-#      ))@:
-#        invariant key
-#  output:
-#    config:
-#      a: A
-#      A: AA
-#      ))@:
-#        invariant key

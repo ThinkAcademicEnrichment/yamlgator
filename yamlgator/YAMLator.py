@@ -20,6 +20,7 @@ DEFAULT_UTILITIES= {
 class _DEBUG:
     YAMLator = False
     CONFIG_ATTRS = False
+    VALIDATE = False
 
 
 class YAMLatorException(Exception):
@@ -69,7 +70,7 @@ class YAMLatorObjectDB(ObjectDB):
     def register(self,object_class,attribute_name,*args,**kwargs):
         self._register(attribute_name,object_class,self,*args,**kwargs)
 
-class YAMLator(YAMLatorObjectDB,Tree):
+class YAMLator(YAMLatorObjectDB, Tree):
     """A powerful, high-level configuration processing engine.
 
     YAMLator provides a robust framework for managing and processing complex
@@ -200,10 +201,10 @@ class YAMLator(YAMLatorObjectDB,Tree):
         for _method in methods:
             _methods.append(getattr(self, _method))
         _old_odict = self.copy().odict
-        [_method(context_tree=context_tree,allow_tree_subs=allow_tree_subs) for _method in _methods]
+        [_method(context_tree=context_tree,allow_tree_subs=allow_tree_subs).evaluate() for _method in _methods]
         while self.odict != _old_odict:
             _old_odict = self.copy().odict
-            [_method(context_tree=context_tree,allow_tree_subs=allow_tree_subs) for _method in _methods]
+            [_method(context_tree=context_tree,allow_tree_subs=allow_tree_subs).evaluate() for _method in _methods]
 
     def get(self,keychain_or_keychain_str,value=None):
         """
@@ -429,6 +430,33 @@ class YAMLator(YAMLatorObjectDB,Tree):
             _data.update({_config_datum:str(getattr(self,_config_datum))})
         return _data
 
+    def validate(self, context_tree=None) -> list:
+        """Runs all available pre-flight validation checks.
+
+        This method orchestrates the validation process by calling the `validate()`
+        method on its registered transformer utilities. It is designed to support
+        a gradual rollout of the validation framework, safely ignoring any
+        utilities that have not yet implemented the `validate()` method.
+
+        Args:
+            context_tree (YAMLator, optional): An external context tree to be
+                used for cross-file validation. Defaults to None.
+
+        Returns:
+            list: A consolidated list of all warning and error strings found
+                by the validators.
+        """
+        all_issues = []
+        for utility_name in DEFAULT_UTILITIES.keys():
+            utility = getattr(self, utility_name)(context_tree=context_tree)
+            if hasattr(utility, 'validate'):
+                if _DEBUG.VALIDATE:
+                    _msg = f"running {utility_name} validation"
+                    ic(_msg)
+                issues = utility.validate()
+                all_issues.extend(issues)
+        return all_issues
+
     def check_subs(self):
         _unsubbed = Tree()
 
@@ -446,122 +474,3 @@ class YAMLator(YAMLatorObjectDB,Tree):
 
         self.visit(value_process=_assert_not_unsubbed)
         return _unsubbed
-
-    def invert(self):
-        """Creates an inverted index of the configuration tree.
-
-        Much like a textbook index, this method scans the tree for all variable
-        tokens (e.g., `${VAR}` or `))VAR`) and generates a new tree that maps
-        each variable to a list of all the locations (keychains) where it is
-        used. This is highly useful for dependency analysis and debugging
-        complex configurations.
-
-        Returns:
-            YAMLator: A new `YAMLator` instance representing the inverted index.
-                The keys of this new tree are the variable names found in the
-                original tree, and the values are lists of keychain strings
-                indicating every location where each variable was used.
-
-        Examples:
-            >>> yaml_content = '''
-            ... server:
-            ...   host: ))host-ip
-            ... database:
-            ...   url: 'postgres://))db-user@))host-ip/))db-name'
-            ... '''
-            >>> yt = YAMLator(yaml_content)
-            >>> inverted_tree = yt.invert()
-            >>> print(inverted_tree)
-            ))host-ip:
-            - server/host
-            - database/url
-            ))db-user:
-            - database/url
-            ))db-name:
-            - database/url
-        """
-        _var_tree = YAMLator()
-
-        def _val(value,keychain):
-            if not isinstance(value,str) and not isinstance(value,list):
-                return
-            if keychain[-1].startswith('_'):
-                return
-            if not isinstance(value,list):
-                value = [value]
-            for _value in value:
-                _tokens = ValueTransformer()._tokenize(_value)
-                for _token in _tokens:
-                    if is_variable_token(_token):
-                        if _token[2] == '{' and _token[-1] == '}':
-                            _token = KEY_OR_KEYCHAIN_OP +  _token[3:-1]
-                        try:
-                            _tree_values = _var_tree.get(_token)
-                        except KeyError:
-                            _tree_values = _var_tree.get(_token,[])
-                        _tree_values.append('/'.join(keychain))
-
-        self.visit(value_process=_val)
-        return _var_tree
-
-    def reduce(self):
-        """Builds a dependency graph of the configuration.
-
-        This method acts as a tool for creating a dependency graph, much like a
-        "Bill of Materials" for your configuration. For each keychain, it
-        determines which variables its value depends on.
-
-        Its primary use case is to enable the detection of circular dependencies
-        before running the full, potentially expensive, transformation process.
-        Self-referential dependencies (where a key's value refers to itself)
-        are ignored.
-
-        Returns:
-            YAMLator: A new `YAMLator` instance representing the dependency graph.
-                It preserves the keychains from the original tree, but replaces
-                their values with a list of the variable tokens they depend on.
-                Keychains with no dependencies are omitted from the result.
-
-        Examples:
-            >>> yaml_content = '''
-            ... db-host: 'db.internal'
-            ... db-port: 5432
-            ... db-url: 'postgres://user@))db-host:))db-port'
-            ... app-port: ))db-port
-            ... '''
-            >>> yt = YAMLator(yaml_content)
-            >>> dependency_graph = yt.reduce()
-            >>> print(dependency_graph)
-            db-url:
-            - '))db-host'
-            - '))db-port'
-            app-port:
-            - '))db-port'
-        """
-        _reduced_tree = YAMLator()
-
-        def _val(value,keychain):
-            if not isinstance(value,str) and not isinstance(value,list):
-                return
-            if keychain[-1].startswith('_'):
-                return
-            if not isinstance(value,list):
-                value = [value]
-
-            _variables_in_value = []
-            for _value in value:
-                _tokens = ValueTransformer()._tokenize(_value)
-                for _token in _tokens:
-                    if is_variable_token(_token):
-                        if _token[2] == '{' and _token[-1] == '}':
-                            _token = KEY_OR_KEYCHAIN_OP +  _token[3:-1]
-                        # not save self reference values
-                        if not _token[len(KEY_OR_KEYCHAIN_OP):] == keychain[-1]:
-                            _variables_in_value.append(_token)
-
-            if _variables_in_value:
-                _reduced_tree.get(keychain,_variables_in_value)
-
-        self.visit(value_process=_val)
-
-        return _reduced_tree

@@ -20,7 +20,7 @@ class DEBUG:
 
 
 from .Transformer import Transformer,TransformerException
-from .ValueTransformer import ValueTransformer,ValueTransformerUtility
+from .ValueTransformer import ValueTransformer
 from .KeyTransformer import KeyTransformer,KeyTransformerUtility
 from .YAMLTransformer import YAMLTransformer,YAMLTransformerUtility
 from .AtTransformer import AtTransformer,AtTransformerUtility
@@ -29,3 +29,10 @@ from .BangTransformer import BangTransformerException,BangTransformer,BangTransf
 from .ImportTransformer import ImportTransformer,ImportTransformerUtility
 from .PlainTextTransformer import PlainTextTransformer,PlainTextTransformerUtility
 
+# to eliminate circular imports due to the use of ValueTransformer in ValueValidator
+from ..validators.ValueValidator import ValueValidator
+class ValueTransformerUtility(ValueValidator,ValueTransformer):
+    def __init__(self,*args,**kwargs):
+        # super().__init__(*args,**kwargs)
+        ValueValidator.__init__(self,*args,**kwargs)
+        ValueTransformer.__init__(self,*args,**kwargs)

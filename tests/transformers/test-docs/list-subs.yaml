@@ -6,13 +6,13 @@ basic-lists:
         - value_1
         - value_2
       b:
-        ))a[0]
+        ))a/[0]
       c:
         d:
           - value_0
           - value_1
       e:
-        )){c/d}[1]
+        )){c/d/}[1]
   output:
     config:
       b: value_0

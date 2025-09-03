@@ -3,10 +3,8 @@ from ..tree import Tree,TreeCreationException
 from . import DEBUG
 from .KeyChainTransformer import KeyChainTransformer
 
-
 class ValueTransformerException(Exception):
     pass
-
 
 class ValueTransformer(KeyChainTransformer):
 
@@ -130,9 +128,3 @@ class ValueTransformer(KeyChainTransformer):
             value = '\n'.join(_transformed_values)
 
         self.get([''] + keychain, value)
-
-
-class ValueTransformerUtility(ValueTransformer):
-    def __init__(self,*args,**kwargs):
-        super().__init__(*args,**kwargs)
-        self.evaluate()

@@ -1014,6 +1014,7 @@ class TestTree(unittest.TestCase):
         self.assertEqual(tree.uget('x/y', 'XY'), 'XY')
         self.assertEqual(tree.get('x/y/'), 'XY')
 
+    @debug_on(Exception)
     def test_aget(self):
         tree = self._tree_factory()
 

@@ -85,4 +85,3 @@ class KeyTransformer(KeyChainTransformer):
 class KeyTransformerUtility(KeyTransformer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.evaluate()

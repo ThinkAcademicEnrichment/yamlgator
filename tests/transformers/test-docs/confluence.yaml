@@ -47,7 +47,6 @@ secret-keys:
   transformer:
     - transform_values
     - transform_ats
-
   input:
     a: A
     _project-name-template: ))@-project
