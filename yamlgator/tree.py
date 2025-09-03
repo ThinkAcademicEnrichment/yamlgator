@@ -22,6 +22,7 @@ class _DEBUG:
     DFS = False
     INDENT = None
     RESET = False
+    ENTRY = False
 
 
 class TreeVisitRestartException(Exception):
@@ -151,17 +152,22 @@ class Tree:
         if _DEBUG.RESET:
             ic(self.print())
 
-    def visit(self,pre_process=lambda x, y:None, post_process=lambda x, y:None, value_process=lambda x, y:None,reverse=False):
+    def visit(self,pre_process=lambda x, y:None, post_process=lambda x, y:None, value_process=lambda x, y:None,reverse=False,entry_keychain=None):
         try:
             if not reverse:
-                self._visit(self.odict,pre_process,post_process,value_process,None)
+                self._visit(self.odict,pre_process,post_process,value_process,None,entry_keychain=entry_keychain)
             else:
                 self._reverse_visit(self.odict,pre_process,post_process,value_process,None)
         except TreeVisitRestartException as e:
-            if _DEBUG.VISIT:
+            if _DEBUG.VISIT or _DEBUG.ENTRY:
                 ic(e)
+                ic(self.odict)
             if e.args[0] is not None:
-                self.get(e.args[0]).visit(pre_process, post_process, value_process, reverse)
+                _keychain_or_keychain_str = e.args[0]
+                _entry_keychain = copy(_keychain_or_keychain_str) if isinstance(_keychain_or_keychain_str,list) else _keychain_or_keychain_str.split('/')
+                if _DEBUG.ENTRY:
+                    ic(_entry_keychain)
+                self.visit(pre_process, post_process, value_process, reverse,entry_keychain=_entry_keychain)
             else:
                 self.visit(pre_process, post_process, value_process, reverse)
         except TreeVisitStopException as e:
@@ -169,17 +175,30 @@ class Tree:
                 ic(e)
             return
 
-    def _visit(self, node, pre_process=lambda x, y:None, post_process=lambda x, y:None, value_process=lambda x, y:None,keychain=None):
+    def _visit(self, node, pre_process=lambda x, y:None, post_process=lambda x, y:None, value_process=lambda x, y:None,keychain=None,entry_keychain=None,process=False):
         keychain = [] if keychain is None else keychain
+        entry_keychain = [] if entry_keychain is None else entry_keychain
+        if not entry_keychain:
+            process = True
+        elif not process and keychain[:len(entry_keychain)] == entry_keychain:
+            process = True
+            if _DEBUG.ENTRY:
+                _msg = f"{keychain[:len(entry_keychain)]} == {entry_keychain} "
+                ic(_msg)
+                ic(process)
+
         if isinstance(node,OrderedDict):
-            pre_process(node,copy(keychain))
+            if process:
+                pre_process(node,copy(keychain))
             for _child_key in node.keys():
                 keychain.append(_child_key)
-                self._visit(node.get(_child_key), pre_process, post_process, value_process, copy(keychain))
+                self._visit(node.get(_child_key), pre_process, post_process, value_process, copy(keychain),entry_keychain,process)
                 keychain.pop()
-            post_process(node,copy(keychain))
+            if process:
+                post_process(node,copy(keychain))
         else:
-            value_process(node,keychain)
+            if process:
+                value_process(node,keychain)
 
     def _reverse_visit(self, node,pre_process=lambda x, y:None, post_process=lambda x, y:None, value_process=lambda x, y:None,keychain=None):
         keychain = [] if keychain is None else keychain
@@ -396,17 +415,27 @@ class Tree:
             return
         if not isinstance(value,list):
             value = [value]
+
+        # always trim the root on aget, but we call self.get on not trimmed root
+        _keychain = copy(keychain_or_keychain_str) if isinstance(keychain_or_keychain_str, list) \
+            else keychain_or_keychain_str.split('/')
+        if not _keychain[-1] == '':
+            _keychain.append('')
+        else:
+            keychain_or_keychain_str = keychain_or_keychain_str[:-1]
+
         try:
-            _value = self.get(keychain_or_keychain_str)
+            _value = self.get(_keychain)
             if not isinstance(_value,list):
                 _value = [_value]
-            # _value.append(value)
             _value += value
         except KeyError:
             _value = value
-            # _value = [value] # like a regular get() wth the key just created
 
-        return self.get(keychain_or_keychain_str,_value)
+        # call get() on the root of the keychain
+        self.get(keychain_or_keychain_str,_value)
+        # but return the value
+        return _value
 
     def daget(self,keychain_or_keychain_str, value=None):
         """Updates a dictionary at a specified keychain.

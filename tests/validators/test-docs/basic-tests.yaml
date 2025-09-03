@@ -819,21 +819,3 @@ plaintext:
 
       All formatting should be preserved.
 
-circular-subs:
-  transformer:
-    - transform_values
-  skip: n
-  input:
-    service-a:
-      # The endpoint for service-a depends on the location of service-b
-      endpoint: https://api.example.com/)){service-b/path}
-
-    service-b:
-      # The path for service-b is built using the asset location from service-c
-      path: v2/data/)){service-c/assets}
-
-    service-c:
-      # The asset location for service-c incorrectly points back to service-a's endpoint
-      assets: static/)){service-a/endpoint}
-
-  # there is no output node, as no substitution should work

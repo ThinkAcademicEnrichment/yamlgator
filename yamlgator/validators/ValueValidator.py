@@ -4,7 +4,7 @@ from ..constants import KEY_OR_KEYCHAIN_OP, ic, KEYCHAIN_LEFT_BOUND, KEYCHAIN_RI
 from .AbstractValidator import AbstractValidator
 from ..transformers import ValueTransformer
 from .issues import ValidationIssue, ValidationResult
-from ..tree import TreeVisitRestartException
+from ..tree import Tree,TreeVisitRestartException
 
 
 class _DEBUG:
@@ -17,6 +17,22 @@ class ValueValidator(AbstractValidator):
     circular dependencies, and undefined or unused variables, before the
     main transformation process is run.
     """
+
+    def validate(self, context_tree: AbstractValidator = None) -> list[ValidationResult]:
+        """Runs all value-related validation checks.
+
+        Args:
+            context_tree (AbstractValidator, optional): An external context tree
+                for resolving variables. Defaults to None.
+
+        Returns:
+            list[ValidationResult]: A list of all validation issues found.
+        """
+        issues = []
+        issues.extend(self._find_circular_dependencies())
+        issues.extend(self._find_undefined_variables(context_tree))
+        return issues
+
     def invert(self):
         """Creates an inverted index of the configuration tree.
 
@@ -51,7 +67,6 @@ class ValueValidator(AbstractValidator):
             - database/url
         """
         _var_tree = self.__class__() # Use cls() for generic instantiation
-
         def _val(value, keychain):
             if not isinstance(value, str) and not isinstance(value, list):
                 return
@@ -71,6 +86,7 @@ class ValueValidator(AbstractValidator):
                     _var_tree.odict[_token] = _tree_values
 
         self.visit(value_process=_val)
+
         return _var_tree
 
     def reduce(self):
@@ -109,7 +125,6 @@ class ValueValidator(AbstractValidator):
             <BLANKLINE>
         """
         _reduced_tree = self.__class__() # Use cls() for generic instantiation
-
         def _val(value, keychain):
             if not isinstance(value, str) and not isinstance(value, list):
                 return
@@ -122,6 +137,9 @@ class ValueValidator(AbstractValidator):
             for _value in value:
                 _tokens = ValueTransformer()._tokenize(_value)
                 for _token in _tokens:
+                    # this is bad: we want to parse ))a//b ( ))a/, /b )
+                    if _token[-1] == '/':
+                        _token = _token[:-1]
                     _token,_keychain = self._remove_data_index(_token)
                     # _keychain == None means _token looks like a variable but is not a value type variable
                     if not _keychain:
@@ -151,136 +169,46 @@ class ValueValidator(AbstractValidator):
             _token = '))' + _token
         return _token,_keychain
 
-    def validate(self, context_tree: AbstractValidator = None) -> list[ValidationResult]:
-        """Runs all value-related validation checks.
-
-        Args:
-            context_tree (AbstractValidator, optional): An external context tree
-                for resolving variables. Defaults to None.
-
-        Returns:
-            list[ValidationResult]: A list of all validation issues found.
-        """
-        issues = []
-        issues.extend(self._find_circular_dependencies())
-        issues.extend(self._find_undefined_variables(context_tree))
-        # issues.extend(self._find_unused_variables())
-        return issues
-
     def _find_circular_dependencies(self) -> list[ValidationResult]:
-        _reduced_tree = self.reduce()
-        _visited = []
-        _issues = []
-
-        def _find_cycles(node, keychain):
-            ic(keychain)
-            ic(node)
-            ic(_visited)
-
-            # Parse the variable token to get the keychain string to test
-            keychain_str = ''
-            for _n in node:
-                var_token = _n
-                ic(var_token)
-                if '{' in var_token and '}' in var_token:
-                    # Handles cases like ')){a/b/c}'
-                    start_index = len(KEY_OR_KEYCHAIN_OP) + 1
-                    keychain_str = var_token[start_index:-1]
-                else:
-                    # Handles cases like '))a-key'
-                    start_index = len(KEY_OR_KEYCHAIN_OP)
-                    keychain_str = var_token[start_index:]
-
-                ic(keychain_str)
-                if var_token in _visited:
-                    _issues.append(ValidationResult(
-                        issue_type=ValidationIssue.CIRCULAR_DEPENDENCY,
-                        message=ValidationIssue.CIRCULAR_DEPENDENCY.value.format(path=' -> '.join(_visited))
-                    ))
-
-                try:
-                    _reduced_tree.get(keychain_str)
-                    _visited.append(keychain)
-                    ic(node.remove(var_token))
-                    _msg = "restarting!"
-                    ic(_msg)
-                    raise TreeVisitRestartException('')
-
-                except KeyError:
-                    _issues.append(ValidationResult(
-                        issue_type=ValidationIssue.UNDEFINED_VARIABLE,
-                        message=ValidationIssue.UNDEFINED_VARIABLE.value.format(variable=var_token)
-                    ))
-
-
-
-        _reduced_tree.visit(value_process=_find_cycles)
-        return _issues
-
-    def _find_circular_dependencies_new(self) -> list[ValidationResult]:
-        _reduced_tree = self.reduce()
-        _visited = set()
-        _issues =[]
-        def _find_cycles(node,keychain):
-            ic(keychain)
-            ic(node)
-            if keychain in _visited:
-                _issues.append(ValidationResult(
-                        issue_type=ValidationIssue.CIRCULAR_DEPENDENCY,
-                        message=ValidationIssue.CIRCULAR_DEPENDENCY.value.format(node=' -> '.join(cycle_path))
-                    ))
-                return
-            if node:
-                {_visited.add(_n) for _n in node}
-            ic(_visited)
-
-        _reduced_tree.visit(value_process=_find_cycles)
-        return _issues
-
-
-    def _find_circular_dependencies_old(self) -> list[ValidationResult]:
         """Detects cyclical dependencies in the variable graph.
 
         Returns:
             list[ValidationResult]: A list of validation results for any cycles found.
         """
-        dep_graph = self.reduce()
-        adj = {
-            key: [v[len(KEY_OR_KEYCHAIN_OP):] for v in deps]
-            for key, deps in dep_graph.odict.items()
-        }
+        _reduced_tree = self.reduce()
+        _visited = []
+        _issues = []
 
-        visited = set()
-        visiting = set()
+        def _find_cycles(node, keychain):
+            keychain_str = ''
+            # Parse the variable token to get the keychain string to test
+            for var_token in node:
+                if var_token.startswith(KEY_OR_KEYCHAIN_OP):
+                    if '{' in var_token and '}' in var_token:
+                        # Handles cases like ')){a/b/c}'
+                        start_index = len(KEY_OR_KEYCHAIN_OP) + 1
+                        keychain_str = var_token[start_index:-1]
+                    else:
+                        # Handles cases like '))a-key'
+                        start_index = len(KEY_OR_KEYCHAIN_OP)
+                        keychain_str = var_token[start_index:]
 
-        def _dfs(node, path):
-            """Recursive DFS helper to find cycles."""
-            visited.add(node)
-            visiting.add(node)
-            path.append(node)
-            for neighbor in adj.get(node, []):
-                if neighbor not in visited:
-                    cycle = _dfs(neighbor, path)
-                    if cycle:
-                        return cycle  # Propagate cycle path up
-                elif neighbor in visiting:
-                    path.append(neighbor)
-                    return path  # Cycle detected, return the path
+                    if keychain_str in _visited:
+                        _issues.append(ValidationResult(
+                            issue_type=ValidationIssue.CIRCULAR_DEPENDENCY,
+                            message=ValidationIssue.CIRCULAR_DEPENDENCY.value.format(path=' -> '.join(_visited))
+                        ))
+                        while _visited:
+                            _visited.pop()
+                        continue
 
-            visiting.remove(node)
-            path.pop()
-            return None  # No cycle found from this node
+                    _visited.append(keychain_str)
+                    entry_keychain = keychain_str.split('/')
+                    raise TreeVisitRestartException(entry_keychain)
 
-        for node in list(adj.keys()):
-            if node not in visited:
-                cycle_path = _dfs(node, [])
-                if cycle_path:
-                    return [ValidationResult(
-                        issue_type=ValidationIssue.CIRCULAR_DEPENDENCY,
-                        message=ValidationIssue.CIRCULAR_DEPENDENCY.value.format(path=' -> '.join(cycle_path))
-                    )]
+        _reduced_tree.visit(value_process=_find_cycles)
 
-        return []
+        return _issues
 
     def _find_undefined_variables(self, context_tree: AbstractValidator = None) -> list[ValidationResult]:
         """Finds variables whose referenced keychains cannot be resolved in the tree.
@@ -338,29 +266,6 @@ class ValueValidator(AbstractValidator):
                 issues.append(ValidationResult(
                     issue_type=ValidationIssue.UNDEFINED_VARIABLE,
                     message=ValidationIssue.UNDEFINED_VARIABLE.value.format(variable=var_token)
-                ))
-
-        return issues
-
-    def _find_unused_variables(self) -> list[ValidationResult]:
-        """Finds variables that are defined as keys but are never used in any values.
-
-        Returns:
-            list[ValidationResult]: A list of validation results for any unused variables.
-        """
-        issues = []
-        used_vars_map = self.invert()
-        # used_vars = {v[len(KEY_OR_KEYCHAIN_OP):] for v in used_vars_map.keys()}
-        used_vars = {v for v in used_vars_map.keys()}
-
-        defined_vars = set(self.keys())
-
-        unused_vars = defined_vars - used_vars
-        for var in unused_vars:
-            if not var.startswith("_"):
-                issues.append(ValidationResult(
-                    issue_type=ValidationIssue.UNUSED_VARIABLE,
-                    message=ValidationIssue.UNUSED_VARIABLE.value.format(variable=var)
                 ))
 
         return issues
