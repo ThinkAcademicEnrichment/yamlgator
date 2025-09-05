@@ -14,6 +14,7 @@ class BangTransformer(ValueTransformer):
     match_regex = rf"{re.escape(KEY_OR_KEYCHAIN_OP)}{REGEXES.BANG}"
     extract_regex = rf"{re.escape(KEY_OR_KEYCHAIN_OP)}{REGEXES.BANG_EXP}"
 
+    name = 'transform_bangs'
     def __init__(self, odict_or_tree=None, **kwargs):
         odict_or_tree = OrderedDict() if odict_or_tree is None else odict_or_tree
         super(BangTransformer, self).__init__(odict_or_tree)

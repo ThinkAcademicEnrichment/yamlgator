@@ -6,24 +6,24 @@ import random
 class TestValidator(unittest.TestCase):
     tests_dir = pathlib.Path(__file__).absolute().parent.joinpath('test-docs')
 
-    # @unittest.skip
     @debug_on(Exception)
     def test_basic(self):
         '''validate basic tests '''
 
-        _tests_yaml = self.tests_dir.joinpath('basic-tests.yaml')
+        _tests_yaml = self.tests_dir.parent.parent.joinpath('transformers/test-docs/basic-tests.yaml')
 
         with _tests_yaml.open('r') as f:
             _tests_tree = YAMLator.load(f)
 
         for _test_name in _tests_tree.keys():
-            print(f"Validating {_test_name} data")
             _test_tree = _tests_tree.get(['',_test_name])
             _skip = _test_tree.uget('skip', 'n')
             if not _skip == 'y':
 
                 _input_tree = _test_tree.get('input/').copy()
                 _all_issues = _input_tree.validate()
+                if _all_issues:
+                    print(f"\n{_test_name} validation issues")
                 for _issue in _all_issues:
                     print(f"\t{_issue}")
 
@@ -40,7 +40,7 @@ class TestValidator(unittest.TestCase):
             _tests_tree = YAMLator.load(f)
 
         for _test_name in _tests_tree.keys():
-            print(f"Validating {_test_name} data")
+            print(f"\nValidating {_test_name} issues")
             _test_tree = _tests_tree.get(['',_test_name])
             _skip = _test_tree.uget('skip', 'n')
             if not _skip == 'y':

@@ -7,6 +7,7 @@ from .ValueTransformer import ValueTransformer
 
 
 class ImportTransformer(KeyTransformer):
+    name = 'transform_imports'
     match_regex = rf"{re.escape(KEY_OR_KEYCHAIN_OP)}{REGEXES.IMPORT}"
     extract_regex = rf"({re.escape(KEY_OR_KEYCHAIN_OP)}{REGEXES.IMPORT_EXP})"
 

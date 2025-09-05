@@ -17,6 +17,8 @@ class ValueValidator(AbstractValidator):
     circular dependencies, and undefined or unused variables, before the
     main transformation process is run.
     """
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
 
     def validate(self, context_tree: AbstractValidator = None) -> list[ValidationResult]:
         """Runs all value-related validation checks.

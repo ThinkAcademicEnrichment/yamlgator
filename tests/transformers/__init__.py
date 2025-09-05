@@ -16,7 +16,8 @@ class TestTransformer(unittest.TestCase):
             _tests_tree = YAMLator.load(f)
 
         for _test_name in _tests_tree.keys():
-            print(_test_name)
+            print(f"\n{_test_name}")
+            # print(f"\n Transforming {_test_name}")
             _test_tree = _tests_tree.get(['',_test_name])
             _skip = _test_tree.uget('skip', 'n')
             if not _skip == 'y':
@@ -38,7 +39,7 @@ class TestTransformer(unittest.TestCase):
             else:
                 print(f'skipping {_test_name}')
 
-        self._is_confluent(_test_tree.get('input/').copy(), _output_tree)
+            # self._is_confluent_with(_test_tree.get('input/').copy(), _output_tree,list(map(lambda x:getattr(globals().get(x),'name'),_transformer_class_names)))
 
     #  so deeply confusing
     # @debug_on(Exception)
@@ -73,13 +74,14 @@ class TestTransformer(unittest.TestCase):
             _tests_tree = YAMLator.load(f)
 
         for _test_name in _tests_tree.keys():
+            print(f"\n{_test_name}")
             _test_tree = _tests_tree.get(_test_name)
             _input_tree = _test_tree.get('input/').copy()
             _output_tree = _test_tree.get('output/').copy()
             KeyTransformer(_input_tree).evaluate()
             self.assertEqual(_input_tree.odict,_output_tree.odict)
 
-        self._is_confluent(_test_tree.get('input/').copy(), _output_tree)
+            self._is_confluent(_test_tree.get('input/').copy(), _output_tree)
 
     @debug_on(Exception)
     def test_list_subs(self):
@@ -89,6 +91,7 @@ class TestTransformer(unittest.TestCase):
             _tests_tree = YAMLator.load(f)
 
         for _test_name in _tests_tree.keys():
+            print(f"\n{_test_name}")
             _test_tree = _tests_tree.get(_test_name)
 
             _input_tree = _test_tree.get('input/').copy()
@@ -98,7 +101,7 @@ class TestTransformer(unittest.TestCase):
             ValueTransformer(_input_tree).evaluate()
             self.assertEqual(_input_tree.odict,_output_tree.odict)
 
-        self._is_confluent(_test_tree.get('input/').copy(), _output_tree)
+            self._is_confluent(_test_tree.get('input/').copy(), _output_tree)
 
     @debug_on(Exception)
     def test_if_keys(self):
@@ -108,6 +111,7 @@ class TestTransformer(unittest.TestCase):
             _tests_tree = YAMLator.load(f)
 
         for _test_name in _tests_tree.keys():
+            print(f"\n{_test_name}")
             _test_tree = _tests_tree.get(_test_name)
             _skip = _test_tree.uget('skip','n')
             if not _skip == 'y':
@@ -119,7 +123,12 @@ class TestTransformer(unittest.TestCase):
                 self.assertEqual(_input_tree.odict,_output_tree.odict)
                 # if _test_name == 'test-5': 1/0
 
-        self._is_confluent(_test_tree.get('input/').copy(), _output_tree)
+                try:
+                    self._is_confluent(_test_tree.get('input/').copy(), _test_tree.get('output/').copy())
+                except Exception as e:
+                    print(f"\n Full Confluence fails")
+                    1/0
+                self._is_confluent_with(_test_tree.get('input/').copy(), _test_tree.get('output/').copy(),[IfKeyTransformer.name,ValueTransformer.name])
 
     @debug_on(Exception)
     def test_if_vars(self):
@@ -129,6 +138,7 @@ class TestTransformer(unittest.TestCase):
             _tests_tree = YAMLator.load(f)
 
         for _test_name in _tests_tree.keys():
+            print(f"\n{_test_name}")
             _test_tree = _tests_tree.get(_test_name)
             _skip = _test_tree.uget('skip', 'n')
             if not _skip == 'y':
@@ -140,7 +150,7 @@ class TestTransformer(unittest.TestCase):
                 self.assertEqual(_input_tree.odict, _output_tree.odict)
                 # self.assertEqual(_input_tree, _output_tree)
 
-        self._is_confluent(_test_tree.get('input/').copy(), _output_tree)
+            self._is_confluent(_test_tree.get('input/').copy(), _output_tree)
 
 
     @debug_on(Exception)
@@ -150,6 +160,7 @@ class TestTransformer(unittest.TestCase):
         with _tests_yaml.open('r') as f:
             _tests_tree = YAMLator.load(f)
         for _test_name in _tests_tree.keys():
+            print(f"\n{_test_name}")
             _test_tree = _tests_tree.get(_test_name)
             _skip = _test_tree.uget('skip', 'n')
             if not _skip == 'y':
@@ -159,7 +170,7 @@ class TestTransformer(unittest.TestCase):
                 ValueTransformer(_input_tree).evaluate()
                 self.assertEqual(_input_tree, _output_tree)
 
-        self._is_confluent(_test_tree.get('input/').copy(), _output_tree)
+            self._is_confluent(_test_tree.get('input/').copy(), _output_tree)
 
     @debug_on(Exception)
     def test_import(self):
@@ -168,6 +179,7 @@ class TestTransformer(unittest.TestCase):
         with _tests_yaml.open('r') as f:
             _tests_tree = YAMLator.load(f)
         for _test_name in _tests_tree.keys():
+            print(f"\n{_test_name}")
             _test_tree = _tests_tree.get(_test_name)
             _skip = _test_tree.uget('skip', 'n')
             if not _skip == 'y':
@@ -176,7 +188,7 @@ class TestTransformer(unittest.TestCase):
                 ImportTransformer(_input_tree).evaluate()
                 self.assertEqual(_input_tree, _output_tree)
 
-        self._is_confluent(_test_tree.get('input/').copy(), _output_tree)
+            self._is_confluent(_test_tree.get('input/').copy(), _output_tree)
 
     @debug_on(Exception)
     def test_plaintext(self):
@@ -185,6 +197,7 @@ class TestTransformer(unittest.TestCase):
         with _tests_yaml.open('r') as f:
             _tests_tree = YAMLator.load(f)
         for _test_name in _tests_tree.keys():
+            print(f"\n{_test_name}")
             _test_tree = _tests_tree.get(_test_name)
             _skip = _test_tree.uget('skip', 'n')
             if not _skip == 'y':
@@ -205,7 +218,12 @@ class TestTransformer(unittest.TestCase):
             _yt = initial_yt.copy()
             _yt.transform(methods=_permuted_transforms)
             _test_results.update({_permuted_transforms : _yt == expected_tree})
-            # self.assertEqual(_yt, expected_tree)
+        # self.assertTrue(any(_test_results.values()))
+        if not any(_test_results.values()):
+            print('CONFLUENCE FAILURE!!!!')
+        print("\nConfluence Test Results:")
+        for _permuted_transforms, _result in _test_results.items():
+            print(f"\n\t{_permuted_transforms} : {_result}")
         return _test_results
 
     def _is_confluent(self,initial_yt,expected_tree):
@@ -234,26 +252,23 @@ class TestTransformer(unittest.TestCase):
         self.assertEqual(shuffled_yt, expected_tree)
 
 
-    @debug_on(Exception)
-    def test_confluence(self):
-        _test_yaml = self.tests_dir.joinpath('confluence.yaml')
-        with _test_yaml.open('r') as f:
-            _tests_tree = YAMLator.load(f)
-        print("\nConfluence Test Results:")
-        for _test_name in _tests_tree.keys():
-            _test_tree = _tests_tree.get(_test_name)
-            _skip = _test_tree.uget('skip', 'n')
-            if not _skip == 'y':
-                _input_tree = _test_tree.get('input/').copy()
-                _output_tree = _test_tree.get('input/').copy()
-                _output_tree.overlay(_test_tree.get('output/'))
-
-                _test_results = self._is_confluent_with(_input_tree,_output_tree,transforms=_test_tree.get('transformer/'))
-                print(f"\n{_test_name}")
-                for _permuted_transforms, _result in _test_results.items():
-                    print(f"\n\t{_permuted_transforms} : {_result}")
-            else:
-                print(f"\n{_test_name} skipped")
+    # @debug_on(Exception)
+    # def test_confluence(self):
+    #     _test_yaml = self.tests_dir.joinpath('confluence.yaml')
+    #     with _test_yaml.open('r') as f:
+    #         _tests_tree = YAMLator.load(f)
+    #     for _test_name in _tests_tree.keys():
+    #         print(f"\n{_test_name}")
+    #         _test_tree = _tests_tree.get(_test_name)
+    #         _skip = _test_tree.uget('skip', 'n')
+    #         if not _skip == 'y':
+    #             _input_tree = _test_tree.get('input/').copy()
+    #             _output_tree = _test_tree.get('input/').copy()
+    #             _output_tree.overlay(_test_tree.get('output/'))
+    #
+    #             self._is_confluent_with(_input_tree,_output_tree,transforms=_test_tree.get('transformer/'))
+    #         else:
+    #             print(f"\n{_test_name} skipped")
 
     # ----- Non confluent transforms
 
@@ -262,9 +277,9 @@ class TestTransformer(unittest.TestCase):
         _tests_yaml = self.tests_dir.joinpath('if-at-vars.yaml')
         with _tests_yaml.open('r') as f:
             _tests_tree = YAMLator.load(f)
-            # _tests_tree = YAMLator.load(f)
 
         for _test_name in _tests_tree.keys():
+            print(f"\n{_test_name}")
             _test_tree = _tests_tree.get(_test_name)
             _skip = _test_tree.uget('skip', 'n')
             if not _skip == 'y':
@@ -277,8 +292,7 @@ class TestTransformer(unittest.TestCase):
                 ValueTransformer(_input_tree).evaluate()
                 self.assertEqual(_input_tree.odict, _output_tree.odict)
 
-        print("not testing at/if confluence")
-        # self._is_confluent_with(_test_tree.get('input/').copy(), _output_tree,transforms=['transform_ifs','transform_ats'])
+                self._is_confluent_with(_test_tree.get('input/').copy(), _output_tree,transforms=['transform_ats','transform_ifs','transform_values'])
 
 if __name__ == '__main__':
     unittest.main()

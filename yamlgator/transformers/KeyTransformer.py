@@ -8,6 +8,7 @@ class KeyTransformerException(Exception):
 
 
 class KeyTransformer(KeyChainTransformer):
+    name = 'transform_keys'
     def __init__(self, odict_or_tree=None, context_tree=None, allow_tree_subs=False):
         super(KeyTransformer,self).__init__(odict_or_tree, context_tree, False)
 

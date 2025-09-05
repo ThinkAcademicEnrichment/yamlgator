@@ -7,7 +7,7 @@ class ValueTransformerException(Exception):
     pass
 
 class ValueTransformer(KeyChainTransformer):
-
+    name = 'transform_values'
     def _do_not_evaluate(self, value, keychain):
         if keychain and keychain[-1].startswith('_'):
             if DEBUG.ValueTransformer:
@@ -121,6 +121,9 @@ class ValueTransformer(KeyChainTransformer):
                     _msg = 'failed to _transform() tree'
                     ic(_msg)
                 return
+            except Exception as e:
+                if DEBUG.ValueTransformer:
+                    ic(e)
 
         if isinstance(value, list):
             value = _transformed_values

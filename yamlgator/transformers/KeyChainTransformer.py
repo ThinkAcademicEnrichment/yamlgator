@@ -16,7 +16,8 @@ class KeyChainTransformer(Transformer):
         f"(?:{re.escape('[')}({REGEXES.DATA_INDEX}){re.escape(']')})?"
 
     def __init__(self, odict_or_tree=None, context_tree=None, allow_tree_subs=True):
-        super(KeyChainTransformer,self).__init__(odict_or_tree)
+        # super(KeyChainTransformer,self).__init__(odict_or_tree)
+        super().__init__(odict_or_tree)
         self.context = context_tree
         self.allow_tree_subs = allow_tree_subs
 

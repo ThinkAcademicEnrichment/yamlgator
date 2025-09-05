@@ -40,8 +40,9 @@ def debug_on(*exceptions):
         return wrapper
     return decorator
 
-# from tests.tree import TestTree
-# from tests.transformers import TestTransformer
+from tests.tree import TestTree
+from tests.transformers import TestTransformer
+from tests.validators import TestValidator
 
 if __name__ == '__main__':
     _tl = unittest.TestLoader()

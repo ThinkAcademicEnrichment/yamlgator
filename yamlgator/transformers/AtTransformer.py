@@ -8,6 +8,7 @@ class AtTransformerException(Exception):
 
 
 class AtTransformer(ValueTransformer):
+    name = 'transform_ats'
     match_regex = \
         f"{re.escape(KEY_OR_KEYCHAIN_OP)}{re.escape(KEYCHAIN_LEFT_BOUND)}?" + \
         f"{REGEXES.AT}{re.escape(KEYCHAIN_RIGHT_BOUND)}?"

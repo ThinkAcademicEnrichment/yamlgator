@@ -8,6 +8,7 @@ class PlainTextTransformerException(Exception):
 
 
 class PlainTextTransformer(PathValueTransformer):
+    name = 'transform_plaintext'
     ext = None
 
     def __init__(self, odict_or_yamlator_or_tree, context_tree=None, allow_tree_subs=False,root_dir=None):
