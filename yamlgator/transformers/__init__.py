@@ -30,9 +30,10 @@ from .ImportTransformer import ImportTransformer,ImportTransformerUtility
 from .PlainTextTransformer import PlainTextTransformer,PlainTextTransformerUtility
 
 # to eliminate circular imports due to the use of ValueTransformer in ValueValidator
+# eventually all utilities will be here
 from ..validators.ValueValidator import ValueValidator
 class ValueTransformerUtility(ValueValidator,ValueTransformer):
     def __init__(self,*args,**kwargs):
-        # super().__init__(*args,**kwargs)
-        ValueValidator.__init__(self,*args,**kwargs)
-        ValueTransformer.__init__(self,*args,**kwargs)
+        super().__init__(*args,**kwargs)
+        # ValueValidator.__init__(self,*args,**kwargs)
+        # ValueTransformer.__init__(self,*args,**kwargs)

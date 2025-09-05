@@ -5,15 +5,15 @@ from .constants import *
 
 
 DEFAULT_UTILITIES= {
-    'transform_imports':ImportTransformerUtility,
-    'transform_values':ValueTransformerUtility,
-    'transform_ats':AtTransformerUtility,
-    'transform_bangs':BangTransformerUtility,
-    'transform_yaml':YAMLTransformerUtility,
-    'transform_keys':KeyTransformerUtility,
-    'transform_if_keys':IfKeyTransformerUtility,
-    'transform_ifs':IfTransformerUtility,
-    'transform_plaintext':PlainTextTransformerUtility,
+    ImportTransformerUtility.name:ImportTransformerUtility,
+    ValueTransformerUtility.name:ValueTransformerUtility,
+    AtTransformerUtility.name:AtTransformerUtility,
+    BangTransformerUtility.name:BangTransformerUtility,
+    YAMLTransformerUtility.name:YAMLTransformerUtility,
+    KeyTransformerUtility.name:KeyTransformerUtility,
+    IfKeyTransformerUtility.name:IfKeyTransformerUtility,
+    IfTransformerUtility.name:IfTransformerUtility,
+    PlainTextTransformerUtility.name:PlainTextTransformerUtility,
 }
 
 
@@ -21,6 +21,7 @@ class _DEBUG:
     YAMLator = False
     CONFIG_ATTRS = False
     VALIDATE = False
+    TRANSFORM = True
 
 
 class YAMLatorException(Exception):
@@ -31,8 +32,8 @@ class YAMLatorObjectDB(ObjectDB):
     regexes = None
 
     def __init__(self):
-        super(YAMLatorObjectDB,self).__init__()
-
+        # super(YAMLatorObjectDB,self).__init__()
+        super().__init__()
         self.regexes = {}
 
 
@@ -198,13 +199,28 @@ class YAMLator(YAMLatorObjectDB, Tree):
         # apply all default utilities until no more change in self.odict
         methods = methods if methods is not None else tuple(DEFAULT_UTILITIES.keys())
         _methods = []
+        if _DEBUG.TRANSFORM:
+            ic(methods)
+
         for _method in methods:
             _methods.append(getattr(self, _method))
+            if _DEBUG.TRANSFORM:
+                ic(_methods[-1]().name)
+
         _old_odict = self.copy().odict
-        [_method(context_tree=context_tree,allow_tree_subs=allow_tree_subs).evaluate() for _method in _methods]
+        if _DEBUG.TRANSFORM:
+            ic(self.odict)
+        # [_method(context_tree=context_tree,allow_tree_subs=allow_tree_subs).evaluate() for _method in _methods]
+        for _method_utility in _methods:
+            _method_utility(context_tree=context_tree, allow_tree_subs=allow_tree_subs).evaluate()
+
         while self.odict != _old_odict:
+            if _DEBUG.TRANSFORM:
+                ic(self.odict)
             _old_odict = self.copy().odict
-            [_method(context_tree=context_tree,allow_tree_subs=allow_tree_subs).evaluate() for _method in _methods]
+            # [_method(context_tree=context_tree,allow_tree_subs=allow_tree_subs).evaluate() for _method in _methods]
+            for _method_utility in _methods:
+                _method_utility(context_tree=context_tree, allow_tree_subs=allow_tree_subs).evaluate()
 
     def get(self,keychain_or_keychain_str,value=None):
         """

@@ -11,6 +11,7 @@ class YAMLTransformerException(Exception):
 
 
 class YAMLTransformer(PathValueTransformer):
+    name = 'transform_yaml'
     ext = 'yaml'
 
     def __init__(self, odict_or_yamlator_or_tree, context_tree=None, allow_tree_subs=False, root_dir=None):

@@ -10,12 +10,14 @@ class IfTransformerException(Exception):
 
 # TODO: using self.context needs tests
 class IfTransformer(ValueTransformer):
+    name = 'transform_ifs'
     match_regex = rf"{re.escape(KEY_OR_KEYCHAIN_OP)}{REGEXES.IF}"
     extract_regex = rf'{re.escape(KEY_OR_KEYCHAIN_OP)}{REGEXES.IF_EXP}'
 
     def __init__(self, odict_or_tree=None, context_tree=None, **kwargs):
         odict_or_tree = OrderedDict() if odict_or_tree is None else odict_or_tree
-        super(IfTransformer, self).__init__(odict_or_tree)
+        # super(IfTransformer, self).__init__(odict_or_tree)
+        super().__init__(odict_or_tree)
         self.context = context_tree
 
     def reduce_logical_exp(self, logical_sub_exps):
@@ -230,10 +232,12 @@ class IfTransformerUtility(IfTransformer):
         self.evaluate()
 
 class IfKeyTransformer(IfTransformer):
+    name = 'transform_if_keys'
     extract_regex = rf'{re.escape(KEY_OR_KEYCHAIN_OP)}{REGEXES.IF_KEY_EXP}'
 
     def __init__(self, odict_or_tree=None, context_tree=None, **kwargs):
-        super(IfKeyTransformer,self).__init__(odict_or_tree)
+        # super(IfKeyTransformer,self).__init__(odict_or_tree)
+        super().__init__(odict_or_tree)
         self.context = context_tree
         # if DEBUG.IfKeyTransformer:
         #     ic()

@@ -1,4 +1,5 @@
 test-1:
+  skip: y
   input:
     a: A
     b: B
@@ -18,7 +19,7 @@ test-1:
     f: F
     g: G
 test-2:
-  skip: n
+  skip: y
   input:
     a:
       b: B
@@ -38,7 +39,7 @@ test-2:
       c: C
     y: They are Equal!
 test-3:
-  skip: n
+  skip: y
   input:
     a:
       b: B

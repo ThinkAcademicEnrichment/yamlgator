@@ -9,8 +9,8 @@ class Transformer(AbstractEvaluator):
 
     def __init__(self, odict_or_tree=None):
         odict_or_tree = OrderedDict() if not odict_or_tree else odict_or_tree
-        super(Transformer, self).__init__(odict_or_tree)
-
+        # super(Transformer, self).__init__(odict_or_tree)
+        super().__init__(odict_or_tree)
     def _match(self, line):
         '''used recursively in self._tokenize to split a line into tokens by matching'''
         # return a re.match object or None to skip
