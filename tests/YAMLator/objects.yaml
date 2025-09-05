@@ -31,7 +31,7 @@ objects:
       - pathlib.Path
       - /tmp/yamlator-tests/example/hello.txt
     example-url:
-      - urlpath.URL
+      - yarl.URL
       - https://build.funtoo.org
     use-example:
       - bool
@@ -41,7 +41,7 @@ objects:
       - False
     example-tree:
       example-url:
-        - urlpath.URL
+        - yarl.URL
         - https://build.funtoo.org
       is-fun:
         - bool

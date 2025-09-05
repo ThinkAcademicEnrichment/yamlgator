@@ -1,6 +1,6 @@
 from copy import copy,deepcopy
 from collections import OrderedDict
-import urlpath
+import yarl
 import pathlib
 import re
 import io
@@ -102,7 +102,7 @@ def bool_factory(x):
 
 DEFAULT_KEY_TYPES = dict(
     path = (REGEXES.PATH_TYPE_KEY, (pathlib.Path,)),
-    url = (REGEXES.URL_TYPE_KEY,(urlpath.URL,)),
+    url = (REGEXES.URL_TYPE_KEY,(yarl.URL,)),
     bool = (REGEXES.BOOL_TYPE_KEY,(bool_factory,))
 )
 

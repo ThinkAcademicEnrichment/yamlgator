@@ -84,7 +84,7 @@ class YAMLator(YAMLatorObjectDB, Tree):
         configuration is fully expanded and reaches a stable state (see the
         `transform` method).
     2.  A dynamic type system that automatically casts string values into rich
-        Python objects (e.g., `pathlib.Path`, `bool`, `urlpath.URL`) based on
+        Python objects (e.g., `pathlib.Path`, `bool`, `yarl.URL`) based on
         regular expression patterns matched against their corresponding keys.
 
     The primary use case is to load a templated YAML file and transform it
