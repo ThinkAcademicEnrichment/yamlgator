@@ -21,7 +21,7 @@ class _DEBUG:
     YAMLator = False
     CONFIG_ATTRS = False
     VALIDATE = False
-    TRANSFORM = True
+    TRANSFORM = False
 
 
 class YAMLatorException(Exception):
@@ -210,7 +210,6 @@ class YAMLator(YAMLatorObjectDB, Tree):
         _old_odict = self.copy().odict
         if _DEBUG.TRANSFORM:
             ic(self.odict)
-        # [_method(context_tree=context_tree,allow_tree_subs=allow_tree_subs).evaluate() for _method in _methods]
         for _method_utility in _methods:
             _method_utility(context_tree=context_tree, allow_tree_subs=allow_tree_subs).evaluate()
 
@@ -218,7 +217,6 @@ class YAMLator(YAMLatorObjectDB, Tree):
             if _DEBUG.TRANSFORM:
                 ic(self.odict)
             _old_odict = self.copy().odict
-            # [_method(context_tree=context_tree,allow_tree_subs=allow_tree_subs).evaluate() for _method in _methods]
             for _method_utility in _methods:
                 _method_utility(context_tree=context_tree, allow_tree_subs=allow_tree_subs).evaluate()
 
