@@ -6,7 +6,6 @@ import random
 class TestTransformer(unittest.TestCase):
     tests_dir = pathlib.Path(__file__).absolute().parent.joinpath('test-docs')
 
-    @unittest.skip
     @debug_on(Exception)
     def test_basic(self):
         '''apply a sequence of transformations '''
@@ -67,7 +66,6 @@ class TestTransformer(unittest.TestCase):
     #             SubstitutionValueTransformer(_input_tree, _restriction).evaluate()
     #             self.assertEqual(_input_tree.odict, _output_tree.odict)
 
-    @unittest.skip
     @debug_on(Exception)
     def test_key_subs(self):
         _tests_yaml = self.tests_dir.joinpath('key-subs.yaml')
@@ -85,7 +83,6 @@ class TestTransformer(unittest.TestCase):
 
             self._is_confluent(_test_tree.get('input/').copy(), _output_tree)
 
-    @unittest.skip
     @debug_on(Exception)
     def test_list_subs(self):
         _tests_yaml = self.tests_dir.joinpath('list-subs.yaml')
@@ -133,7 +130,6 @@ class TestTransformer(unittest.TestCase):
                     1/0
                 self._is_confluent_with(_test_tree.get('input/').copy(), _test_tree.get('output/').copy(),[IfKeyTransformer.name,ValueTransformer.name])
 
-    @unittest.skip
     @debug_on(Exception)
     def test_if_vars(self):
         _tests_yaml = self.tests_dir.joinpath('if-vars.yaml')
@@ -157,7 +153,6 @@ class TestTransformer(unittest.TestCase):
             self._is_confluent(_test_tree.get('input/').copy(), _output_tree)
 
 
-    @unittest.skip
     @debug_on(Exception)
     def test_context(self):
         _tests_yaml = self.tests_dir.joinpath('context.yaml')
@@ -177,7 +172,6 @@ class TestTransformer(unittest.TestCase):
 
             self._is_confluent(_test_tree.get('input/').copy(), _output_tree)
 
-    @unittest.skip
     @debug_on(Exception)
     def test_import(self):
         _tests_yaml = self.tests_dir.joinpath('imports.yaml')
@@ -196,7 +190,6 @@ class TestTransformer(unittest.TestCase):
 
             self._is_confluent(_test_tree.get('input/').copy(), _output_tree)
 
-    @unittest.skip
     @debug_on(Exception)
     def test_plaintext(self):
         _tests_yaml = self.tests_dir.joinpath('plaintext.yaml')
@@ -279,7 +272,6 @@ class TestTransformer(unittest.TestCase):
 
     # ----- Non confluent transforms
 
-    @unittest.skip
     @debug_on(Exception)
     def test_at_if_vars(self):
         _tests_yaml = self.tests_dir.joinpath('if-at-vars.yaml')
