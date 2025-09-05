@@ -169,7 +169,7 @@ class YAMLator(YAMLatorObjectDB, Tree):
             self.register(_transformer_class,_attribute_name)
 
 
-    def transform(self,methods=None,context_tree=None,allow_tree_subs=False):
+    def transform(self,methods=None,context_tree=None,allow_tree_subs=True):
         """The main processing engine for the YAMLator object.
 
         This method repeatedly applies a suite of transformation utilities to the
