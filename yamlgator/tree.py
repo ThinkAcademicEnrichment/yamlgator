@@ -153,6 +153,64 @@ class Tree:
             ic(self.print())
 
     def visit(self,pre_process=lambda x, y:None, post_process=lambda x, y:None, value_process=lambda x, y:None,reverse=False,entry_keychain=None):
+        """Traverses the tree using a visitor pattern.
+
+        This method walks through the entire tree, executing callbacks at
+        different stages of the traversal. It provides three distinct callback
+        hooks:
+
+        - `pre_process`: Called on a branch node before its children are visited
+            (pre-order traversal).
+        - `post_process`: Called on a branch node after its children have been
+            visited (post-order traversal).
+        - `value_process`: Called on a leaf node.
+
+        Args:
+            pre_process (callable, optional): A function that accepts a branch
+                node (OrderedDict) and its keychain (list[str]). It is
+                executed before visiting the node's children. Defaults to a
+                no-op.
+            post_process (callable, optional): A function with the same
+                signature as `pre_process`, but executed after visiting the
+                node's children. Defaults to a no-op.
+            value_process (callable, optional): A function that accepts a leaf
+                value (any type) and its keychain (list[str]). Defaults to a
+                no-op.
+            reverse (bool, optional): If True, the children of each node are
+                visited in reverse order. Defaults to False.
+            entry_keychain (typing.Union[str, list[str]], optional): A specific
+                keychain (string or list) that defines a starting point for
+                processing. The traversal still begins at the root, but the
+                callbacks will only be activated for the target node and its
+                descendants. Defaults to None.
+
+        Raises:
+            TreeVisitRestartException: A callback can raise this exception to
+                interrupt and restart the entire visit, optionally providing a
+                new entry keychain to begin the new traversal from.
+            TreeVisitStopException: A callback can raise this exception to
+                gracefully and immediately terminate the entire traversal.
+
+        Examples:
+            >>> tree = Tree({'a': {'b': 1}, 'c': 2})
+            >>>
+            >>> def pre(node, keychain):
+            ...     indent = '  ' * len(keychain)
+            ...     if keychain:
+            ...         print(f"{indent}{keychain[-1]}:")
+            ...
+            >>> def post(node, keychain):
+            ...     pass  # Not needed for this example
+            ...
+            >>> def value(val, keychain):
+            ...     indent = '  ' * (len(keychain) -1)
+            ...     print(f"{indent}  {keychain[-1]}: {val}")
+            ...
+            >>> tree.visit(pre_process=pre, value_process=value)
+            a:
+              b: 1
+            c: 2
+        """
         try:
             if not reverse:
                 self._visit(self.odict,pre_process,post_process,value_process,None,entry_keychain=entry_keychain)

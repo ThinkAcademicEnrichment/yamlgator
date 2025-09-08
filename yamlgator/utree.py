@@ -1,5 +1,5 @@
 from .tree import Tree
-from copy import copy
+from copy import copy, deepcopy
 from collections import OrderedDict
 class UnOrderedTreeException(Exception):
     pass
@@ -16,11 +16,13 @@ class UTree(Tree):
             raise UnOrderedTreeException('Cannot create tree')
 
     def visit(self,pre_process=lambda x, y:None, post_process=lambda x, y:None, value_process=lambda x, y:None,reverse=False):
+        """Reverse visting is not supported for UTree objects."""
         if reverse:
             raise UnOrderedTreeException('Reverse visiting not supported !')
 
         self._visit(self.odict, pre_process, post_process, value_process, None)
 
+    visit.__doc__ += '\n' + Tree.visit.__doc__
     def _visit(self, node, pre_process=lambda x, y:None, post_process=lambda x, y:None, value_process=lambda x, y:None,keychain=None):
         keychain = [] if keychain is None else keychain
 
