@@ -3,7 +3,6 @@ from .AbstractState import AbstractState
 from . import DEBUG
 
 class AggregateState(AbstractState):
-
     def pre_update(self,node,keychain):
         if DEBUG.AggregateState:
             ic()
