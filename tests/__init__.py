@@ -1,6 +1,9 @@
 from yamlgator.tree import Tree,TreeException
 from yamlgator.transformers import *
 from yamlgator.YAMLator import YAMLator,DEFAULT_UTILITIES
+from yamlgator.evaluators.StateEvaluator import *
+from yamlgator.evaluators.Observables import *
+from yamlgator.evaluators.States import *
 
 from collections import OrderedDict
 from copy import deepcopy
@@ -38,10 +41,10 @@ def debug_on(*exceptions):
         return wrapper
     return decorator
 
-from tests.tree import TestTree
-from tests.transformers import TestTransformer
-from tests.validators import TestValidator
-from tests.evaluators import TestEvaluator
+# from tests.tree import TestTree
+# from tests.transformers import TestTransformer
+# from tests.validators import TestValidator
+# from tests.evaluators import TestEvaluator
 
 if __name__ == '__main__':
     _tl = unittest.TestLoader()

@@ -1,9 +1,5 @@
 from tests import *
 
-from yamlgator.evaluators.StateEvaluator import *
-from yamlgator.evaluators.Observables import *
-from yamlgator.evaluators.States import *
-
 class TestEvaluator(unittest.TestCase):
     tests_dir = pathlib.Path(__file__).absolute().parent
 
