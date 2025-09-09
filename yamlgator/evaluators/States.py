@@ -84,8 +84,7 @@ class AggregateState(AbstractState):
                 ic(_result)
 
 
-# TODO: this is not quite right
-class DAggregateState(AggregateState):
+class DAggregateState(AbstractState):
     def pre_update(self,node,keychain):
         for _observation in self.pre_observables:
             _result = _observation.observe(node,keychain)
@@ -126,7 +125,7 @@ class DAggregateState(AggregateState):
                     ic(_state_keychain)
 
 
-class TreeState(AggregateState):
+class TreeState(AbstractState):
     def pre_update(self,node,keychain):
         for _observation in self.pre_observables:
             _result = _observation.observe(node,keychain)
@@ -151,3 +150,30 @@ class TreeState(AggregateState):
                     ic(_result[0])
                     ic(self.keys())
                     # ic(self.print())
+    def post_update(self,node,keychain):
+        if DEBUG.TreeState:
+            ic()
+            ic(keychain)
+        for _observation in self.post_observables:
+            _result = _observation.observe(node, keychain)
+            if _result:
+                _state_keychain, _value = _result
+                if DEBUG.TreeState:
+                    ic(_state_keychain)
+                    ic(_value)
+                try:
+                    _values = self.get(_state_keychain)
+                    if DEBUG.TreeState:
+                        ic(_values)
+                except KeyError:
+                    # _state_keychain has already been popped ?
+                    if DEBUG.TreeState:
+                        _msg = f'{_state_keychain} not found; ignoring'
+                        ic(_msg)
+                    # return
+                    continue
+                self.pop(_state_keychain)
+
+            if DEBUG.TreeState:
+                ic(_observation.__class__)
+                ic(_result)
