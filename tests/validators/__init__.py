@@ -19,16 +19,14 @@ class TestValidator(unittest.TestCase):
             _test_tree = _tests_tree.get(['',_test_name])
             _skip = _test_tree.uget('skip', 'n')
             if not _skip == 'y':
-
                 _input_tree = _test_tree.get('input/').copy()
                 _all_issues = _input_tree.validate()
                 if _all_issues:
-                    print(f"\n{_test_name} validation issues")
+                    print(f"\nbasic-tests:{_test_name} validation issues")
                 for _issue in _all_issues:
                     print(f"\t{_issue}")
-
             else:
-                print(f'skipping {_test_name}')
+                print(f'skipping validation of basic-tests:{_test_name}')
 
     @debug_on(Exception)
     def test_issues(self):
@@ -40,20 +38,19 @@ class TestValidator(unittest.TestCase):
             _tests_tree = YAMLator.load(f)
 
         for _test_name in _tests_tree.keys():
-            print(f"\nValidating {_test_name} issues")
+            # print(f"\nValidating {_test_name} issues")
             _test_tree = _tests_tree.get(['',_test_name])
             _skip = _test_tree.uget('skip', 'n')
             if not _skip == 'y':
-
                 _input_tree = _test_tree.get('input/').copy()
                 _all_issues = _input_tree.validate()
-                for _issue in _all_issues:
-                    print(f"\t{_issue}")
+                # for _issue in _all_issues:
+                #     print(f"\t{_issue}")
                 _issue_names = [result.issue_type.name for result in _all_issues]
                 for _issue_name in _issue_names:
                     self.assertIn(_issue_name, _test_tree.get('validation-issues/'))
             else:
-                print(f'skipping {_test_name}')
+                print(f'skipping validation of issues:{_test_name}')
 
 if __name__ == '__main__':
     unittest.main()

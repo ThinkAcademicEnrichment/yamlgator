@@ -69,9 +69,6 @@ class TestTree(unittest.TestCase):
 
         self.assertEqual(_test,_result)
 
-    def test_all(self):
-        pass
-
     @debug_on(Exception)
     def test_get(self):
 
@@ -381,12 +378,6 @@ class TestTree(unittest.TestCase):
         self.assertEqual(_test_config_odict.get('config').get('is_updated_cleaned'),_subtree.odict)
         _confirm_yes = _subtree.pop('confirm_yes')
 
-
-# class TestRelativeRoot(unittest.TestCase):
-#     def _tree_factory(self,odict=None):
-#         odict = OrderedDict() if odict is None else odict
-#         return Tree(deepcopy(odict))
-
     @debug_on(Exception)
     def test_get_relative_root(self):
 
@@ -471,18 +462,12 @@ class TestTree(unittest.TestCase):
         _t1 = self._tree_factory(_test_odict_1)
         _tInsert = self._tree_factory(_insert_odict)
 
-        # raise AssertionError
-
         _tGet = _t1.get('d',_tInsert)
         _result_subodict = OrderedDict(e='BDE',f='BDF',g='G',h='H')
         self.assertEqual(_tGet,self._tree_factory(OrderedDict(d=_result_subodict)))
         _tGet = _t1.get('d/',_tInsert)
         self.assertEqual(_tGet,self._tree_factory(_result_subodict))
 
-        # self.assertEqual(_tmerged.get('a/'),_tInsert)
-        # self.assertEqual(_tmerged.get('a'),self._tree_factory(OrderedDict(a=_insert_odict)))
-        # self.assertEqual(_tInsert,_t1.get('c/a/'))
-        # broken or wrong by dfs rules
         self.assertEqual(self._tree_factory(OrderedDict(a=_insert_odict)),_t1.get('a',_tInsert))
         self.assertEqual(self._tree_factory(OrderedDict(a=_insert_odict)),_t1.get('a'))
         self.assertEqual(self._tree_factory(_insert_odict),_t1.get('a/'))
@@ -502,23 +487,12 @@ class TestTree(unittest.TestCase):
         _t1 = self._tree_factory(_test_odict_1)
         self.assertEqual(self._tree_factory(OrderedDict(a=_insert_odict)),_t1.get('c/a',_tInsert))
 
-        # broken
-        #self.assertEqual(self._tree_factory(OrderedDict(a=_insert_odict)),_t1.get('c/a'))
-        #self.assertEqual(_t2,_t1.get('c/a/'))
-
         # create a new subtree at the root level
         _t1 = self._tree_factory(_test_odict_1)
         self.assertEqual('H',_t1.get('c/b/a','H'))
 
-        # broken
-        #self.assertEqual('H',_t1.get('c/b/a'))
-        #self.assertEqual('H',_t1.get('c/b/a/'))
-
         _updated_test_odict = deepcopy(_test_odict_1)
         _updated_test_odict['c'] = OrderedDict(b=OrderedDict(a='H'))
-
-        # broken
-        # self.assertEqual(self._tree_factory(_updated_test_odict),_t1)
 
         # append a key to an existing subtree
         _t1 = self._tree_factory(_test_odict_1)
@@ -534,7 +508,7 @@ class TestTree(unittest.TestCase):
 
         # locate a key via depth first search
         _t1 = self._tree_factory(_test_odict_1)
-        # add a ducplicate key at a deeper level
+        # add a duplicate key at a deeper level
         self.assertEqual('BDC',_t1.get('c','BDC'))
         self.assertEqual('BDC',_t1.get('c'))
         self.assertEqual('BDC',_t1.get('c/'))
@@ -555,13 +529,6 @@ class TestTree(unittest.TestCase):
         self.assertEqual('BDA',_tInsert.get('a'))
         self.assertNotEqual('BDA',_tInsert.get('/a'))
         self.assertEqual('A',_tInsert.get('/a'))
-
-# class TestTreeFind(unittest.TestCase):
-#     tests_dir = pathlib.Path(__file__).absolute().parent
-#
-#     def _tree_factory(self,odict=None):
-#         odict = OrderedDict() if odict is None else odict
-#         return Tree(deepcopy(odict))
 
     @debug_on(Exception)
     def test_dfs(self):
@@ -664,18 +631,12 @@ class TestTree(unittest.TestCase):
         self.assertEqual(_keychain,['','c','d','b'])
         self.assertEqual(_value,'CDB')
 
-
-#class TestTreeGet(unittest.TestCase):
-#    tests_dir = pathlib.Path(__file__).absolute().parent
-#
-#    def _tree_factory(self,odict=None):
-#        odict = OrderedDict() if odict is None else odict
-#        return Tree(deepcopy(odict))
     @debug_on(Exception)
     def test_root_get(self):
         t = self._tree_factory()
         t.get('/a','A')
         self.assertEqual(t.odict,_od(a=_test_odict_0['a']))
+
     @debug_on(Exception)
     def test_root_override(self):
 
@@ -712,28 +673,12 @@ class TestTree(unittest.TestCase):
         )
 
         self.assertEqual(t2.odict,_result_odict_2)
-#class TestTreeStringify(unittest.TestCase):
-#
-#    tests_dir = pathlib.Path(__file__).absolute().parent
-#
-#    def _tree_factory(self,odict=None):
-#        odict = OrderedDict() if odict is None else odict
-#        return Tree(deepcopy(odict))
-
 
     @debug_on(Exception)
     def test_stringify(self):
         t = self._tree_factory(_test_odict_0)
         _tData = t.stringify()
         self.assertEqual(_tData,Tree(_test_odict_0))
-
-#class TestTreeSystematic(unittest.TestCase):
-#
-#    tests_dir = pathlib.Path(__file__).absolute().parent
-#
-#    def _tree_factory(self,odict=None):
-#        odict = OrderedDict() if odict is None else odict
-#        return Tree(deepcopy(odict))
 
     @debug_on(Exception)
     def test_overlay(self):
