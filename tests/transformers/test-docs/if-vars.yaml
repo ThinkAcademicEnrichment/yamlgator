@@ -1,0 +1,305 @@
+test-1:
+  skip: n
+  input:
+    a: A
+    b: B
+    c: ))?{ a == 'A' :'True' :'False' }
+  output:
+    c: True
+test-2:
+  skip: n
+  input:
+    a: A
+    b: B
+    c: True
+    d: False
+    e: ))?{ 'XXX' != a :c :d }
+  output:
+    e: True
+test-3:
+  skip: n
+  input:
+    a:
+      f: A
+    b: B
+    c: |
+      some multiline
+      text
+    d: False
+    e: ))?{ b != a/f :c :d }
+  output:
+    e: |
+      some multiline
+      text
+test-4:
+  skip: n
+  input:
+    a:
+      f: A
+      g: hello
+    b: B
+    c: |
+      some multiline
+      text
+    d: False
+    e: ))?{ b == a/f | 'hello' == a/g :c :d }
+  output:
+    e: |
+      some multiline
+      text
+test-4.1:
+  skip: n
+  input:
+    a:
+      f: A
+      g: hello
+    b: B
+    c: >-
+      some joined
+      text
+    d: False
+    e: ))?{ b == a/f | 'hello' == a/g :c :d }
+  output:
+    e: some joined text
+test-5:
+  skip: n
+  input:
+    a:
+      f: A
+      g: hello
+    b: B
+    c: |
+      some multiline
+      text
+    d: False
+    e: ))?{ b == a/f & 'hello' == a/g :c :d }
+#    no case to return for false condition; returns an empty string
+    f: ))?{ b == a/f & 'hello' != a/g :c }
+    g: ))?{ b == a/f & 'hello' == a/g :c }
+  output:
+    e: False
+    f: ''
+    g: ''
+test-6:
+  skip: n
+  input:
+    a:
+      f: A
+      g: hello
+    b: B
+    c: |
+      some multiline
+      text
+    d: False
+    e: ))?{ b == a/f & 'hello' == a/g :c :'I am False' }
+#    no case to return for false condition; returns an empty string
+    f: ))?{ b != a/f & 'hello' == a/g :'I am True' }
+    g: ))?{ b == a/f & 'hello' == a/g :'I am True' }
+    h: ))?{  b  !=  a/f  &  'hello'  ==  a/g  :'I am True'  :'I am False'  }
+  output:
+    e: I am False
+    f: I am True
+    g: ''
+    h: I am True
+test-7:
+  skip: n
+  input:
+    use-this:
+      y
+    is-ok:
+      n
+    a: A
+    b: B
+    c: ))?{ use-this :a :b }
+    d: ))?{ is-ok :a :'Not OK' }
+  output:
+    c: A
+    d: Not OK
+test-8:
+  skip: n
+  input:
+    use-this:
+      y
+    is-ok:
+      n
+    is-really-not-ok:
+      y
+    a: A
+    b: B
+    c: ))?{ ! use-this :a :b }
+    d: ))?{ ! is-ok :OK :'Not OK' }
+    e: ))?{ ! is-ok :'Not OK' }
+    f: ))?{ is-really-not-ok :'Not OK' }
+  output:
+    c: B
+    d: OK
+    e: Not OK
+    f: Not OK
+test-9:
+  skip: n
+  input:
+    use-this: y
+    use-not-this: n
+    a:
+      b: B
+      c: C
+    x:
+      y: Y
+      z: Z
+    d:
+      - ))?{ use-this :a/ }
+      - ))?{ use-this :x/ }
+    e:
+      ))?{!use-not-this :A}
+    output:
+      d:
+        b: B
+        c: C
+        y: Y
+        z: Z
+      e: A
+test-10:
+  skip: n
+  input:
+    is-kernel-source-excluded: y
+    extra-exclude: --exclude=usr/src/*
+    export-disk-image:
+      sh: |
+        rsync -a \
+        ))?{ is-kernel-source-excluded :extra-exclude } \
+        ./ /mnt/image
+    export-disk-image-2:
+      sh: |
+        rsync -a \
+        ))?{ is-kernel-source-excluded :'--exclude=usr/src/*' } \
+        ./ /mnt/image
+  output:
+    export-disk-image:
+      sh: |
+        rsync -a \
+        --exclude=usr/src/* \
+        ./ /mnt/image
+    export-disk-image-2:
+      sh: |
+        rsync -a \
+        --exclude=usr/src/* \
+        ./ /mnt/image
+test-11:
+  skip: n
+  input:
+    a: A
+    b: B
+    c: C
+    d: ))?{ 'A' == a :Equals :'Not Equals' }
+  output:
+    d: Equals
+
+test-12:
+  skip: n
+  input:
+    is-a: y
+    is-b: y
+    my-test:
+      ))?{is-a & is-b :hello :goodbye}
+    my-test-1:
+      ))?{!is-a & is-b :hello :goodbye}
+    my-test-2:
+      ))?{is-a & !is-b :hello :goodbye}
+    my-test-3:
+      ))?{!is-a & !is-b :hello :goodbye}
+
+  output:
+    my-test: hello
+    my-test-1: goodbye
+    my-test-2: goodbye
+    my-test-3: goodbye
+
+test-13:
+  skip: n
+  input:
+    a-string:
+      hello
+    a-test:
+      ))?{a-string[:-1] == 'hell' :correct :incorrect}
+    b-test:
+      ))?{a-string[0] == 'h' :correct :incorrect}
+  output:
+    a-string:
+      hello
+    a-test:
+      correct
+    b-test:
+      correct
+# ))? and ))! constructs cannot be repleated on a line :(
+#test-13:
+#  input:
+#    is-a: y
+#    is-b: n
+#    my-double-if-test:
+#      ))?[is-a :Hello :Goodbye] ))?[is-b :Earth :Moon]
+#  output:
+#    my-double-if-test:
+#      Hello Moon
+
+test-14:
+  skip: n
+  input:
+    x-arch: arm-32bit
+    x-subarch: raspi3
+    gcc:
+      xtra-config:
+        powerpc: >-
+          --with-abi=elfv2 
+          --enable-secureplt 
+          --enable-decimal-float=no
+#   see glibc/scripts/build-many-glibcs.py !
+        raspi3: >-
+          --with-float=hard
+          --with-cpu=arm926ej-s
+      configure: >-
+        ../configure
+        --build=${XDEV_HOST}
+        --host=${XDEV_HOST}
+        --with-native-system-header-dir=/usr/include
+        --disable-shared
+        --without-headers
+        --with-newlib
+        --enable-initfini-array
+        --disable-decimal-float
+        --disable-libgomp
+        --disable-libssp
+        --disable-libatomic
+        --disable-libitm
+        --disable-libsanitizer
+        --disable-libquadmath
+        --disable-libvtv
+        --disable-libcilkrts
+        --disable-threads
+        --enable-languages=c,c++
+        ))?{ x-subarch == 'raspi3' :gcc/xtra-config/raspi3 }
+        ))?{ x-arch == 'powerpc' :gcc/xtra-config/powerpc }
+
+  output:
+    gcc:
+      configure: >-
+        ../configure
+        --build=${XDEV_HOST}
+        --host=${XDEV_HOST}
+        --with-native-system-header-dir=/usr/include
+        --disable-shared
+        --without-headers
+        --with-newlib
+        --enable-initfini-array
+        --disable-decimal-float
+        --disable-libgomp
+        --disable-libssp
+        --disable-libatomic
+        --disable-libitm
+        --disable-libsanitizer
+        --disable-libquadmath
+        --disable-libvtv
+        --disable-libcilkrts
+        --disable-threads
+        --enable-languages=c,c++
+        --with-float=hard
+        --with-cpu=arm926ej-s 

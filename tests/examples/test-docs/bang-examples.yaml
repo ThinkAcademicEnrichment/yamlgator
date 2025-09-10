@@ -1,0 +1,15 @@
+date-bang:
+  input:
+    short-id: ))!short_uuid()
+    long-id: ))!uuid()
+    token: ))!token_hex(16)
+    now: ))!date('%Y-%m-%dT%H:%M:%S.%f')
+    a-key: xxx-xxx
+    substring-to-replace: 'x-x'
+    replacement-substring: y_y
+    # Notice the two forms of escaping the '-' character, similar to '/' escaping
+    # string arguments to ))! functions must be quoted
+    replace-))substring-to-replace/-with-)){replacement-substring}-in-))a-key: ))!replace('))a-key','))substring-to-replace','))replacement-substring')
+
+
+

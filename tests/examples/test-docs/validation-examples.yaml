@@ -1,0 +1,28 @@
+issues:
+  input:
+    service-a:
+      # The endpoint for service-a depends on the location of service-b
+      endpoint: https://api.example.com/)){service-b/path}
+
+    service-b:
+      # The path for service-b is built using the asset location from service-c
+      path: v2/data/)){service-c/assets}
+
+    service-c:
+      # The asset location for service-c incorrectly points back to service-a's endpoint
+      assets: static/)){service-a/endpoint}
+      # a common idiom
+    service-d:
+      widgets: ))service-d
+
+    service-e:
+      garbage: )){config/unknown-stuff}
+
+    service-f:
+      value: SERVICE_F
+    service-g:
+      bad-token: ))service-ff//THINGS
+
+  validation-issues:
+    - UNDEFINED_VARIABLE
+    - CIRCULAR_DEPENDENCY

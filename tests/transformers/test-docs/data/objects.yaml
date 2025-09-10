@@ -1,0 +1,15 @@
+tmp-dir:
+  /tmp/yamlator-tests
+example-dir:
+  /tmp/yamlator-tests/example
+example-path:
+  /tmp/yamlator-tests/example/hello.txt
+use-example:
+  True
+is-an-option:
+  False
+example-url:
+  https://build.funtoo.org
+subs:
+ use-other-example:
+   True

@@ -1,0 +1,264 @@
+test-1:
+  skip: n
+  input:
+    a: A
+    b: B
+    c: C
+    d: D
+    ))?{a==b}:
+      e: E
+      f: F
+    ))?{a!=b}:
+      g: G
+      h: H
+  output:
+    a: A
+    b: B
+    c: C
+    d: D
+    f: F
+    g: G
+test-2:
+  skip: n
+  input:
+    a:
+      b: B
+      c: C
+    d:
+      b: B
+      c: C
+    ))?{a/==d/}:
+      y: They are Equal!
+      n: They are not Equal!
+  output:
+    a:
+      b: B
+      c: C
+    d:
+      b: B
+      c: C
+    y: They are Equal!
+test-3:
+  skip: n
+  input:
+    a:
+      b: B
+      c: C
+    d:
+      b: B
+      c: C
+    ))?{a == d}:
+      y: They are Equal!
+      n: They are not Equal!
+  output:
+    a:
+      b: B
+      c: C
+    d:
+      b: B
+      c: C
+    n: They are not Equal!
+test-4:
+  skip: n
+  input:
+    a:
+      b: B
+      c: C
+    d: D
+    e: E
+    ))?{ a/b == d }:
+      y:
+        They are Equal!
+      n: ))a
+  output:
+    a:
+      b: B
+      c: C
+    d: D
+    e: E
+    n:
+      a:
+        b: B
+        c: C
+test-5:
+  skip: n
+  input:
+    a:
+      b: B
+      c: C
+    d: D
+    e: E
+    ))?{ a/b == d }:
+      y:
+        They are Equal!
+      n: )){a/}
+  output:
+    a:
+      b: B
+      c: C
+    d: D
+    e: E
+    n:
+      b: B
+      c: C
+test-6:
+  input:
+    a: A
+    b: B
+    c: C
+    d: D
+    ))?{a=='X'}:
+      e: E
+      f: F
+    ))?{'X'!=b}:
+      g: G
+      h: H
+    ))?{ 'X' != b & 'X' != c}:
+      i: I
+      j: J
+    ))?{ 'X' == b & 'X' != c | a == 'A' }:
+      k:
+        l: L
+        m: M
+      n: N
+    ))?{ 'X' == b & 'X' != c & a == 'A' }:
+      o: O
+#      no false branch specified; nothing in output?
+  output:
+    a: A
+    b: B
+    c: C
+    d: D
+    f: F
+    g: G
+    i: I
+    k:
+      l: L
+      m: M
+test-7:
+  input:
+    a: A
+    b: B
+    c: C
+    d: D
+    ))?{a=='X'}/:
+      e:
+        f: F
+      g:
+        h: H
+    ))?{d=='D'}/:
+      i:
+        j:
+          k: K
+      l:
+        m: M
+  output:
+    a: A
+    b: B
+    c: C
+    d: D
+    h: H
+    j:
+      k: K
+test-8:
+  input:
+    is-a: y
+    is-b: y
+    is-c: n
+    x: X
+    ))?{is-a}:
+      c: C
+      d: D
+    ))?{!is-a}:
+      e: E
+      f: F
+    ))?{ x=='X' & is-a }:
+      g: G
+      h: H
+    ))?{ is-a & is-b}:
+      i: I
+      j: J
+    ))?{ ! is-a & is-b}:
+      k: K
+      l: L
+    ))?{ is-a & ! is-b}:
+      m: M
+      n: N
+    ))?{ !is-a & ! is-b}:
+      o: O
+      p: P
+    ))?{ is-a | is-b | is-c }:
+      q: Q
+      r: R
+
+  output:
+    is-a: y
+    is-b: y
+    is-c: n
+    x: X
+    c: C
+    f: F
+    g: G
+    i: I
+    l: L
+    n: N
+    p: P
+    q: Q
+
+test-9:
+  input:
+    is-a: y
+    some-data: hello
+    more-data: goodbye
+    ))?{is-a}/:
+      yes:
+        my-yes-data: yes
+      no:
+        my-no-data: no
+    ))?{!is-a}:
+      yes:
+        my-yes-data: yes
+      no:
+        my-no-data: no
+    even-more-data: hohum
+  output:
+    is-a: y
+    some-data: hello
+    more-data: goodbye
+    my-yes-data: yes
+    no:
+      my-no-data: no
+    even-more-data: hohum
+test-10:
+  input:
+    a-string:
+      hello
+    ))?{a-string[:-1] == 'hell'}/:
+      yes:
+        correct:
+          1
+      no:
+        incorrect:
+          0
+  output:
+    a-string:
+      hello
+    correct:
+      1
+#test-10:
+#  input:
+#    project-type: host
+#    this fails
+#    parent-repo:
+#      ))?{project-type == 'host'}/:
+#        host-type:
+#          host-parent-repo
+#        non-host-type:
+#          non-host-parent-repo
+# instead do this:
+#    parent-repo:
+#      ))?{project-type == 'host' :host-project-repo :parent-project-repo}
+#
+#  output:
+#    project-type: host
+#    parent-repo: host-parent-repo

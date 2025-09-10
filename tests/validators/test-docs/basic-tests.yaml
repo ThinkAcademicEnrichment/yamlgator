@@ -1,0 +1,821 @@
+keychains:
+  transformer:
+   - transform_values
+  skip: n
+  input:
+    config:
+      key-a:
+        key-b:
+          value_b
+      key-c:
+        )){config/key-a/key-b} is a keychain sub
+      key-d:
+        key-e:
+          key-f:
+            )){config/key-c} again
+# An undefined variable
+      key-g:
+        )){config/key-x/key-y/key-z}
+  output:
+    config:
+      key-a:
+        key-b:
+          value_b
+      key-c:
+        value_b is a keychain sub
+      key-d:
+        key-e:
+          key-f:
+            value_b is a keychain sub again
+
+single-key:
+  transformer:
+   - transform_values
+  skip: n
+  input:
+    a:
+      b: B
+      c: C
+    d:
+      ))a/
+    e:
+      )){a/}
+    f:
+      )){a}/
+    g:
+      ))a
+    h:
+      hello, world
+    i:
+      ))h[:-7]
+    j:
+      ))h[7:]
+  output:
+    d:
+      b: B
+      c: C
+    e:
+      b: B
+      c: C
+    f: "a:\n  b: B\n  c: C\n/"
+    g:
+      a:
+        b: B
+        c: C
+    i:
+      hello
+    j:
+      world
+
+list-of-trees:
+  transformer:
+   - transform_values
+  skip: n
+  input:
+    a:
+      b: B
+      c: C
+    d:
+      e: E
+      f: F
+    g:
+      - )){a/}
+      - )){d/}
+    h:
+      - ))a
+      - ))d
+    i:
+      j:
+        - )){a/b}
+        - )){d/e}
+    k:
+      l:
+        - ))a/b
+        - ))d/e
+  output:
+    g:
+      b: B
+      c: C
+      e: E
+      f: F
+    h:
+      a:
+        b: B
+        c: C
+      d:
+        e: E
+        f: F
+    i:
+      j:
+        - B
+        - E
+    k:
+      l:
+        - B
+        - E
+#        - "b: B\nc: C\n/b"
+#        - "e: E\nf: F\n/e"
+
+list-of-included-trees:
+  transformer:
+    - transform_yaml
+    - transform_values
+  skip: n
+  input:
+    a:
+      - ./data/tree-data.yaml#u
+      - ./data/tree-data.yaml#x
+    b:
+      - ./data/config.yaml#config
+      - ./data/sub-config.yaml#/config
+  output:
+    a:
+      u:
+        v: V
+        w: W
+      x:
+        y: Y
+        z: Z
+    b:
+      config:
+        a: A
+        b: BB
+        c: C
+        d: D
+deep-trees:
+  transformer:
+    - transform_yaml
+  skip: n
+  input:
+    a:
+      - ./data/tree-data.yaml#u
+      - ./data/tree-data.yaml#uu
+  output:
+    a:
+      u:
+        v: V
+        w: W
+      uu:
+        vv: VV
+        ww: VV
+
+deep-var-trees:
+  transformer:
+    - transform_values
+    - transform_yaml
+  skip: n
+  input:
+    my-choice: uu
+    a:
+      - ./data/tree-data.yaml#u
+      - ./data/tree-data.yaml#))my-choice
+  output:
+    a:
+      u:
+        v: V
+        w: W
+      uu:
+        vv: VV
+        ww: VV
+
+basic:
+  transformer:
+   - transform_values
+  skip: n
+  input:
+    key-a:
+      value_a
+    key-b:
+      ))key-a
+    key-c:
+      ))key-b
+    key-d:
+      ))key-c and stuff
+    key-e:
+      key-f:
+        a subkey
+    key-g:
+      )){key-e/key-f}
+
+  output:
+    key-b:
+      value_a
+    key-c:
+      value_a
+    key-d:
+      value_a and stuff
+    key-g:
+      a subkey
+
+dashes:
+  transformer:
+   - transform_values
+  skip: n
+  input:
+    key-a:
+      value_a
+    key-b:
+      value_b
+    key-c:
+      )){key-a}-)){key-b}
+    key-d:
+      )){key-c}-)){key-a}-)){key-b}
+    key-e:
+      key-f:
+        ))key-a
+    key-g:
+      )){key-a}-))key-b
+    key-h:
+      ))key-a-))key-b
+  #  key-g:
+  ##    this fails via the split('/') in Tree.get()
+  #    my-data-))(key-e/key-f)-))key-d
+    project-name:
+      my-project
+    key-i:
+      recipe/)){project-name}/a-python-operation
+
+  output:
+    key-c:
+      value_a-value_b
+    key-d:
+      value_a-value_b-value_a-value_b
+    key-e:
+      key-f:
+        value_a
+    key-g:
+      value_a-value_b
+    key-h:
+      ))key-a-value_b
+    key-i:
+      recipe/my-project/a-python-operation
+
+
+  #  key-gg
+  #    my-data-value_a-value_a-value_b-value_a-value_b
+
+hierarchical-substitutions:
+  transformer:
+   - transform_values
+  skip: n
+  input:
+    config:
+      key-a:
+        value_a
+      level-1:
+        key-b:
+          key-b is ))key-a
+        level-2:
+          key-c:
+            key-c is ))key-b
+          key-d:
+            key-d is ))key-a
+        key-e:
+          key-e is ))key-a and stuff
+        key-f: value_f
+      key-g:
+        value_g
+    recipe:
+      alice: ))key-e
+      bob:
+        carol: ))alice loves carol
+        alice-url: http://)){key-f}.com
+      dave-dir:
+        /tmp/))key-a
+      erik-dir:
+        /tmp/)){key-a/}/))key-f
+      keith-dir:
+        /tmp/))key-a//keith
+#      this now throws AttributeError...hmmmm
+#      bad-keith-dir:
+#        /tmp/))key-a/keith
+
+  output:
+    config:
+      level-1:
+        key-b:
+          key-b is value_a
+        level-2:
+          key-c:
+            key-c is key-b is value_a
+          key-d:
+            key-d is value_a
+        key-e:
+          key-e is value_a and stuff
+        key-f: value_f
+      key-g:
+        value_g
+    recipe:
+      alice: key-e is value_a and stuff
+      bob:
+        carol: key-e is value_a and stuff loves carol
+        alice-url: http://value_f.com
+      dave-dir:
+        /tmp/value_a
+      erik-dir:
+        /tmp/value_a/value_f
+      keith-dir:
+        /tmp/value_a/keith
+#      bad-keith-dir:
+#        /tmp/))key-a/keith
+# tries to get('key-a/keith') and fails without // in path
+
+
+lists:
+  transformer:
+   - transform_values
+  skip: n
+  input:
+    key-a:
+      value_a
+    example-list:
+      - ))key-a
+      - ))key-a
+      - ))key-a
+
+    tmp-dir:
+      /tmp/yamlator-tests
+
+    example-dir-list:
+      - ))tmp-dir
+      - )){tmp-dir}/test1
+      - )){tmp-dir}/test2
+
+    example-url-list:
+      - http://)){key-a}))tmp-dir
+      - http://)){key-a}/test1
+
+    another-example-url-list:
+      - http://))key-a))tmp-dir
+      - http://))key-a//test1
+
+
+  output:
+    key-a:
+      value_a
+    example-list:
+      - value_a
+      - value_a
+      - value_a
+
+    tmp-dir:
+      /tmp/yamlator-tests
+
+    example-dir-list:
+      - /tmp/yamlator-tests
+      - /tmp/yamlator-tests/test1
+      - /tmp/yamlator-tests/test2
+
+    example-url-list:
+      - http://value_a/tmp/yamlator-tests
+      - http://value_a/test1
+
+    another-example-url-list:
+      - http://value_a/tmp/yamlator-tests
+      - http://value_a/test1
+
+pathvalue-list:
+  transformer:
+   - transform_yaml
+  skip: n
+  input:
+    pathvalue-list:
+      - ./data/urls.yaml#
+      - ./data/objects.yaml#
+
+  output:
+    pathvalue-list:
+      a-url:
+        http://www.google.ca
+      b-url-list:
+        - http://www.bing.com
+        - http://www.yahoo.com/really
+      tmp-dir:
+        /tmp/yamlator-tests
+      example-dir:
+        /tmp/yamlator-tests/example
+#      TODO: BROKEN
+      example-path:
+        /tmp/yamlator-tests/example/hello.txt
+      use-example:
+        True
+      is-an-option:
+        False
+      example-url:
+        https://build.funtoo.org
+      subs:
+       use-other-example:
+         True
+
+missing-keys:
+  transformer:
+   - transform_values
+  skip: n
+  input:
+    config:
+      key-a:
+        value_a
+      key-b:
+        ))key-a
+      key-c:
+        ))key-b
+      key-d:
+        ))key-c and stuff
+      key-e:
+        /)){key-a}/)){key-x}/))key-b
+      key-e2:
+        /))key-a//))key-x//))key-b
+      key-f:
+        /)){key-x}/)){key-b}/))key-c
+      key-f2:
+        /)){key-x}/))key-b//))key-c
+      key-g:
+        /)){key-a}/)){key-b}/))key-x
+      key-h-dir:
+        /tmp/yamlator-tests
+      key-i-dir:
+        )){key-h-dir}/)){key-x}/i-dir
+      key-j-list:
+        - ))key-a
+        - ))key-b
+        - ))key-x
+      key-k-dir-list:
+        - )){key-h-dir}/k-dir
+        - )){key-i-dir}/))key-y
+        - )){key-i-dir}/))key-y
+        - )){key-h-dir}/)){key-x}/))key-a
+
+  output:
+    config:
+     key-a:
+      value_a
+     key-b:
+      value_a
+     key-c:
+      value_a
+     key-d:
+      value_a and stuff
+     key-e:
+      /value_a/)){key-x}/value_a
+     key-e2:
+       /value_a/))key-x//value_a
+     key-f:
+      /)){key-x}/value_a/value_a
+     key-f2:
+       /)){key-x}/value_a/value_a
+     key-g:
+      /value_a/value_a/))key-x
+     key-h-dir:
+      /tmp/yamlator-tests
+     key-i-dir:
+      /tmp/yamlator-tests/)){key-x}/i-dir
+     key-j-list:
+      - value_a
+      - value_a
+      - ))key-x
+     key-k-dir-list:
+      - /tmp/yamlator-tests/k-dir
+      - /tmp/yamlator-tests/)){key-x}/i-dir/))key-y
+      - /tmp/yamlator-tests/)){key-x}/i-dir/))key-y
+      - /tmp/yamlator-tests/)){key-x}/value_a
+
+dfs-sub:
+  transformer:
+   - transform_values
+  skip: n
+  input:
+    config:
+      a-key:
+        A_VALUE
+      b-key:
+        a-key:
+          B_A_VALUE
+      c-key:
+        ))a-key
+  output:
+    config:
+      c-key:
+        B_A_VALUE
+
+dfs-sub-2:
+  transformer:
+   - transform_values
+  skip: n
+  input:
+    a-key:
+      A_VALUE
+    b-key:
+      a-key:
+        B_A_VALUE
+    c-key:
+      ))a-key
+  output:
+    c-key:
+      B_A_VALUE
+
+at-list-vars:
+  transformer:
+    - transform_ats
+    - transform_values
+  skip: n
+  input:
+    config:
+      a:
+        - value_0
+        - value_1
+        - value_2
+      c: C
+      e:
+        f: F
+      d:
+        )){))@[-1]/c}
+      b:
+        ))@
+      b2:
+        )){@}
+      g:
+        )){a}[0]
+      h:
+        )){))@[-1]/a}[1]
+      i:
+        ))x[23]
+      j:
+        k:
+          )){@[-1]}
+        l:
+          ))@[-1]
+  output:
+    config:
+      d: C
+      b: b
+      b2: config/b2
+      g: value_0
+      h: value_1
+      i: ))x[23]
+      j:
+        k: config/j
+        l: j
+
+at-vars:
+  transformer:
+   - transform_ats
+  skip: n
+  input:
+    config:
+      a-key:
+        ))@
+      b-key:
+        B_VALUE
+      c-key:
+        ))b-key
+      d-key:
+        The full name of this key is )){@}
+      e-key:
+        f-key:
+          The short name of this key is ))@
+        g-key: |
+          This key is called both ))@ and )){@} depending
+          on how the at variable is used.
+      h-key:
+        l-key: |
+          this key's parent is ))@[-1] and it must work
+          in multiline mode.
+        m-key:
+          this key's parent's parent is ))@[-2]
+      g-key:
+        i-key:
+          the full name of this key's parent is )){@[-1]}
+        j-key:
+          k-key: |
+            the full name of this key's parent's parent is )){@[-2]}
+            and it must work in multiline mode.
+        n-key:
+          - this key is the ))@ key
+          - this key's parent is the ))@[-1] key
+          - this key's parent's parent is the ))@[-2] key
+          - this key has a dash after it ))@[-1]-
+      linux:
+        version: 6.4.12
+        vVx: v6.x
+        ext: xz
+        fetch-urls:
+          - https://cdn.kernel.org/pub/))@[-1]/kernel/)){))@[-1]/vVx}/))@[-1]-)){))@[-1]/version}.tar.)){))@[-1]/ext}
+  output:
+    config:
+      a-key:
+        a-key
+      b-key:
+        B_VALUE
+      c-key:
+        ))b-key
+      d-key:
+        The full name of this key is config/d-key
+      e-key:
+        f-key:
+          The short name of this key is f-key
+        g-key: |
+          This key is called both g-key and config/e-key/g-key depending
+          on how the at variable is used.
+      h-key:
+        l-key: |
+          this key's parent is h-key and it must work
+          in multiline mode.
+        m-key:
+          this key's parent's parent is config
+      g-key:
+        i-key:
+          the full name of this key's parent is config/g-key
+        j-key:
+          k-key: |
+            the full name of this key's parent's parent is config/g-key
+            and it must work in multiline mode.
+        n-key:
+          - this key is the n-key key
+          - this key's parent is the g-key key
+          - this key's parent's parent is the config key
+          - this key has a dash after it g-key-
+      linux:
+        version: 6.4.12
+        ext: xz
+        fetch-urls:
+          - https://cdn.kernel.org/pub/linux/kernel/)){linux/vVx}/linux-)){linux/version}.tar.)){linux/ext}
+
+# ORDER DEPENDENT
+at-dependencies:
+  transformer:
+    - transform_ats
+    - transform_values
+  input:
+    work-dir:
+      ))))@/
+    some-other-dir:
+      ))work-dir//my-dir
+
+  output:
+    work-dir:
+      ))work-dir/
+    some-other-dir:
+      ))work-dir//my-dir
+
+at-bad-order-dependencies:
+  transformer:
+    - transform_values
+    - transform_ats
+  input:
+    work-dir:
+      ))))@/
+    some-other-dir:
+      ))work-dir//my-dir
+
+  output:
+    work-dir:
+      ))work-dir/
+    some-other-dir:
+      ))some-other-dir//my-dir
+
+at-bugs:
+  transformer:
+    - transform_values
+    - transform_ats
+  input:
+    a-list:
+      - item0
+      - item1
+      - item2
+    b: B
+
+    list-subs: |-
+      A list is flattened to ))a-list/.
+      But we also want to use value ))b/.
+
+    x-emerge-default-opts: >-
+      --usepkg=y
+      --autounmask=y 
+      --autounmask-write=n
+      --jobs=3
+      --quiet=y
+
+    x-build-stage1:
+      is-skipped: n
+      is-build-aborted-on-fail: n
+      pkgs-to-build:
+        - app-arch/bzip2
+        - app-arch/gzip
+        - app-arch/tar
+        - app-arch/xz-utils
+        - app-admin/eselect
+        - app-shells/bash
+        - net-misc/wget
+        - sys-devel/autoconf
+        - sys-devel/automake
+        - sys-devel/libtool
+        - sys-apps/coreutils
+        - sys-apps/diffutils
+        - sys-apps/file
+        - sys-apps/findutils
+        - sys-apps/gawk
+        - sys-apps/grep
+        - sys-apps/less
+        - sys-apps/net-tools
+        - sys-apps/sed
+        - sys-apps/texinfo
+        - sys-devel/binutils
+        - sys-devel/bison
+        - sys-devel/flex
+        - sys-devel/gcc
+        - sys-devel/gettext
+        - sys-devel/gnuconfig
+        - sys-devel/make
+        - sys-devel/patch
+        - sys-libs/pam
+        - virtual/editor
+        - virtual/libc
+        - virtual/os-headers
+        - virtual/package-manager
+        - sys-apps/openrc
+        - dev-vcs/git
+        - app-editors/vis
+        - net-misc/rsync
+      bash: |-
+        # bug in ebuild: workdir uses MarkupSafe instead of markupsafe 
+        emerge --noreplace --oneshot ))x-emerge-default-opts \=dev-python/markupsafe-3.0.2-r99
+
+        TO_BUILD="))pkgs-to-build"
+        emerge --noreplace --oneshot ))x-emerge-default-opts $TO_BUILD
+
+        gcc-config 1
+        ego profile mix-in -stage1
+  output:
+    list-subs: |-
+      A list is flattened to item0 item1 item2.
+      But we also want to use value B.
+    x-build-stage1:
+      bash: |-
+        # bug in ebuild: workdir uses MarkupSafe instead of markupsafe 
+        emerge --noreplace --oneshot --usepkg=y --autounmask=y  --autounmask-write=n --jobs=3 --quiet=y \=dev-python/markupsafe-3.0.2-r99
+        
+        TO_BUILD="app-arch/bzip2 app-arch/gzip app-arch/tar app-arch/xz-utils app-admin/eselect app-shells/bash net-misc/wget sys-devel/autoconf sys-devel/automake sys-devel/libtool sys-apps/coreutils sys-apps/diffutils sys-apps/file sys-apps/findutils sys-apps/gawk sys-apps/grep sys-apps/less sys-apps/net-tools sys-apps/sed sys-apps/texinfo sys-devel/binutils sys-devel/bison sys-devel/flex sys-devel/gcc sys-devel/gettext sys-devel/gnuconfig sys-devel/make sys-devel/patch sys-libs/pam virtual/editor virtual/libc virtual/os-headers virtual/package-manager sys-apps/openrc dev-vcs/git app-editors/vis net-misc/rsync"
+        emerge --noreplace --oneshot --usepkg=y --autounmask=y  --autounmask-write=n --jobs=3 --quiet=y $TO_BUILD
+        
+        gcc-config 1
+        ego profile mix-in -stage1
+
+
+path-strings:
+  transformer:
+   - transform_values
+  input:
+    project-name: xtoo-simple-project
+    work-dir: /mnt/xtoo2
+    tmpfs-dir:
+      )){work-dir}/tmpfs
+    tmpfs-2-dir:
+      ))work-dir//tmpfs
+    tmp-dir:
+      )){tmpfs-dir}/))project-name
+    tmp-2-dir:
+      ))tmpfs-dir//))project-name
+    eliot-log-dir:
+      )){tmpfs-dir}/logs
+    eliot-log-2-dir:
+      ))tmpfs-dir//logs
+  output:
+    tmpfs-dir:
+      /mnt/xtoo2/tmpfs
+    tmpfs-2-dir:
+      /mnt/xtoo2/tmpfs
+    tmp-dir:
+      /mnt/xtoo2/tmpfs/xtoo-simple-project
+    tmp-2-dir:
+      /mnt/xtoo2/tmpfs/xtoo-simple-project
+    eliot-log-dir:
+      /mnt/xtoo2/tmpfs/logs
+    eliot-log-2-dir:
+      /mnt/xtoo2/tmpfs/logs
+
+secret-keys:
+  transformer:
+    - transform_values
+    - transform_ats
+
+  input:
+    a: A
+    _project-name-template: ))@-project
+    super-project-name: )){_project-name-template}
+  output:
+    a: A
+    _project-name-template: ))@-project
+    super-project-name: super-project-name-project
+
+plaintext:
+  transformer:
+    - transform_plaintext
+  input:
+    a: ./../../YAMLator/plaintext#
+  output:
+    a: |
+      Here is some plaintext.
+
+
+      All formatting should be preserved.
+

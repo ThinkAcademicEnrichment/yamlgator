@@ -1,0 +1,12 @@
+test-1:
+  input:
+    is-a: y
+    is-b: n
+    ))?{is-a}:
+      ))?{is-b}:
+        a-and-b: Not the case
+        a-and-not-b: Is the case
+  output:
+    is-a: y
+    is-b: n
+    a-and-not-b: Is the case

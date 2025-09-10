@@ -1,0 +1,22 @@
+selector-subs:
+  input:
+    a: xdata
+    b: ./a-file.yaml#))a/
+    c: data
+    d: ./a-file.yaml#))c
+    e: ./a-file.yaml#))c//
+    f: ./plaintext#
+  output:
+    b: ./a-file.yaml#xdata
+    d:
+      data:
+        data-1: X
+        data-2: Y
+    e:
+      data-1: X
+      data-2: Y
+    f: |
+      Here is some plaintext.
+     
+      
+      All formatting should be preserved.

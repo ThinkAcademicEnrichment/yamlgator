@@ -1,0 +1,19 @@
+basic-lists:
+  input:
+    config:
+      a:
+        - value_0
+        - value_1
+        - value_2
+      b:
+        ))a/[0]
+      c:
+        d:
+          - value_0
+          - value_1
+      e:
+        )){c/d/}[1]
+  output:
+    config:
+      b: value_0
+      e: value_1

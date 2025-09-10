@@ -1,0 +1,21 @@
+# these seem to be broken
+py-execs:
+  transformer:
+    PythonTransformer
+
+  input:
+   my_test_exec:
+    ./data/py-execs.py#my_test_exec
+   basic_exec:
+    ./data/py-execs.py#basic_exec
+
+  output:
+   my_test_exec:
+    python: |
+     import os
+     print('))key-a', '))(key-e/key-f)')
+
+   basic_exec:
+    python: |
+     import os
+     print('))key-a', '))key-d')
