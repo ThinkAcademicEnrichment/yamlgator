@@ -52,3 +52,4 @@ __javascript__/
 tmp*.yaml
 tests/YAMLator/tmp
 old
+dist
