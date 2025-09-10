@@ -79,7 +79,7 @@ class Tree:
         Returns:
              Tree: A deepcopy of the Tree object.
         """
-        return Tree(deepcopy(self.odict))
+        return self.__class__(deepcopy(self.odict))
 
     def reset(self, *keys_to_preserve):
         """Clears all contents of the tree, with an option to preserve branches.
@@ -1140,4 +1140,4 @@ class Tree:
         Returns:
             Tree: A new Tree instance populated with the data from the stream.
         """
-        return Tree(Tree._load(stream))
+        return cls(Tree._load(stream))

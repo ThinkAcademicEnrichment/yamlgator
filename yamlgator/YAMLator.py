@@ -32,7 +32,6 @@ class YAMLatorObjectDB(ObjectDB):
     regexes = None
 
     def __init__(self):
-        # super(YAMLatorObjectDB,self).__init__()
         super().__init__()
         self.regexes = {}
 
@@ -128,7 +127,9 @@ class YAMLator(YAMLatorObjectDB, Tree):
             _root_dir = str(pathlib.Path('.').parent)
         else:
             _root_dir = str(pathlib.Path(stream.name).parent)
-        return YAMLator(cls._load(stream),_root_dir)
+        # return YAMLator(cls._load(stream),_root_dir)
+        return cls(cls._load(stream),_root_dir)
+
 
     def __init__(self, odict_or_yamlator_or_tree=None, root_dir=None):
         """Initializes a new YAMLator instance.
@@ -229,9 +230,9 @@ class YAMLator(YAMLatorObjectDB, Tree):
         operations.
         """
         # AND transfer registered utilities and objdb
-        _tmp_value = super(YAMLator,self).get(keychain_or_keychain_str,value)
+        _tmp_value = super(self.__class__,self).get(keychain_or_keychain_str,value)
         if isinstance(_tmp_value,Tree):
-            _yt = YAMLator(
+            _yt = self.__class__(
                 _tmp_value,
                 root_dir=self.root_dir)
             _yt.set_config_attrs()
@@ -247,7 +248,7 @@ class YAMLator(YAMLatorObjectDB, Tree):
         Returns:
              YAMLator: A deepcopy of the YAMLator object.
         """
-        _yt = YAMLator(deepcopy(self.odict),root_dir=self.root_dir)
+        _yt = self.__class__(deepcopy(self.odict),root_dir=self.root_dir)
         _yt.set_config_attrs()
         return _yt
 
@@ -314,7 +315,7 @@ class YAMLator(YAMLatorObjectDB, Tree):
         _root_dir = _yaml_path.parent
 
         _yt = YAMLTransformer(
-            YAMLator(
+            self.__class__(
                 OrderedDict(
                     _merge_data=f'./{_yaml_path.name}#{_selector}'
                 ),
