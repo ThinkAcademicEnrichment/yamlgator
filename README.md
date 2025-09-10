@@ -305,7 +305,7 @@ config:
 
 ### Conditional Values (`transform_ifs`)
 
-Sets a value based on a condition, using a ternary-like syntax: `))?{condition: value_if_true: value_if_false}`. The `&`, `|` and '!' operators are supported. Unquoted strings are treated as keychains, quoted strings are treaded as such.
+Sets a value based on a condition, using a ternary-like syntax: `))?{condition: value_if_true: value_if_false}`. The `&`, `|` and `!` operators are supported. Unquoted strings are treated as keychains, quoted strings are treaded as such. Notice how cases are written, with no space between the `:` and the case expression.
 
 **Input:**
 
@@ -660,4 +660,70 @@ super-project-name: )){_project-name-template}
 a: A
 _project-name-template: ))@-project
 super-project-name: super-project-name-project
+```
+
+## Advanced Usage: Automatic Type Conversion
+
+`yamlgator` can automatically convert string values from your YAML file into rich Python objects like `pathlib.Path`, `yarl.URL`, or `bool` when you use the `set_config_attrs()` method.
+
+This works by convention. When you create a subclass of `YAMLator`, you can define uppercase attributes on it. When you call `set_config_attrs()`, `yamlgator` maps the keys from your YAML file to these attributes. If a YAML key matches a specific naming pattern, its value is automatically cast to the corresponding Python type.
+
+Here are the key naming conventions:
+
+| Key Pattern | Description | Converted Type |
+| :--- | :--- | :--- |
+| `is-` or `use-` (prefix) | For boolean flags (e.g., `is-enabled`). | `bool` |
+| `-path` or `-dir` (suffix) | For file system paths (e.g., `output-dir`). | `pathlib.Path` |
+| `-url` (suffix) | For URLs (e.g., `api-url`). | `yarl.URL` |
+
+#### Complete Example
+
+Here’s how to put it all together.
+
+**1. Python Subclass (`my_config.py`)**
+
+```python
+import pathlib
+from yarl import URL
+from yamlgator import YAMLator
+
+class MyConfig(YAMLator):
+    WORK_DIR = None
+    IS_PRODUCTION = None
+    API_URL = None
+```
+
+**2. YAML Configuration (`config.yaml`)**
+
+```yaml
+config:
+  work-dir: /tmp/data
+  is-production: y
+  api-url: https://api.example.com
+```
+
+**3. Loading and Verifying**
+
+```python
+import pathlib
+from yarl import URL
+# Assuming my_config.py and config.yaml are in the same directory
+from my_config import MyConfig
+
+# Load the YAML file
+config = MyConfig.load("config.yaml")
+
+# Transform and set attributes
+config.transform()
+config.set_config_attrs()
+
+# Verify the types
+print(f"WORK_DIR: {config.WORK_DIR} (type: {type(config.WORK_DIR)})")
+print(f"IS_PRODUCTION: {config.IS_PRODUCTION} (type: {type(config.IS_PRODUCTION)})")
+print(f"API_URL: {config.API_URL} (type: {type(config.API_URL)})")
+
+assert isinstance(config.WORK_DIR, pathlib.Path)
+assert isinstance(config.IS_PRODUCTION, bool)
+assert config.IS_PRODUCTION is True
+assert isinstance(config.API_URL, URL)
 ```
