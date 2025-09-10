@@ -1,7 +1,7 @@
 from ..constants import *
-from . import DEBUG
-from .ValueTransformer import ValueTransformer
+from .ValueTransformer import *
 
+from . import DEBUG
 
 class PathValueTransformerException(Exception):
     pass

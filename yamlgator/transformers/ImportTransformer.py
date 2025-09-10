@@ -1,10 +1,10 @@
 from ..constants import *
-from ..tree import Tree
-from . import DEBUG
-from .KeyTransformer import KeyTransformer
-from .YAMLTransformer import YAMLTransformer
-from .ValueTransformer import ValueTransformer
+from ..tree import *
+from .KeyTransformer import *
+from .YAMLTransformer import *
+from .ValueTransformer import *
 
+from . import DEBUG
 
 class ImportTransformer(KeyTransformer):
     name = 'transform_imports'

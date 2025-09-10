@@ -1,6 +1,7 @@
 from ..constants import *
+from .KeyChainTransformer import *
+
 from . import DEBUG
-from .KeyChainTransformer import KeyChainTransformer
 
 
 class KeyTransformerException(Exception):

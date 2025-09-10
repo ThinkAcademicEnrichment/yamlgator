@@ -1,6 +1,4 @@
-from dataclasses import dataclass
-from enum import Enum
-
+from ..constants import *
 
 class ValidationIssue(Enum):
     """Enumeration for all possible validation issues."""

@@ -1,4 +1,4 @@
-from .tree import Tree
+from .tree import *
 from .transformers import *
 from .objdb import *
 from .constants import *

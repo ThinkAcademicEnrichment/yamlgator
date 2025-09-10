@@ -1,10 +1,18 @@
+import io
+import re
+import ast
+import yarl
+import yaml
+import astor
+import pathlib
+import typing
+
 from copy import copy,deepcopy
 from collections import OrderedDict
-import yarl
-import pathlib
-import re
-import io
 from functools import partial,reduce
+from dataclasses import dataclass
+from enum import Enum
+
 
 try:
     from icecream import ic
@@ -28,16 +36,10 @@ FALSE_VALUES = \
     + ("off","Off","OFF")
 
 
-
 class REGEXES:
     BOOL_VALUE = r'|'.join(TRUE_VALUES) + r'|' + r'|'.join(FALSE_VALUES)
 
-    # TODO: what about keychains with expressions in them???
-    # sometimes we want to traverse them
     KEY = r'[a-zA-Z0-9_][a-zA-Z0-9_\.-]*'
-    # can we create 'non transformable' keys by naming them with an underscore???
-    # KEY = r'[a-zA-Z0-9][a-zA-Z0-9_\.-]*'
-    # this can match the empty string...??
     KEYCHAIN = rf'/?(?:{KEY}/)*'
 
     BOOL_TYPE_KEY = rf'(?:use|is)-{KEY}'
@@ -46,7 +48,6 @@ class REGEXES:
 
     LIST_INDEX = r'\d+'
     SLICE = r'\:?\-?\d+\:?'
-    # DATA_INDEX = rf'{KEYCHAIN}{KEY}/?|{LIST_INDEX}|{SLICE}'
     DATA_INDEX = rf'{KEYCHAIN}{KEY}/?|{SLICE}'
     POSIX_RELATIVE = r'\./(?:[^\0/]+/?)*[^#]'
     POSIX_ABSOLUTE = r'/(?:[^\0/]+/?)*[^#]'
@@ -62,9 +63,6 @@ class REGEXES:
     IMPORT_EXP = r'\+.*(?:\s|$)'
     # -----------------------------------
 
-    # FRAGILE! Only allows one per line
-    # IF = r'\?\[.+(?<!(?:\[-\d))\]'
-
     IF = rf'\?{re.escape(KEYCHAIN_LEFT_BOUND)}[^}}]+{re.escape(KEYCHAIN_RIGHT_BOUND)}'
 
     OR_SEP = r'|'
@@ -76,7 +74,6 @@ class REGEXES:
 
     IF_KEY_EXP = \
         rf'\?{re.escape(KEYCHAIN_LEFT_BOUND)}((?:\s*{LOGICAL_KEY_EXP}|\s*[{OR_SEP}{AND_SEP}]?\s*!?\s*{BOOL_TYPE_KEY})+)\s*{re.escape(KEYCHAIN_RIGHT_BOUND)}(/?)'
-    # rf'\?\[((?:\s*{LOGICAL_KEY_EXP}|\s*[{OR_SEP}{AND_SEP}]?\s*!?\s*{BOOL_TYPE_KEY})+)\s*\](/?)'
 
     LOGICAL_EXP = \
         rf'[{OR_SEP}{AND_SEP}]?\s*!?\s*[^=!{AND_SEP}{OR_SEP}{CASE_SEP}]+(?:\[{DATA_INDEX}\])?\s*(?:[!=]=\s*!?\s*[^=!{AND_SEP}{OR_SEP}{CASE_SEP}]+)?'
@@ -84,10 +81,6 @@ class REGEXES:
     IF_EXP = \
         rf'\?{re.escape(KEYCHAIN_LEFT_BOUND)}((?:\s*{LOGICAL_EXP}|\s*[{OR_SEP}{AND_SEP}]?\s*!?\s*{BOOL_TYPE_KEY})+)\s*{CASE_SEP}' + \
         rf'([^{AND_SEP}{OR_SEP}{CASE_SEP}]+)\s*(?:{CASE_SEP}([^{AND_SEP}{OR_SEP}{CASE_SEP}]+))?\s*{re.escape(KEYCHAIN_RIGHT_BOUND)}'
-
-    #     rf'\?\[((?:\s*{LOGICAL_EXP}|\s*[{OR_SEP}{AND_SEP}]?\s*!?\s*{BOOL_TYPE_KEY})+)\s*{CASE_SEP}' + \
-    #     rf'([^{AND_SEP}{OR_SEP}{CASE_SEP}]+)\s*(?:{CASE_SEP}([^{AND_SEP}{OR_SEP}{CASE_SEP}]+))?\s*(?<!(?:\[-\d))\]'
-
 
 
 def bool_factory(x):

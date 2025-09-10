@@ -1,4 +1,4 @@
-from ..tree import Tree
+from ..tree import *
 
 class AbstractState(Tree):
     def __init__(self,  pre_observables=(), value_observables=(), post_observables=(),initial_state=None):

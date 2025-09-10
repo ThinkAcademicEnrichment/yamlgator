@@ -1,6 +1,7 @@
 from ..constants import *
+from ..evaluators.AbstractEvaluator import *
+
 from . import DEBUG
-from ..evaluators.AbstractEvaluator import AbstractEvaluator
 
 class TransformerException(Exception):
     pass

@@ -1,8 +1,8 @@
 from ..constants import *
-from . import DEBUG
-from ..tree import Tree
-from .Transformer import Transformer
+from ..tree import *
+from .Transformer import *
 
+from . import DEBUG
 
 class KeyChainTransformer(Transformer):
     match_regex = \

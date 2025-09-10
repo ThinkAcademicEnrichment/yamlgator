@@ -4,4 +4,3 @@ class DEBUG:
     AggregateState = False
     DAggregateState = False
     Observable = False
-

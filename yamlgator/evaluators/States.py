@@ -1,5 +1,6 @@
-from ..constants import ic
-from .AbstractState import AbstractState
+from ..constants import *
+from .AbstractState import  *
+
 from . import DEBUG
 
 class AggregateState(AbstractState):

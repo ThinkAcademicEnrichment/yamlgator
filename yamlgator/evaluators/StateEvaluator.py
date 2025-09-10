@@ -1,16 +1,16 @@
 from ..constants import *
+from ..tree import *
 from ..YAMLator import YAMLator
-from . import DEBUG
 from .States import *
 from .Observables import *
 
 
+from . import DEBUG
 
 class StateEvaluator(YAMLator):
     """ _post_evaluate,_pre_evaluate and _value_evaluate all have access to the state
         which is updated upon entering and exiting a node of nodes, or a node containing a value.
     """
-    # class StateEvaluator(YAMLator):
 
     def __init__(self, tree, state):
         super().__init__(tree)

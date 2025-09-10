@@ -1,10 +1,8 @@
-from ..tree import Tree
+from ..tree import *
 from ..constants import *
-from . import DEBUG
 from .ValueTransformer import ValueTransformer
 
-import ast
-import astor
+from . import DEBUG
 
 class BangTransformerException(Exception):
     pass

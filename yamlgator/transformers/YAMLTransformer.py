@@ -1,10 +1,8 @@
 from ..constants import *
-from . import DEBUG
-from .PathValueTransformer import PathValueTransformer
-from ..tree import Tree
-# circular!!!
-# from yamlator.YAMLator import YAMLator
+from .PathValueTransformer import *
+from ..tree import *
 
+from . import DEBUG
 
 class YAMLTransformerException(Exception):
     pass

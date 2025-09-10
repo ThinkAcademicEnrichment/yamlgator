@@ -1,5 +1,6 @@
-from ..constants import ic, re
-from .AbstractObservable import AbstractObservable
+from ..constants import *
+from .AbstractObservable import *
+
 from . import DEBUG
 
 class KeyPresenceObservable(AbstractObservable):

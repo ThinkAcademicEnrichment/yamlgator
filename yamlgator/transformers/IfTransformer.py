@@ -1,8 +1,8 @@
 from ..constants import *
-from ..tree import Tree
-from . import DEBUG
-from .ValueTransformer import ValueTransformer
+from ..tree import *
+from .ValueTransformer import *
 
+from . import DEBUG
 
 class IfTransformerException(Exception):
     pass

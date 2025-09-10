@@ -1,4 +1,4 @@
-from ..tree import Tree
+from ..tree import *
 
 class AbstractEvaluator(Tree):
     def __init__(self, odict_or_tree):
