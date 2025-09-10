@@ -643,3 +643,21 @@ for issue in all_issues:
     Circular dependency found: service-b/path -> service-c/assets -> service-a/endpoint
     Warning: Undefined variable ')){config/unknown-stuff}' is found.
 ```
+
+## Hidden Keys
+
+Appending any key name with an underscore hides it from the transformation engine while allowing its value to be accessed via the `))` syntax.
+
+**Input**
+```yaml
+a: A
+_project-name-template: ))@-project
+super-project-name: )){_project-name-template}
+```
+
+**Output**
+```yaml
+a: A
+_project-name-template: ))@-project
+super-project-name: super-project-name-project
+```
