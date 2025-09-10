@@ -7,14 +7,16 @@ from yamlgator.evaluators.States import *
 
 from collections import OrderedDict
 from copy import deepcopy
-import random
+from importlib import import_module
 
 import sys
 import pdb
+import random
+import pathlib
+import tempfile
+import unittest
 import functools
 import traceback
-import pathlib
-import unittest
 
 try:
     from icecream import ic
@@ -45,6 +47,7 @@ from tests.tree import TestTree
 from tests.transformers import TestTransformer
 from tests.validators import TestValidator
 from tests.evaluators import TestEvaluator
+from tests.YAMLator import TestYAMLator
 
 if __name__ == '__main__':
     _tl = unittest.TestLoader()
