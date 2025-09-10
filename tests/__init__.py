@@ -1,6 +1,6 @@
-from yamlgator.tree import Tree,TreeException
+from yamlgator.tree import *
 from yamlgator.transformers import *
-from yamlgator.YAMLator import YAMLator,DEFAULT_UTILITIES
+from yamlgator.YAMLator import *
 from yamlgator.evaluators.StateEvaluator import *
 from yamlgator.evaluators.Observables import *
 from yamlgator.evaluators.States import *
@@ -42,14 +42,3 @@ def debug_on(*exceptions):
                 pdb.post_mortem(info[2])
         return wrapper
     return decorator
-
-from tests.tree import TestTree
-from tests.transformers import TestTransformer
-from tests.validators import TestValidator
-from tests.evaluators import TestEvaluator
-from tests.YAMLator import TestYAMLator
-
-if __name__ == '__main__':
-    _tl = unittest.TestLoader()
-    _tl.discover('.')
-    unittest.main()

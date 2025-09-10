@@ -1,6 +1,5 @@
 from tests import *
 
-
 class TestYAMLator(unittest.TestCase):
     tests_dir = pathlib.Path(__file__).absolute().parent
 
