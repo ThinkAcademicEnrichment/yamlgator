@@ -340,3 +340,13 @@ plaintext:
 
 
         /dev/nvme0n1p1          /boot           vfat            noauto,noatime  1 2
+
+hidden-keys:
+  input:
+    a: A
+    _project-name-template: ))@-project
+    super-project-name: )){_project-name-template}
+  output:
+    a: A
+    _project-name-template: ))@-project
+    super-project-name: super-project-name-project
