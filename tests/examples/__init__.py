@@ -87,6 +87,36 @@ class TestExamples(unittest.TestCase):
             else:
                 print(f'skipping validation of issues:{_test_name}')
 
+    @debug_on(Exception)
+    def test_type_conversion(self):
+        import pathlib
+        from yarl import URL
+        from yamlgator import YAMLator
+
+        class MyConfig(YAMLator):
+            WORK_DIR = None
+            IS_PRODUCTION = None
+            API_URL = None
+
+        _config_yaml = self.tests_dir.joinpath('type-conversion-example.yaml')
+
+        with _config_yaml.open('r') as f:
+            _configlator = MyConfig.load(f)
+
+        _configlator.transform()
+        _configlator.set_config_attrs()
+
+        # Verify the types
+        print(f"WORK_DIR: {_configlator.WORK_DIR} (type: {type(_configlator.WORK_DIR)})")
+        print(f"IS_PRODUCTION: {_configlator.IS_PRODUCTION} (type: {type(_configlator.IS_PRODUCTION)})")
+        print(f"API_URL: {_configlator.API_URL} (type: {type(_configlator.API_URL)})")
+
+        assert isinstance(_configlator.WORK_DIR, pathlib.Path)
+        assert isinstance(_configlator.IS_PRODUCTION, bool)
+        assert _configlator.IS_PRODUCTION is True
+        assert isinstance(_configlator.API_URL, URL)
+
+
 if __name__ == '__main__':
     unittest.main()
 

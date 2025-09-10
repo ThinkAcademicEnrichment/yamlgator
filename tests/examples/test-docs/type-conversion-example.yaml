@@ -1,0 +1,4 @@
+config:
+  work-dir: /tmp/data
+  is-production: y
+  api-url: https://api.example.com
