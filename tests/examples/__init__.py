@@ -107,14 +107,15 @@ class TestExamples(unittest.TestCase):
         _configlator.set_config_attrs()
 
         # Verify the types
+        print()
         print(f"WORK_DIR: {_configlator.WORK_DIR} (type: {type(_configlator.WORK_DIR)})")
         print(f"IS_PRODUCTION: {_configlator.IS_PRODUCTION} (type: {type(_configlator.IS_PRODUCTION)})")
         print(f"API_URL: {_configlator.API_URL} (type: {type(_configlator.API_URL)})")
 
-        assert isinstance(_configlator.WORK_DIR, pathlib.Path)
-        assert isinstance(_configlator.IS_PRODUCTION, bool)
-        assert _configlator.IS_PRODUCTION is True
-        assert isinstance(_configlator.API_URL, URL)
+        self.assertIsInstance(_configlator.WORK_DIR, pathlib.Path)
+        self.assertIsInstance(_configlator.IS_PRODUCTION, bool)
+        self.assertIsInstance(_configlator.API_URL, URL)
+        self.assertTrue(_configlator.IS_PRODUCTION is True)
 
 
 if __name__ == '__main__':
