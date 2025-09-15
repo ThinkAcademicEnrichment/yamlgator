@@ -1,6 +1,6 @@
 [project]
 name = "yamlgator"
-version = "0.2.1"
+version = "0.2.2"
 description = "A macro language for yaml documents."
 authors = [{name="jeff",email="jeff@thinkae.org"}]
 readme = "README.md"
