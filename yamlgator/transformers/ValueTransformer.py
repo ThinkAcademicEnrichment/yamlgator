@@ -81,7 +81,6 @@ class ValueTransformer(KeyChainTransformer):
                         # this works but is awkward
                         _are_tree_values = True
                     elif isinstance(_transformed_token, list):
-                        ic(_transformed_token)
                         _are_list_values = True
                         # _transformed_token = ' '.join(map(str, _transformed_token))
                     elif isinstance(_transformed_token, str) and re.match(
@@ -135,7 +134,6 @@ class ValueTransformer(KeyChainTransformer):
             _lists = list(map(ast.literal_eval,_transformed_values))
             if len(_lists) > 1:
                 raise ValueTransformerException("Nested lists cannot be substituted")
-            ic(_lists)
             value = _lists[0]
         else:
             if isinstance(value, list):
