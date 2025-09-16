@@ -1,0 +1,295 @@
+#parent-types:
+#  - init
+#child-types:
+#  - target
+#  - xdev
+
+config:
+  user-types-dir: /mnt/pitII/xtoo/data/types
+  project-type:
+    host
+
+  # inherited from init.yaml
+  machine-subarch: ))))@/
+  machine-arch: ))))@/
+  xtoo-config-name: ))))@/
+  base-type-path: ))))@/
+  release-list: ))))@/
+  use-fresh-build-data: ))))@/
+  type-path: ))))@/
+  eliot-log-dir: ))))@/
+  xtoo-data-dir: ))))@/
+  arch-tree-cache-path: ))))@/
+  stage3-cache-dir: ))))@/
+  root-repo: ))))@/
+  default-host-stage3: stage3:next:2025-01-07
+  builder: ))))@/
+  use-docker-build-debug: ))))@/
+  work-dir: ))))@/
+  xtoo-lib-dir: ))))@/
+  build-server-url: ))))@/
+  build-data-dir: ))))@/
+  profile-dir: ))))@/
+  sync-base-url: ))))@/
+  distfiles-cache-dir: ))))@/
+  package-cache-dir: ))))@/
+  is-machine-arch-correct: ))))@/
+  is-machine-subarch-correct: ))))@/
+#  lib-path: ))))@/
+#  lib-path:
+#    ./lib.yaml
+#
+#  _metro-plaintext-keys:
+#    ./lib.yaml#data/
+
+  ########################
+  #  set by factory
+  parent-project-dir: /mnt/pitII/xtoo
+  parent-project-name: xtoo
+  parent-project-type: init
+  ########################
+
+  ))+base-imports:
+    ))base-type-path#config/
+
+  dockerfile-path:
+      ))xtoo-lib-dir//data/dockerfiles/Dockerfile
+
+# pure contstants
+  container-prefix:
+    /xtoo
+
+# needs detection and setting; used to link packages into .local/lib/))x-python-exe/site-packages
+  machine-python-exe:
+    ))!machine_python_exe()
+# TODO: how do we detect this automatically? And just setting python3 will NOT work well the py-execs volume
+  host-python-exe:
+    python3.9
+# a place to link any required repos and store xtoo's version of the Funtoo meta-repo
+  repos-dir:
+    ))work-dir//repos
+
+# a list of repos from ))repos-dir to mount
+  host-repos:
+
+# anytime a parent repo is not found, it is initialized from a funtoo stage3
+  is-root-repo-initialized-from-funtoo-stage3: y
+
+# use the forward slash for values, which ensures correct subbing into path values
+
+  host-arch:
+    ))machine-arch/
+
+
+# ONCE and for ALL! This does NOT work. Must always be set via ui or extra-config arugments
+#  x-arch:
+#    arm-64bit
+#  x-subarch:
+#    raspi4
+
+  tmpfs-dir:
+    ))work-dir//tmpfs
+
+  host-release:
+    ))arch-tree-cache-path#))host-arch//))host-subarch//))release-build-date-variant//release
+  host-variant:
+    ))arch-tree-cache-path#))host-arch//))host-subarch//))release-build-date-variant//variant
+  host-latest:
+    ))arch-tree-cache-path#))host-arch//))host-subarch//))release-build-date-variant//latest
+  host-download:
+    ))arch-tree-cache-path#))host-arch//))host-subarch//))release-build-date-variant//download
+  stage3-archive:
+    ))arch-tree-cache-path#))host-arch//))host-subarch//))release-build-date-variant//archive
+
+  make-opts:
+    -j))core-count
+
+# this the setting of PKGDIR and the bind mount of ))binpkg-cache-dir
+  portage-pkgdir:
+    ))container-prefix//packages
+  binpkg-cache-dir:
+    ))package-cache-dir//))host-arch//))host-subarch
+
+  stage3-cache:
+    ))container-prefix//stage3-cache
+
+# this data is used are arguments to the configure-make node
+  qemu-targets: >-
+    qemu_user_targets_riscv64
+    qemu_user_targets_aarch64
+    qemu_user_targets_arm
+
+  features: buildpkg -pid-sandbox -network-sandbox -sandbox -usersandbox -ipc-sandbox -selinux -sesandbox
+  emerge-default-opts: >-
+    --usepkg=))?{use-host-bin-pkgs :y :n}
+    --keep-going
+    --autounmask-keep-masks
+    --autounmask=y
+    --autounmask-write=n
+    --jobs=3
+    --quiet=y
+  qemu-softmmu-targets: x86_64 arm aarch64 i386 riscv64 ppc64
+  qemu-user-targets:    x86_64 arm aarch64 i386 riscv64 ppc64
+
+  debug-scripts-dir:
+    ))tmpfs-dir//))project-name//debug
+  debug-scripts:
+    ))container-prefix//debug
+  x-bind-mounts:
+    x-bind-mounts.txt
+
+#ui:
+  project-name:
+    host-8349
+
+  host-subarch:
+    ))machine-subarch
+
+  release-build-date-variant:
+    ))default-host-stage3
+
+  core-count:
+    ))!ncpus()
+
+  use-dynamic-tmpfs:
+    n
+
+  use-ccache:
+    y
+
+  ccache-size:
+    2048M
+
+  is-updated-cleaned:
+    y
+
+  use-host-bin-pkgs:
+    y
+
+recipe:
+#  TODO: these will now take the place of make.conf mounts or locally exported vars in bash nodes
+  env:
+    DONT_MOUNT_BOOT: 1
+    MAKEOPTS: ))make-opts
+    FEATURES: ))features
+    PKGDIR: ))portage-pkgdir
+    EMERGE_DEFAULT_OPTS: ))emerge-default-opts
+    QEMU_SOFTMMU_TARGETS: ))qemu-softmmu-targets
+    QEMU_USER_TARGETS: ))qemu-user-targets
+    ))?{ use-ccache }/:
+      yes:
+        CCACHE_DIR: ))container-prefix//ccache
+        CCACHE_SIZE: ))ccache-size
+
+  volumes:
+    ))+base-imports:
+      ))base-type-path#volumes/
+# notice the -dir spec on the vol names
+# this helps manage autocreation directories in XtooEvaluator
+# just make sure we don't shadow any )) variables!
+# remember, if a volume lacks a bind node, the volume name is used
+    ccache-dir:
+      path: ))tmpfs-dir//ccache
+      bind: ))container-prefix//ccache
+      mode: rw
+    binpkg-dir:
+      path: ))binpkg-cache-dir
+      bind: ))portage-pkgdir
+      mode: rw
+    distfiles-dir:
+      path: ))distfiles-cache-dir
+      bind: /var/cache/portage/distfiles
+      mode: rw
+    root-inputrc:
+      path:
+        ))xtoo-lib-dir//data/root/inputrc
+      bind:
+        /root/.inputrc
+    fchroot-conf:
+      path: |
+        dev-libs/libpcre static-libs
+        dev-libs/glib static-libs
+        app-emulation/qemu static-user
+        sys-apps/attr static-libs
+        app-emulation/qemu -doc ))qemu-targets
+      bind:
+        /etc/portage/package.use/fchroot
+
+    py-execs-vol-dir:
+      path: ))xtoo-lib-dir//drivers/py_execs
+      bind: /root/.local/lib/))host-python-exe//site-packages/py_execs
+      mode: ro
+    debug-dir:
+      path: ))debug-scripts-dir
+      bind: ))debug-scripts
+      mode: ro
+    meta-repo-dir:
+      path: /mnt/pitII/xtoo/repos/meta-repo
+      bind: /var/git/meta-repo
+      mode: rw
+
+  ))project-name:
+    ego-sync:
+      bash: |
+        ego sync
+
+    remove-debian-sources:
+      is-build-aborted-on-fail: n
+      bash: |
+        emerge -C sys-kernel/debian-sources
+        emerge --depclean
+
+    ))?{use-ccache}:
+      install-ccache:
+        bash: |
+          emerge dev-util/ccache
+          # did we upgrade? Then clear the cache
+          # ccache -C
+
+    emerge-world:
+      is-build-aborted-on-fail: n
+      bash: |
+        emerge -uvDN --keep-going @world
+        emerge --depclean
+        emerge --keep-going @preserved-rebuild
+        revdep-rebuild --ignore
+
+    install-fchroot:
+      bash: |
+        emerge sys-apps/fchroot
+
+# Why do we need some of these?
+    install-xtoo-utilities:
+      xtoo-utils-pkg-list: >-
+        app-crypt/gnupg
+        dev-vcs/git
+        sys-apps/util-linux
+        net-misc/rsync
+        sys-apps/coreutils
+        sys-apps/grep
+        sys-apps/findutils
+        sys-apps/sed
+        app-arch/tar
+        app-arch/xz-utils
+        dev-python/pip
+        sys-block/parted
+        sys-fs/e2fsprogs
+        sys-apps/dmidecode
+#        - app-admin/ego
+#        - app-admin/sudo
+#        - sys-fs/dosfstools
+#        - sys-apps/pv
+#        - app-emulation/docker
+      bash: |
+        emerge -u1 )){))@[-1]/xtoo-utils-pkg-list}
+
+    install-local-python-packages:
+      xtoo-python-pip-list: >-
+        yarl
+        plumbum
+        pyfstab
+      xtoo-python-pkg-list: >-
+        dev-python/python-gnupg
+      bash: |
+        pip install --user )){))@[-1]/xtoo-python-pip-list}
+        emerge -u1 )){))@[-1]/xtoo-python-pkg-list}

@@ -1,0 +1,63 @@
+config:
+  a-dummy-node:
+    ))a-dummy-node
+
+  project-type: init
+  machine-subarch: amd64-zen
+  machine-arch: x86-64bit
+  xtoo-config-name: xtoo-config.yaml
+  work-dir: /mnt/pitII/xtoo
+  xtoo-lib-dir: /mnt/pit/Workspace/xtoo/xtoo
+  base-type-path: ./base.yaml
+  release-list:
+  - next
+  use-fresh-build-data: n
+  eliot-log-dir: /mnt/pitII/xtoo/logs
+  xtoo-data-dir: /mnt/pitII/xtoo/data
+  arch-tree-cache-path: /mnt/pitII/xtoo/data/arch-tree.yaml
+  stage3-cache-dir: /mnt/pitII/xtoo/data/stage3-cache
+#  allowed-builds:
+#    next:
+#      arm-64bit:
+#      - raspi4
+#      - arm64_generic
+#      x86-32bit: []
+#      arm-32bit: []
+#      x86-64bit:
+#      - amd64-piledriver
+#      - intel64-skylake
+#      - intel64-silvermont
+#      - intel64-sandybridge
+#      - amd64-zen3
+#      - generic_64
+#      - intel64-haswell
+#      - generic_64-v2
+#      - amd64-k10
+#      - generic_64-v3
+#      - intel64-nehalem
+#      - intel64-ivybridge
+#      - amd64-zen2
+#      - amd64-steamroller
+#      - intel64-broadwell
+#      - amd64-bulldozer
+#      - intel64-westmere
+#      - generic_64-v4
+#      - core2_64
+#      - amd64-excavator
+#      - amd64-zen
+#      riscv-64bit:
+#      - sifive-fu740
+  root-repo: funtoo/))host-variant//))host-subarch//))host-release:))host-latest
+  default-host-stage3: ))default-host-stage3/
+  builder: alpine:latest
+  use-docker-build-debug: y
+ui:
+  build-server-url: https://build.funtoo.org
+  build-data-dir: /mnt/pitII/xtoo/data/build-data
+  profile-dir: /var/git/meta-repo/kits/core-kit/profiles/funtoo/1.0/linux-gnu
+  is-machine-arch-correct: y
+  is-machine-subarch-correct: y
+  sync-base-url: https://github.com/funtoo
+  distfiles-cache-dir: /var/cache/portage/distfiles
+  package-cache-dir: /mnt/pitII/xtoo/data/packages
+  user-types-dir: /mnt/pitII/xtoo/types

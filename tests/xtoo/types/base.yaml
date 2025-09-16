@@ -1,0 +1,55 @@
+
+config:
+
+  is-true:
+    y
+  is-false:
+    n
+
+  docker-image-tar-file:
+    ))project-name/.tar
+  type-path:
+    ))xtoo-lib-dir//data/types/))project-type//))xtoo-config-name
+  project-dir:
+    ))parent-project-dir//))project-name
+  project-output-dir:
+    ))tmpfs-dir//))project-name//output
+  host-exec-output-path:
+    ))project-output-dir//exec-output.txt
+
+  project-id:
+    ))!short_uuid()
+
+#  this is the repo which represents the sum of all the build steps
+  ))?{project-type == 'host'}:
+    parent-repo:
+      ))parent-project-name:))project-name
+
+  project-output:
+    ))container-prefix//container-output
+  tmp-dir:
+    ))tmpfs-dir//))project-name
+
+  distcc-log-path:
+    ))project-output-dir//distcc.log
+  distcc-log:
+    ))project-output//distcc.log
+
+#  TODO: implement dockerhub
+  use-dockerhub-images: n
+
+#  TODO: implement dockerhub
+#  use-dockerhub-images:
+#    prompt: Try to use a prebuilt Dockerhub image, if possible?
+#    default: n
+
+volumes:
+  container-output-dir:
+    path: ))project-output-dir
+    bind: ))project-output
+    mode: rw
+  distcc-output:
+    path: ))distcc-log-path
+    bind: ))distcc-log
+    mode: rw
+

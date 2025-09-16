@@ -1,0 +1,506 @@
+config:
+  user-types-dir: /mnt/pitII/xtoo/data/types
+  project-type: host
+  machine-subarch: amd64-zen
+  machine-arch: x86-64bit
+  xtoo-config-name: xtoo-config.yaml
+  base-type-path: ./base.yaml
+  release-list:
+  - next
+  use-fresh-build-data: n
+  type-path: /mnt/pit/Workspace/xtoo/xtoo/data/types/host/xtoo-config.yaml
+  eliot-log-dir: /mnt/pitII/xtoo/logs
+  xtoo-data-dir: /mnt/pitII/xtoo/data
+  arch-tree-cache-path: /mnt/pitII/xtoo/data/arch-tree.yaml
+  stage3-cache-dir: /mnt/pitII/xtoo/data/stage3-cache
+#  allowed-builds:
+#    next:
+#      arm-64bit:
+#      - raspi4
+#      - raspi3_64
+#      - arm64_generic
+#      x86-32bit:
+#      - athlon-xp
+#      - athlon-tbird
+#      - k6
+#      - atom_32
+#      - geode
+#      - i486
+#      - pentium-m
+#      - amd64-k8_32
+#      - k6-3
+#      - i686
+#      - native_32
+#      - athlon
+#      - pentium2
+#      - pentiumpro
+#      - amd64-k8+sse3_32
+#      - pentium-mmx
+#      - pentium4
+#      - xen-pentium4+sse3
+#      - k6-2
+#      - athlon-4
+#      - pentium
+#      - prescott
+#      - btver1
+#      - athlon-mp
+#      - generic_32
+#      - core2_32
+#      - pentium3
+#      arm-32bit:
+#      - raspi3
+#      - armv7a_vfpv3_hardfp
+#      - armv6j_hardfp
+#      - raspi2
+#      - armv6j_vfp_hardfp
+#      - armv7a_hardfp
+#      - raspi
+#      - odroid-xu4
+#      x86-64bit:
+#      - amd64-piledriver
+#      - intel64-skylake
+#      - intel64-silvermont
+#      - intel64-sandybridge
+#      - amd64-k8+sse3
+#      - amd64-zen3
+#      - generic_64
+#      - intel64-haswell
+#      - intel64-skylake-avx512
+#      - nocona
+#      - atom_64
+#      - amd64-k10
+#      - amd64-jaguar
+#      - core-avx-i
+#      - corei7
+#      - amd64-pumaplus
+#      - intel64-nehalem
+#      - intel64-ivybridge
+#      - amd64-zen2
+#      - native_64
+#      - opteron_64
+#      - amd64-steamroller
+#      - intel64-broadwell
+#      - amd64-bulldozer
+#      - intel64-westmere
+#      - amd64-k8
+#      - core2_64
+#      - amd64-excavator
+#      - amd64-zen
+#      - xen-pentium4+sse3_64
+#      - btver1_64
+#      riscv-64bit:
+#      - sifive-fu740
+  root-repo: funtoo/stage3/amd64-zen/next:2025-01-07
+  default-host-stage3: stage3:next:2025-01-07
+  builder: alpine:latest
+  use-docker-build-debug: y
+  work-dir: /mnt/pitII/xtoo
+  xtoo-lib-dir: /mnt/pit/Workspace/xtoo/xtoo
+  build-server-url: https://build.funtoo.org
+  build-data-dir: /mnt/pitII/xtoo/data/build-data
+  profile-dir: /var/git/meta-repo/kits/core-kit/profiles/funtoo/1.0/linux-gnu
+  sync-base-url: https://github.com/funtoo
+  distfiles-cache-dir: /var/cache/portage/distfiles
+  package-cache-dir: /mnt/pitII/xtoo/data/packages
+  is-machine-arch-correct: y
+  is-machine-subarch-correct: y
+#  lib-path: ./lib.yaml
+#  _metro-plaintext-keys: '-----BEGIN PGP PUBLIC KEY BLOCK-----
+#
+#    mQINBFhMV4wBEADnqf2q2BAZuAWODX1XufDSnYS++m/bDyaLQ5ovgALA4Tq6rZQk
+#
+#    YtPVEENnZwSZa/IHkXwLhyg9wP1b6cNi+yNg/zgEaFvqs9XlHQlBsLwzmfha4mdD
+#
+#    qDstx10/jvhtReBWJMpGV8u0Tgf/UNA7IHgVv3539/bFcTQEoIY9LdQ4Kdz5TaoT
+#
+#    n6IloByevVOKcuyyED6lc1INfC38SuG59bvjDa1/13H7pA8OAq6GG/lHH0aVLYqN
+#
+#    b+yPG5i4meD2APNoZgXuPTFXDoqthdFsO2PRSNFYuw6pf4PWYVCRIo0zxvcWYoYx
+#
+#    YRVZHMpkjEDJS2xAb8gOKa0Sx7cJzrwcM7a66FXU/OCNd6eLVjyn130nboIwDbAz
+#
+#    LVu5wQsLG8q2YyhyomAk/BRKProxbfdWN3FYZhBSIIgsfJvBRvzuw/nGg+5+z8L7
+#
+#    Kl3M69RrL87AyM2WqekdKYD9gRCEZttjspIOzRwb2UfN3PfKD+7OhIPcLtNQgyOo
+#
+#    YBc3c+rRXMvswYs8ImPZ6pMV5K3a5KNyrRfdPiU733vRdy9mct2ZvIZz+x39G9Ym
+#
+#    iso7a7ScaJ8ivX0FdWG5NYux4Czowu8VxvSMP2DhDrZ82Th0uIbVweiN9UCVFFCJ
+#
+#    UjT28J6J0kMmIWPxxDioCDe98sBvLxhyNIGr9R6ITq4R9aKpVKRxKEY1EQARAQAB
+#
+#    tDFEYW5pZWwgUm9iYmlucyAobWV0cm86bm9kZSkgPGRyb2JiaW5zQGZ1bnRvby5v
+#
+#    cmc+iQI5BBMBCAAjBQJYTFeMAhsDBwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AA
+#
+#    CgkQkmbE+hH9AP0Ovw/9Fti8RrZ/u4+nqsD/AdS1lOa/GJ7F5lWAGbxgN/Ep3hvZ
+#
+#    P8SGWNtNUmhEZirQwpF0qW5XyyoSQIjon4k5MebHTjXbgM31Nl5SUDwMVXH56kI0
+#
+#    4+O7ATXnhnGM2JgZkVqspxQ6BPXCU1hbpd9BlPtCbdFeNLJWaUinOnqTVJt4wFDw
+#
+#    0qjrujLSjn+eCdMGo6Yml5V3IE6KGWCZXoIUZ2urX9j851W8sYlD773a+oCTbZHB
+#
+#    RL2EaBYRcslG398Dm/jxHcHSfIypOXPIJ4pCkQJvdKWQYYp8SD6AmUCK1TndLXfW
+#
+#    KGMdL2K2iKJVcVNwbrw7hLP1s0krbMzU8CCS8grtEyJu7N033QAPQPButUdank5g
+#
+#    jtSKFd/mb9sd3BuxtzmRpi8ukDtjSdQDhI4RhzwyNwbQ9WSTlWAU4/gh4Am9u8rC
+#
+#    muOoEelG4gczqHR7Uobp+xbPxZneA97lUQh9ZDhq1M1UEOI3qBGrFozi/srhT9rg
+#
+#    ZYLzk77WEd1HV8A67JCrlbw0n2CfxWcAI1uBQFzK0aOdSptmYFd6sYxTztOXeO0o
+#
+#    lUngptINUOpFgfiRC3iMTUYuUWOzysjAx2I9v9v/fsf7VfeB7P9bbIBRX6p+yYPO
+#
+#    WP5lavQNVCyKzr9Us2kVgjfNAav2R0X+leWcj9q4XAXbF3hqEgo3g3HZE29hVIuJ
+#
+#    AjcEEwEIACECGwMCHgECF4AFAlhMWEUFCwkIBwMFFQoJCAsFFgIDAQAACgkQkmbE
+#
+#    +hH9AP1ScA//dVqZDbmeu25tw2BQiVia+brhR2nJuhr6xAY/LEts23Mq1NA1usJ1
+#
+#    o9IervwW76ekObRlsQfQAvkoz4xVUqzMPUjLRVjt2xGM8lEHs0fQnRs//3wKqnrn
+#
+#    1ryz3BJQq2aFUEW8PzDMnjkYZx5fLJXcu5pPoBFY20+ob1Jkj75qYtogOraCw81v
+#
+#    wBS5XZzKcgRrG6/a5Anzj5kJY9qhlNkNy8vY/Y7JwEqajlq+ktjRuXqMsv4gAgXw
+#
+#    09jKh4XxvuxPEP4LP0IkcFU4LrlmyKPveFws1+FWSbu3cBSb+otLxHcYc5vA/1y1
+#
+#    CHZtNq3UmsFYUC1E+6+ZkT2i2Vc1RZPTvHJVeLUXzZD41a4FI9/F9uvgztndB6Yv
+#
+#    eNP7NWkLKBgTUgvR/yGpLBm4l2XJ6dUNSm7Yly9esEIxOz/qET1/ttXkzVdSEAJj
+#
+#    UMoxVfdbGHjFp5dD7PvVcGi6ByFmE0pN7kv6BZ4gR3qlsJw8rHK5k75+wApy5AcJ
+#
+#    zWAsKCr8tHjUjhv667jNdMpng+a5OqKcl4ekFEmdIkjRzuuFOLMinR1LgCuQHvQA
+#
+#    dvWSVIlFKCp3UEFygP2deBZst4caehVnIWK9duvIgplEZDejN3ij3N9yV8vcs7ru
+#
+#    n68qevIbE0BTpdcZ1IqU8iOLJ4pi9ipWnunrT31cFaeBDPAiGNm7oVGJAhwEEAEI
+#
+#    AAYFAlhMWfMACgkQmmWDBumG6O61Ug//U65rHk6ieDx+/qsxBZWHzwLdxsSEJd2f
+#
+#    1hx/BYKfA4ox4k9GfmtcjuWTwJO6rKR6nWHAY6zUfiygYM8fucxIPpdBSKO3gRI/
+#
+#    pirFz3E7RgwWyuwvlxg/r9Pi5Zi1CX1iFvSjNWFiXXbOxhtdXpQPzfCwaT6RCjkX
+#
+#    sA2yHSDdWUwy+uaoLKSNJKupICAvt4cObYK1t/GbHCShG5vd17uTSbRPP07dlQyW
+#
+#    aH4Grb7f8L+WjvpjKDMqpL9FEVoyu22faZ1FELYOV9DLQjpgheN5d9dVX6FeX4zh
+#
+#    qF0m+LXL9hsamC2S550fD98ENgtcwCTPuoSn/aqbfrW/0XE8b0W6FpnnyORhJtuY
+#
+#    vLLTIUqd1qLxoMtM9TtjmFr+rQkUXqlbRc0lv8i6moDOY/rD66V1+U0IqTrFbnNM
+#
+#    Jj+/SOHzZCA/PS3J8mQ+2NiOez41e6o+/eXp+b84ZBKtDuJVZBTS3QbO42eUXmDr
+#
+#    Lf/YKi+OhdLCEqV+fEq0IYyLovWvMcdyMpj0IkWn7mvpWhTGMc9OOY4iyYNomFSg
+#
+#    Hqdn64AGzA4Hxt5uotRe6FJs5w0pna5aZDt0G6NTgsAXWL5uIzpzjB7OImpdi22c
+#
+#    SfK04Q9wNOtXK4gb2V5ZDYq8huTLDbkJhqagq4K7j24JNWdW67WrzEK+gtnMWMij
+#
+#    PNcikjba84u5Ag0EWExXjAEQAMfkzgduorcqcuNetU5xIbZM1tObZRdxnxk5zONI
+#
+#    YvmtacQcgj66TIWMjafU0HKjlCNdmzd3zZGSbsy8txyb+ilsiyWO81BalhK/HSzx
+#
+#    2NLtnPcwjOZLuo4J6en3KuauwyeINbKui4+AvJ/1KdKSJXniS02mkk/46PN0WqPD
+#
+#    lPKMs1bhjoZI4XpuYovH4RMUFEEpB0ccxf5C9vQeebmwYjy/BI+Ce5XZ9y+l4ABS
+#
+#    YwDtCOEuEYYWtx1slQgTupWmIsEETZ+vmEWlQNL80FQ9Anp61WF1FkIi0s7DIvNy
+#
+#    4Z5NUF7kvQe14FMUkpBWpVsnGwPVMvssDiA5gNladhquUxnidhJRuUIAqk4rbMre
+#
+#    3hNAMO/hxvhcaF42RNhgQFpbr5gbZMYd0lXBpYpowaJG7F2GNV9drb4mdPsDYTzZ
+#
+#    aujw/55iLAFUJZbcQTU4Qoi2fA+JQViYzSIxEqH7NHIbQ6jagBQWfk6cIgNxIVSv
+#
+#    QeYoJQMfAcs4G0JEpk8EbQnbzejRnWUZQadnRs/TpAVQjBkrPEjEIL/mWTDe/kDd
+#
+#    2DB1+wuBzXSFdq6MbrHLWLXLpKa+wrwLjx60zfkSWD0fmRKoUtQ9ALGByStdOlsA
+#
+#    GquS2Pkp1KT/w3KwsITjO24LfoviOScBc1pC6XEg8fXCPw2qV74BKXnDh1XObviZ
+#
+#    MbDfABEBAAGJAh8EGAEIAAkFAlhMV4wCGwwACgkQkmbE+hH9AP0jAxAAjW0VZ1AW
+#
+#    WoRjR0EMtMXaUBiVVeLdXPmNpZz34/+XIT9M5ZquXJJHLickR7o6GK0EjvWaFB38
+#
+#    vibFA4fbvkohxcavtIekz9rLdu3Kkolzabz2PPQ4i51Vns3PkmmZo/GhuA8ERChH
+#
+#    EQDvi2T/zkbutmUdcdxg+3cuPpAMdtCr+6eyqU3Sn8NuAWChGixcdIVR3YT4tG0O
+#
+#    uO9KlQtHlxW8jRujW0KNnTOItqKtw77biVsSstJREDbU716Cws2OvOJxqJUkv01K
+#
+#    OwIVBNcC3Kvl2DLWesBrB9TqpotjrdemURfToywsIDtou7BMDUy27i14QzoroUbU
+#
+#    Ir/byN0MYAJiZ7tbJUetNkHd3FeOHrrBCNthR4yY7hAvnGwAkkQKKZl2FA9VYGKs
+#
+#    3c7MIoTk6yp94ZCmDIT7Tg4nlM+Hj8wh2s17sPchtAWOzScGn2LBG6mUXeZkD8b3
+#
+#    N+3+73npcDP/pQ5SVdj1uX84yTTRLN1bW7EbY8diGyj9rQA5ZCFXE6tSjjsZLQST
+#
+#    LCgATQJ4ks2l7XWcqOd/Jqa8+80jbEOHF1TqufhqAUpkWNMxp3R4KrI5NfZsLFt/
+#
+#    iyLBrhSt0aV2/siwf3OqQRyyL6UC3ri+2kb2+A7Ck7wFQ7l3GXcRRltdHb4pDw8W
+#
+#    zf8Uvc+eXJcX0YujN/hApyGYMXLobHpNCOW5Ag0EWExmJQEQANXt6VURsCHwYLxw
+#
+#    2Q2LejJOd7LwU8pMfaf5si+ctWSOIrWhdKGamwx7JzS2WWE8wCNHBqCBCXlyNSaf
+#
+#    wDi9Z1cyDcVDeE81320N1CYboJ1al2DZwiCa3MmG0QkHbpnwTRrQFwLfC+yjr/DB
+#
+#    WNFy0UdwbJ7urelZW7knZVxqeF/srUx9gWRZqGxCvUyXSWCPRGtk5wkpmYKRKcuA
+#
+#    zEoT2iafjii0SO2uD9Thtf2Kvc/wBqkus6tWpVL13RKgBM2+xfK7mmRzEBaAbFOu
+#
+#    qOm7UJUnc5Ka+4kcPkQDWqtWVbAijKou5Vce7QFxl6qlS2K6LFVOqoA22FE7JwRu
+#
+#    tXyg6/lqMPUERLTdVZ2x+6lv8A4GHoPlPZ0uFLv7fq7gFLL4Eisapk4RPL+WnKrj
+#
+#    8pXHIGR35oy2EzsiBl+A7SgkQ5Gr9YvQ8qb5bQ8wXGx4wGbvviQjhctIO2lKQwQw
+#
+#    Kh59o7OtwxJo0Qh5YTo/NvxY8oTrrZRXNwsC45S0QAjFY98b2/qac0Usu/9MEUM2
+#
+#    o3WTzTo0c76pxef0FuNHvaPLnR6Zv5hfv+cCpmcMca3wNi14L3eItpgrDKzvEUEY
+#
+#    kjP72lU9lHgEUr+TwQTlAscIFnEfdIw1rchqbXLP9QsjGy6M1C9hFmOLjxd4TzMd
+#
+#    f41opO1npS/slok06YVKkHaMx3eHABEBAAGJBD4EGAEIAAkFAlhMZiUCGwICKQkQ
+#
+#    kmbE+hH9AP3BXSAEGQEIAAYFAlhMZiUACgkQV8sKEhuuyy7Kow//ZO93gcLmxkpX
+#
+#    S3JNhwBhsyLXSkBO1PRAURm7WoQBSudf9TDN0edaDx4SxRHY+oK4H5CaNkmUfqDm
+#
+#    iubcEfVpfZI6V8InoFaUYnhkbw6g8BUoSiRCizWO8ns87vtyL3i/6BcbGTqH3O4n
+#
+#    vwjqoIEqZboaaxWK1o1HOr/H7q2PSoh57Yyt6vkTMmHj7AFWZSRK5YDnon0OxcCz
+#
+#    2n54PaV63LHyny+hZEhuk7YBuy7g9Dk/wUAb5QxfpiaZuMt/UaMC//sd5INJsx4z
+#
+#    L1FmlNd3FLQ5RV5qXYKJVB7urYeO+wS+H9vMvgYcuje9eFqdX7T30OX+93/urman
+#
+#    hFSvCiSpZkDOQU/rDsRblT7xiNTIHfpPNgln94t2fX3+A0X7cVflUN3IZb4vhLxv
+#
+#    uPncIn+h7th5gi96RrP65fXwZV3KVq2cZeXAcdqxvruqf8VbGrEypO3rxbv0OC1o
+#
+#    SzRDWAry+rwG9aO9sUzB0BGJTY7V9ByQwPEK0p+8QWLHHS56fwFon/LBlnOjsfFt
+#
+#    SZXYXzgQJUExTOwvrqQju0X7zwcvJvz+2qn30m1/i0VXmrh0sy4u9uL5WMIYivj1
+#
+#    DqRiqt3stlH7UlUXNATRB8TWpdZghg88poM5t+tp5bbNKckIEDfe2oZbLalnlmEX
+#
+#    c1Gv0EqlgC9V92LZRMS2P/cXztEM+Ut4Iw//VImJAzrr8E9nRC0jlHm2op5GpyjD
+#
+#    1UOQ0fuknguE+V6co950UZyfUvS7qejNpsIxelIE+xfiNwrjS64AtQ9YynjW+DSk
+#
+#    oT4A6h6GrZpu7HqIJhbebn61jwTjSduq/HsCmuc3wyeB+xdPlbKuwSuBr08+e8j5
+#
+#    KVbDH0zAvBddlNDKxyDx0ovNb0gtnDOTeYPWYVc0RCaqJcRKRW3PWs+sPh/JRxGR
+#
+#    zXW/J8wwewct0d+z8Dx4E1uinvDf6u0m+HZJc6t5UDDv7+bYsHWq9AZ+lhRLr0kU
+#
+#    auUn59g0l0w3r0XlmqNrBGCRqTyJldO2aU2abWOCpq9s+9pZNSPMkU10VsHbTUfU
+#
+#    tEMTftXCQ6qw3LtC94Qo/RVakA49AJW4QkZmxDzu8gLcsfEW5OybeDxD9qNQGq7k
+#
+#    xZGdIZmiEt9XvYyuBIG8HxSCnSezj6z1MaHbVBA4hy+eo7hwU3ursmDeAAepeo8e
+#
+#    H9zyVtL/DNVI7t0UFBaxM2IetOC3jChEuISg7RHqtzKoNll7gIV7eCRSQ1yDygag
+#
+#    X/iYQYonQzk46yGL7z+1lyGlTzurBVtUK22yb/kJoJhFBYMHS1XuKYKlKXo8IMVn
+#
+#    bFd7ekQ9u6yR9krd1C36TzlyCUUpk2Ppa0O0ZpOATJEh+jS1eu5orBO/tK5qmheV
+#
+#    Smt7/K/SeplXzSY=
+#
+#    =Quyb
+#
+#    -----END PGP PUBLIC KEY BLOCK-----
+#
+#    '
+  parent-project-dir: /mnt/pitII/xtoo
+  parent-project-name: xtoo
+  parent-project-type: init
+  is-true: y
+  is-false: n
+  docker-image-tar-file: host-8349.tar
+  project-dir: /mnt/pitII/xtoo/host-8349
+  project-output-dir: /mnt/pitII/xtoo/tmpfs/host-8349/output
+  host-exec-output-path: /mnt/pitII/xtoo/tmpfs/host-8349/output/exec-output.txt
+  project-id: '8349'
+  parent-repo: xtoo:host-8349
+  project-output: /xtoo/container-output
+  tmp-dir: /mnt/pitII/xtoo/tmpfs/host-8349
+  distcc-log-path: /mnt/pitII/xtoo/tmpfs/host-8349/output/distcc.log
+  distcc-log: /xtoo/container-output/distcc.log
+  use-dockerhub-images: n
+  dockerfile-path: /mnt/pit/Workspace/xtoo/xtoo/data/dockerfiles/Dockerfile
+  container-prefix: /xtoo
+  machine-python-exe: python3.9
+  host-python-exe: python3.9
+  repos-dir: /mnt/pitII/xtoo/repos
+  host-repos: ''
+  is-root-repo-initialized-from-funtoo-stage3: y
+  host-arch: x86-64bit
+  tmpfs-dir: /mnt/pitII/xtoo/tmpfs
+  host-release: next
+  host-variant: stage3
+  host-latest: '2025-01-07'
+  host-download: /next/x86-64bit/amd64-zen/2025-01-07/stage3-amd64-zen-next-2025-01-07.tar.xz
+  stage3-archive: stage3-amd64-zen-next-2025-01-07.tar.xz
+  make-opts: -j16
+  portage-pkgdir: /xtoo/packages
+  binpkg-cache-dir: /mnt/pitII/xtoo/data/packages/x86-64bit/amd64-zen
+  stage3-cache: /xtoo/stage3-cache
+  qemu-targets: qemu_user_targets_riscv64 qemu_user_targets_aarch64 qemu_user_targets_arm
+  features: buildpkg -pid-sandbox -network-sandbox -sandbox -usersandbox -ipc-sandbox
+    -selinux -sesandbox
+  emerge-default-opts: --usepkg=y --keep-going --autounmask-keep-masks --autounmask=y
+    --autounmask-write=n --jobs=3 --quiet=y
+  qemu-softmmu-targets: x86_64 arm aarch64 i386 riscv64 ppc64
+  qemu-user-targets: x86_64 arm aarch64 i386 riscv64 ppc64
+  debug-scripts-dir: /mnt/pitII/xtoo/tmpfs/host-8349/debug
+  debug-scripts: /xtoo/debug
+  x-bind-mounts: x-bind-mounts.txt
+  project-name: host-8349
+  host-subarch: amd64-zen
+  release-build-date-variant: stage3:next:2025-01-07
+  core-count: '16'
+  use-dynamic-tmpfs: n
+  use-ccache: y
+  ccache-size: 2048M
+  is-updated-cleaned: y
+  use-host-bin-pkgs: y
+recipe:
+  env:
+    DONT_MOUNT_BOOT: '1'
+    MAKEOPTS: -j16
+    FEATURES: buildpkg -pid-sandbox -network-sandbox -sandbox -usersandbox -ipc-sandbox
+      -selinux -sesandbox
+    PKGDIR: /xtoo/packages
+    EMERGE_DEFAULT_OPTS: --usepkg=y --keep-going --autounmask-keep-masks --autounmask=y
+      --autounmask-write=n --jobs=3 --quiet=y
+    QEMU_SOFTMMU_TARGETS: x86_64 arm aarch64 i386 riscv64 ppc64
+    QEMU_USER_TARGETS: x86_64 arm aarch64 i386 riscv64 ppc64
+    CCACHE_DIR: /xtoo/ccache
+    CCACHE_SIZE: 2048M
+  volumes:
+    container-output-dir:
+      path: /mnt/pitII/xtoo/tmpfs/host-8349/output
+      bind: /xtoo/container-output
+      mode: rw
+    distcc-output:
+      path: /mnt/pitII/xtoo/tmpfs/host-8349/output/distcc.log
+      bind: /xtoo/container-output/distcc.log
+      mode: rw
+    ccache-dir:
+      path: /mnt/pitII/xtoo/tmpfs/ccache
+      bind: /xtoo/ccache
+      mode: rw
+    binpkg-dir:
+      path: /mnt/pitII/xtoo/data/packages/x86-64bit/amd64-zen
+      bind: /xtoo/packages
+      mode: rw
+    distfiles-dir:
+      path: /var/cache/portage/distfiles
+      bind: /var/cache/portage/distfiles
+      mode: rw
+    root-inputrc:
+      path: /mnt/pit/Workspace/xtoo/xtoo/data/root/inputrc
+      bind: /root/.inputrc
+    fchroot-conf:
+      path: 'dev-libs/libpcre static-libs
+
+        dev-libs/glib static-libs
+
+        app-emulation/qemu static-user
+
+        sys-apps/attr static-libs
+
+        app-emulation/qemu -doc qemu_user_targets_riscv64 qemu_user_targets_aarch64
+        qemu_user_targets_arm
+
+        '
+      bind: /etc/portage/package.use/fchroot
+    py-execs-vol-dir:
+      path: /mnt/pit/Workspace/xtoo/xtoo/drivers/py_execs
+      bind: /root/.local/lib/python3.9/site-packages/py_execs
+      mode: ro
+    debug-dir:
+      path: /mnt/pitII/xtoo/tmpfs/host-8349/debug
+      bind: /xtoo/debug
+      mode: ro
+    meta-repo-dir:
+      path: /mnt/pitII/xtoo/repos/meta-repo
+      bind: /var/git/meta-repo
+      mode: rw
+  host-8349:
+    ego-sync:
+      bash: 'ego sync
+
+        '
+    remove-debian-sources:
+      is-build-aborted-on-fail: n
+      bash: 'emerge -C sys-kernel/debian-sources
+
+        emerge --depclean
+
+        '
+    install-ccache:
+      bash: 'emerge dev-util/ccache
+
+        # did we upgrade? Then clear the cache
+
+        # ccache -C
+
+        '
+    emerge-world:
+      is-build-aborted-on-fail: n
+      bash: 'emerge -uvDN --keep-going @world
+
+        emerge --depclean
+
+        emerge --keep-going @preserved-rebuild
+
+        revdep-rebuild --ignore
+
+        '
+    install-fchroot:
+      bash: 'emerge sys-apps/fchroot
+
+        '
+    install-xtoo-utilities:
+      xtoo-utils-pkg-list: >-
+        app-crypt/gnupg
+        dev-vcs/git
+        sys-apps/util-linux
+        net-misc/rsync
+        sys-apps/coreutils
+        sys-apps/grep
+        sys-apps/findutils
+        sys-apps/sed
+        app-arch/tar
+        app-arch/xz-utils
+        dev-python/pip
+        sys-block/parted
+        sys-fs/e2fsprogs
+        sys-apps/dmidecode
+      bash: 'emerge -u1 app-crypt/gnupg dev-vcs/git sys-apps/util-linux net-misc/rsync
+        sys-apps/coreutils sys-apps/grep sys-apps/findutils sys-apps/sed app-arch/tar
+        app-arch/xz-utils dev-python/pip sys-block/parted sys-fs/e2fsprogs sys-apps/dmidecode
+
+        '
+    install-local-python-packages:
+      xtoo-python-pip-list: >-
+        yarl
+        plumbum
+        pyfstab
+      xtoo-python-pkg-list: >-
+        dev-python/python-gnupg
+      bash: 'pip install --user yarl plumbum pyfstab
+
+        emerge -u1 dev-python/python-gnupg
+
+        '
