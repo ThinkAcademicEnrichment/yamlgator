@@ -230,9 +230,10 @@ class YAMLator(YAMLatorObjectDB, Tree):
         operations.
         """
         # AND transfer registered utilities and objdb
-        _tmp_value = super(self.__class__,self).get(keychain_or_keychain_str,value)
+        # _tmp_value = super(self.__class__,self).get(keychain_or_keychain_str,value)
+        _tmp_value = super(YAMLator,self).get(keychain_or_keychain_str,value)
         if isinstance(_tmp_value,Tree):
-            _yt = self.__class__(
+            _yt = YAMLator(
                 _tmp_value,
                 root_dir=self.root_dir)
             _yt.set_config_attrs()
@@ -248,7 +249,7 @@ class YAMLator(YAMLatorObjectDB, Tree):
         Returns:
              YAMLator: A deepcopy of the YAMLator object.
         """
-        _yt = self.__class__(deepcopy(self.odict),root_dir=self.root_dir)
+        _yt = YAMLator(deepcopy(self.odict), root_dir=self.root_dir)
         _yt.set_config_attrs()
         return _yt
 
@@ -315,7 +316,7 @@ class YAMLator(YAMLatorObjectDB, Tree):
         _root_dir = _yaml_path.parent
 
         _yt = YAMLTransformer(
-            self.__class__(
+            YAMLator(
                 OrderedDict(
                     _merge_data=f'./{_yaml_path.name}#{_selector}'
                 ),

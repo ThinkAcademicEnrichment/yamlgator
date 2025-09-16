@@ -12,10 +12,16 @@ class StateEvaluator(YAMLator):
         which is updated upon entering and exiting a node of nodes, or a node containing a value.
     """
 
-    def __init__(self, tree, state,**kwargs):
+    def __init__(self, tree, state):
         # if a subclass of this calls copy() it needs to call the constructor with root_dir=self.root_dir
-        super().__init__(tree,**kwargs)
+        super().__init__(tree)
         self.state = state
+
+    def copy(self):
+        """Copies the object.
+        """
+        _ae = self.__class__(deepcopy(self.odict), self.state.copy())
+        return _ae
 
     def read_state(self,observable):
         try:

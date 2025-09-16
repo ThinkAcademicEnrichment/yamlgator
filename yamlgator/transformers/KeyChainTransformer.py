@@ -81,6 +81,9 @@ class KeyChainTransformer(Transformer):
             _substitution_value = None
 
         try:
+            # we must always try to get a value if possible
+            if not _keychain_param[-1] == '/':
+                _keychain_param += '/'
             _substitution_value = _local_context.get(_keychain_param)
             # _substitution_value = _local_context.get(_local_context_keychain)
         except KeyError:
