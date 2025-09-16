@@ -5,8 +5,8 @@ class DEBUG:
     ValueTransformer = False
     KeyTransformer = False
 
-    PathValueTransformer = True
-    YAMLTransformer = True
+    PathValueTransformer = False
+    YAMLTransformer = False
     PythonTransformer = False
     PlainTextTransformer = False
 
@@ -16,7 +16,7 @@ class DEBUG:
     IfKeyTransformer = False
 
     BangTransformer = False
-    ImportTransformer = True
+    ImportTransformer = False
 
 
 from .Transformer import Transformer,TransformerException
