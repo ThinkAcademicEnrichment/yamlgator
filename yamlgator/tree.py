@@ -1140,4 +1140,4 @@ class Tree:
         Returns:
             Tree: A new Tree instance populated with the data from the stream.
         """
-        return Tree(Tree._load(stream))
+        return cls(cls._load(stream))
