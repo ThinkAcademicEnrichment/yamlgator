@@ -1,3 +1,5 @@
+import io
+
 from .constants import *
 
 class _DEBUG:
@@ -61,7 +63,7 @@ class Tree:
         elif issubclass(odict_or_tree.__class__,Tree):
             self.odict = odict_or_tree.odict
         elif isinstance(odict_or_tree,str):
-            self.odict = self.load(io.StringIO(odict_or_tree)).odict
+            self.odict = Tree.load(io.StringIO(odict_or_tree)).odict
         elif isinstance(odict_or_tree,dict):
             self.odict = OrderedDict(odict_or_tree)
         else:
