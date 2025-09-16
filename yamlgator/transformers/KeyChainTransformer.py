@@ -81,11 +81,7 @@ class KeyChainTransformer(Transformer):
             _substitution_value = None
 
         try:
-            # we must always try to get a value if possible
-            if not _keychain_param[-1] == '/':
-                _keychain_param += '/'
             _substitution_value = _local_context.get(_keychain_param)
-            # _substitution_value = _local_context.get(_local_context_keychain)
         except KeyError:
             if DEBUG.KeyChainTransformer:
                 _msg = f'cannot find key {_keychain_param}'
@@ -101,13 +97,15 @@ class KeyChainTransformer(Transformer):
                 _msg = 'found an ordereddict substitution'
                 ic(_msg)
 
-        # elif isinstance(_substitution_value, list):
-
         elif isinstance(_substitution_value, Tree):
             if DEBUG.KeyChainTransformer:
                 _msg = 'found a tree substitution'
                 ic(_msg)
+                ic(self.allow_tree_subs)
             if not self.allow_tree_subs:
+                if DEBUG.KeyChainTransformer:
+                    _msg = "disallowing tree sub"
+                    ic(_msg)
                 _substitution_value = None
 
         if _slice is not None:
