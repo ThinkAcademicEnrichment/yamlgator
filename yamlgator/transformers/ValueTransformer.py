@@ -1,3 +1,5 @@
+import ast
+
 from ..constants import *
 from ..tree import *
 from .KeyChainTransformer import *
@@ -40,6 +42,7 @@ class ValueTransformer(KeyChainTransformer):
         _transformed_lines = []
         # are the results of _transform() Tree values?
         _are_tree_values = False
+        _are_list_values = False
 
         for _i, _tmp_value in enumerate(_tmp_values):
             _tokenized_lines = list(map(lambda x: self._tokenize(x), _tmp_value.split('\n')))
@@ -64,6 +67,7 @@ class ValueTransformer(KeyChainTransformer):
                         ic(_extract.groups()) if _extract else None
                     # MUST reset this!
                     _are_tree_values = False
+                    _are_list_values = False
                     if _extract is not None:
                         _transformed_token = self._transform(_extract.groups(), keychain)
 
@@ -77,7 +81,9 @@ class ValueTransformer(KeyChainTransformer):
                         # this works but is awkward
                         _are_tree_values = True
                     elif isinstance(_transformed_token, list):
-                        _transformed_token = ' '.join(map(str, _transformed_token))
+                        ic(_transformed_token)
+                        _are_list_values = True
+                        # _transformed_token = ' '.join(map(str, _transformed_token))
                     elif isinstance(_transformed_token, str) and re.match(
                             # TODO: this needs refinement
                             # DO NOT SUB IN ANY UNRESOLVED SELECTORS
@@ -125,10 +131,16 @@ class ValueTransformer(KeyChainTransformer):
             except Exception as e:
                 if DEBUG.ValueTransformer:
                     ic(e)
-
-        if isinstance(value, list):
-            value = _transformed_values
+        elif _are_list_values:
+            _lists = list(map(ast.literal_eval,_transformed_values))
+            if len(_lists) > 1:
+                raise ValueTransformerException("Nested lists cannot be substituted")
+            ic(_lists)
+            value = _lists[0]
         else:
-            value = '\n'.join(_transformed_values)
+            if isinstance(value, list):
+                value = _transformed_values
+            else:
+                value = '\n'.join(_transformed_values)
 
         self.get([''] + keychain, value)
