@@ -17,12 +17,6 @@ class StateEvaluator(YAMLator):
         super().__init__(tree)
         self.state = state
 
-    def copy(self):
-        """Copies the object.
-        """
-        _ae = self.__class__(deepcopy(self.odict), self.state.copy())
-        return _ae
-
     def read_state(self,observable):
         try:
             return list(filter(lambda x: isinstance(x, observable),
@@ -94,7 +88,7 @@ class StateEvaluator(YAMLator):
                     })
                 ),
             )
-        ).evaluate().state.get(property_name)
+        ).evaluate().state.get(property_name+'/')
 
     def daggregate(self,property_name):
         '''aggregate all property dictionaries into a single dict'''
