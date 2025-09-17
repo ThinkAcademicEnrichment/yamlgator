@@ -1,3 +1,5 @@
+import io
+
 from .constants import *
 
 class _DEBUG:
@@ -61,7 +63,7 @@ class Tree:
         elif issubclass(odict_or_tree.__class__,Tree):
             self.odict = odict_or_tree.odict
         elif isinstance(odict_or_tree,str):
-            self.odict = self.load(io.StringIO(odict_or_tree)).odict
+            self.odict = Tree.load(io.StringIO(odict_or_tree)).odict
         elif isinstance(odict_or_tree,dict):
             self.odict = OrderedDict(odict_or_tree)
         else:
@@ -79,7 +81,7 @@ class Tree:
         Returns:
              Tree: A deepcopy of the Tree object.
         """
-        return self.__class__(deepcopy(self.odict))
+        return Tree(deepcopy(self.odict))
 
     def reset(self, *keys_to_preserve):
         """Clears all contents of the tree, with an option to preserve branches.
@@ -1140,4 +1142,4 @@ class Tree:
         Returns:
             Tree: A new Tree instance populated with the data from the stream.
         """
-        return cls(Tree._load(stream))
+        return cls(cls._load(stream))

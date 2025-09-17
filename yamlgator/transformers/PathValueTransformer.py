@@ -73,7 +73,7 @@ class PathValueTransformer(ValueTransformer):
             if DEBUG.PathValueTransformer:
                 _msg = f'wrong ext {_ext}, not {self.ext}'
                 ic(_msg)
-            return
+            return None
 
         # only transform paths with the right extension!!!
         # if self.ext and _path.name.split('.')[-1] != self.ext:

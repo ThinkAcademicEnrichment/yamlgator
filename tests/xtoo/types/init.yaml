@@ -1,0 +1,87 @@
+#child-types:
+#  - host
+
+config:
+
+  a-dummy-node:
+    ))))@
+
+  project-type:
+    init
+
+# detected by driver code
+  machine-subarch:
+    ))!machine_subarch()
+  machine-arch:
+    ))!machine_arch()
+
+#  constants set by a factory
+##############################################3
+  xtoo-config-name:
+    xtoo-config.yaml
+  work-dir: /mnt/pitII/xtoo
+  xtoo-lib-dir: /mnt/pit/Workspace/xtoo/xtoo
+##############################################3
+
+# pure constants
+  base-type-path:
+    ./base.yaml
+
+  release-list:
+    - next
+#    - 1.4-release-std
+
+  use-fresh-build-data: n
+
+#  configuration dependent
+  eliot-log-dir:
+    ))work-dir//logs
+  xtoo-data-dir:
+    ))work-dir//data
+  arch-tree-cache-path:
+    ))xtoo-data-dir//arch-tree.yaml
+  stage3-cache-dir:
+    ))xtoo-data-dir//stage3-cache
+
+#  allowed-builds:
+#    ))release-list[0]:
+#      ))!all_known_arches()
+
+# requires allowed-builds
+#  arch-tree:
+#    ))!build_or_load_arch_tree()
+
+  root-repo:
+    funtoo/))host-variant//))host-subarch//))host-release:))host-latest
+
+# this is deleted in the host type if unset to force a ui choice under create --all-defaults
+  default-host-stage3:
+    ))))@/
+
+# this mini linux needed by docker to build the host image
+  builder:
+    alpine:latest
+
+ # send daemon output during image building to stdout
+  use-docker-build-debug: y
+
+ui:
+  build-server-url:
+    https://build.funtoo.org
+  build-data-dir:
+    ))xtoo-data-dir//build-data
+  profile-dir:
+    /var/git/meta-repo/kits/core-kit/profiles/funtoo/1.0/linux-gnu
+  is-machine-arch-correct:
+    y
+  is-machine-subarch-correct:
+    y
+  sync-base-url:
+    https://github.com/funtoo
+  distfiles-cache-dir:
+    /var/cache/portage/distfiles
+  package-cache-dir:
+    ))xtoo-data-dir//packages
+  user-types-dir:
+    ))work-dir//types
+

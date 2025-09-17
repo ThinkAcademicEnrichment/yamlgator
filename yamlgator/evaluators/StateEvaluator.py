@@ -12,9 +12,9 @@ class StateEvaluator(YAMLator):
         which is updated upon entering and exiting a node of nodes, or a node containing a value.
     """
 
-    def __init__(self, tree, state,**kwargs):
+    def __init__(self, tree, state):
         # if a subclass of this calls copy() it needs to call the constructor with root_dir=self.root_dir
-        super().__init__(tree,**kwargs)
+        super().__init__(tree)
         self.state = state
 
     def read_state(self,observable):
@@ -88,7 +88,7 @@ class StateEvaluator(YAMLator):
                     })
                 ),
             )
-        ).evaluate().state.get(property_name)
+        ).evaluate().state.get(property_name+'/')
 
     def daggregate(self,property_name):
         '''aggregate all property dictionaries into a single dict'''

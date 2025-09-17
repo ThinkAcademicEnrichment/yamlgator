@@ -8,6 +8,12 @@ class AbstractState(Tree):
         self.value_observables = value_observables
         self.all_observables = pre_observables + post_observables + value_observables
 
+    def copy(self):
+        """Copies the object.
+        """
+        _as = self.__class__(self.pre_observables,self.value_observables,self.post_observables,deepcopy(self.odict))
+        return _as
+
     def pre_update(self,node,keychain):
         raise NotImplemented
 

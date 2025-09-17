@@ -11,7 +11,7 @@ single-key:
     e:
       )){a/}
     f:
-      )){a}/
+      )){a} is an inline tree
     g:
       ))a
     h:
@@ -27,7 +27,7 @@ single-key:
     e:
       b: B
       c: C
-    f: "a:\n  b: B\n  c: C\n/"
+    f: "a:\n  b: B\n  c: C\n is an inline tree"
     g:
       a:
         b: B
@@ -648,6 +648,7 @@ at-dependencies:
   transformer:
     - AtTransformer
     - ValueTransformer
+  skip: n
   input:
     work-dir:
       ))))@/
@@ -680,11 +681,12 @@ at-bugs:
   transformer:
     - ValueTransformer
     - AtTransformer
+  skip: n
   input:
-    a-list:
-      - item0
-      - item1
-      - item2
+    a-list: >-
+      item0
+      item1
+      item2
     b: B
 
     list-subs: |-
@@ -701,44 +703,44 @@ at-bugs:
     x-build-stage1:
       is-skipped: n
       is-build-aborted-on-fail: n
-      pkgs-to-build:
-        - app-arch/bzip2
-        - app-arch/gzip
-        - app-arch/tar
-        - app-arch/xz-utils
-        - app-admin/eselect
-        - app-shells/bash
-        - net-misc/wget
-        - sys-devel/autoconf
-        - sys-devel/automake
-        - sys-devel/libtool
-        - sys-apps/coreutils
-        - sys-apps/diffutils
-        - sys-apps/file
-        - sys-apps/findutils
-        - sys-apps/gawk
-        - sys-apps/grep
-        - sys-apps/less
-        - sys-apps/net-tools
-        - sys-apps/sed
-        - sys-apps/texinfo
-        - sys-devel/binutils
-        - sys-devel/bison
-        - sys-devel/flex
-        - sys-devel/gcc
-        - sys-devel/gettext
-        - sys-devel/gnuconfig
-        - sys-devel/make
-        - sys-devel/patch
-        - sys-libs/pam
-        - virtual/editor
-        - virtual/libc
-        - virtual/os-headers
-        - virtual/package-manager
-        - sys-apps/openrc
-        - dev-vcs/git
-        - app-editors/vis
-        - net-misc/rsync
+      pkgs-to-build: >-
+        app-arch/bzip2
+        app-arch/gzip
+        app-arch/tar
+        app-arch/xz-utils
+        app-admin/eselect
+        app-shells/bash
+        net-misc/wget
+        sys-devel/autoconf
+        sys-devel/automake
+        sys-devel/libtool
+        sys-apps/coreutils
+        sys-apps/diffutils
+        sys-apps/file
+        sys-apps/findutils
+        sys-apps/gawk
+        sys-apps/grep
+        sys-apps/less
+        sys-apps/net-tools
+        sys-apps/sed
+        sys-apps/texinfo
+        sys-devel/binutils
+        sys-devel/bison
+        sys-devel/flex
+        sys-devel/gcc
+        sys-devel/gettext
+        sys-devel/gnuconfig
+        sys-devel/make
+        sys-devel/patch
+        sys-libs/pam
+        virtual/editor
+        virtual/libc
+        virtual/os-headers
+        virtual/package-manager
+        sys-apps/openrc
+        dev-vcs/git
+        app-editors/vis
+        net-misc/rsync
       bash: |-
         # bug in ebuild: workdir uses MarkupSafe instead of markupsafe 
         emerge --noreplace --oneshot ))x-emerge-default-opts \=dev-python/markupsafe-3.0.2-r99
@@ -767,6 +769,7 @@ at-bugs:
 path-strings:
   transformer:
     - ValueTransformer
+  skip: n
   input:
     project-name: xtoo-simple-project
     work-dir: /mnt/xtoo2
@@ -801,6 +804,7 @@ secret-keys:
     - ValueTransformer
     - AtTransformer
 
+  skip: n
   input:
     a: A
     _project-name-template: ))@-project
