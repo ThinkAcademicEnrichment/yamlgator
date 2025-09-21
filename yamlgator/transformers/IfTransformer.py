@@ -321,6 +321,7 @@ class IfKeyTransformer(IfTransformer):
             _node_copy = deepcopy(node)
             _key_index = list(_node_copy.keys()).index(_node_key)
             _branches = node.get(_node_key)
+
             if isinstance(_branches,OrderedDict):
                 assert len(list(_branches.keys())) < 3
                 if not _forward_slash:
@@ -372,6 +373,12 @@ class IfKeyTransformer(IfTransformer):
                 if DEBUG.IfKeyTransformer:
                     _msg = f'{_logical_exp} is TRUE'
                     ic(_msg)
+
+                if isinstance(_branches, str):
+                    # The dreaded missing double-slash, e.g ))a/path not ))a//path
+                    _msg = f"{keychain}/{_node_key} Error!"
+                    ic(_msg)
+                    raise IfTransformerException(_msg)
 
                 # are we key order preserving here? NO! fix it...
                 if _if:
