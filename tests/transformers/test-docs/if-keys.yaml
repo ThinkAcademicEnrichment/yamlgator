@@ -245,6 +245,7 @@ test-10:
       hello
     correct:
       1
+
 #test-10:
 #  input:
 #    project-type: host

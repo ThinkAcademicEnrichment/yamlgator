@@ -1,0 +1,102 @@
+
+test-1:
+  transformers:
+    - ValueTransformer
+  input:
+    correct-str: YES!
+    incorrect-str: NO!
+    a-string:
+      hell
+    correct-output:
+      ))a-string, ))correct-str
+    incorrect-output:
+      ))a-string, ))incorrect-str
+    ))?{a-string == 'hell'}/:
+      yes:
+        correct:
+          ))correct-output
+      no:
+        incorrect:
+          ))incorrect-output
+  output:
+    correct-str: YES!
+    incorrect-str: NO!
+    a-string:
+      hell
+    correct-output:
+      hell, YES!
+    incorrect-output:
+      hell, NO!
+    ))?{a-string == 'hell'}/:
+      yes:
+        correct:
+          ))correct-output
+      no:
+        incorrect:
+          ))incorrect-output
+
+
+test-2:
+  transformers:
+    - ValueTransformer
+    - IfKeyTransformer
+  input:
+    correct-str: YES!
+    incorrect-str: NO!
+    a-string:
+      hell
+    correct-output:
+      ))a-string, ))correct-str
+    incorrect-output:
+      ))a-string, ))incorrect-str
+    ))?{a-string == 'hell'}/:
+      yes:
+        correct:
+          ))correct-output
+      no:
+        incorrect:
+          ))incorrect-output
+  output:
+    correct-str: YES!
+    incorrect-str: NO!
+    a-string:
+      hell
+    correct-output:
+      hell, YES!
+    incorrect-output:
+      hell, NO!
+    correct:
+      ))correct-output
+
+test-3:
+  transformers:
+    - ValueTransformer
+    - IfKeyTransformer
+    - ValueTransformer
+  input:
+    correct-str: YES!
+    incorrect-str: NO!
+    a-string:
+      hell
+    correct-output:
+      ))a-string, ))correct-str
+    incorrect-output:
+      ))a-string, ))incorrect-str
+    ))?{a-string == 'hell'}/:
+      yes:
+        correct:
+          ))correct-output
+      no:
+        incorrect:
+          ))incorrect-output
+  output:
+    correct-str: YES!
+    incorrect-str: NO!
+    a-string:
+      hell
+    correct-output:
+      hell, YES!
+    incorrect-output:
+      hell, NO!
+    correct:
+      hell, YES!

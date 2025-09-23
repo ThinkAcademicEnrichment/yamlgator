@@ -52,5 +52,37 @@ class TestValidator(unittest.TestCase):
             else:
                 print(f'skipping validation of issues:{_test_name}')
 
+    @debug_on(Exception)
+    def test_ignore_ifkeys(self):
+        '''apply a sequence of transformations '''
+
+        _tests_yaml = self.tests_dir.joinpath('ignore-ifkeys.yaml')
+
+        with _tests_yaml.open('r') as f:
+            _tests_tree = YAMLator.load(f)
+
+        for _test_name in _tests_tree.keys():
+            print(f"\n{_test_name}")
+            _test_tree = _tests_tree.get(['',_test_name])
+            _skip = _test_tree.uget('skip', 'n')
+            if not _skip == 'y':
+                _transformer_class_names = _test_tree.get('transformers/')
+                if not isinstance(_transformer_class_names,list):
+                    _transformer_class_names = [_transformer_class_names]
+
+                _input_tree = _test_tree.get('input/').copy()
+                _output_tree = _test_tree.get('output/').copy()
+                # we are mutating the structure
+                # _output_tree.overlay(_test_tree.get('output/'))
+
+                for _transformer_class_name in _transformer_class_names:
+                    _transformer_class = globals().get(_transformer_class_name)
+                    if _transformer_class in (YAMLTransformer,PlainTextTransformer,ImportTransformer):
+                        _transformer_class(_input_tree,root_dir=self.tests_dir).evaluate()
+                    elif _transformer_class in (BangTransformer,ValueTransformer, AtTransformer, IfTransformer, IfKeyTransformer):
+                        _transformer_class(_input_tree).evaluate()
+                self.assertEqual(_input_tree, _output_tree)
+            else:
+                print(f'skipping ignore-ifkeys:{_test_name}')
 if __name__ == '__main__':
     unittest.main()
