@@ -17,6 +17,11 @@ class ValueTransformer(KeyChainTransformer):
                 _msg = f'NOT EVALUATING {keychain}'
                 ic(_msg)
             return True
+        elif keychain and keychain[-1].startswith('))?{'):
+            if DEBUG.ValueTransformer:
+                _msg = f'NOT EVALUATING {keychain}'
+                ic(_msg)
+            return True
         return False
 
     def _value_evaluate(self, value, keychain):
