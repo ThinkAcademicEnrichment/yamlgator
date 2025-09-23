@@ -7,7 +7,7 @@ from .KeyChainTransformer import *
 from . import DEBUG
 
 class _DEBUG:
-    IGNORE_IFKEYS = True
+    IGNORE_IFKEYS = False
 
 if DEBUG.ValueTransformer:
     _DEBUG.IGNORE_IFKEYS = True
