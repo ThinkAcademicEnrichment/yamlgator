@@ -6,6 +6,12 @@ from .KeyChainTransformer import *
 
 from . import DEBUG
 
+class _DEBUG:
+    IGNORE_IFKEYS = False
+
+if DEBUG.ValueTransformer:
+    _DEBUG.IGNORE_IFKEYS = True
+
 class ValueTransformerException(Exception):
     pass
 
@@ -14,6 +20,11 @@ class ValueTransformer(KeyChainTransformer):
     def _do_not_evaluate(self, value, keychain):
         if keychain and keychain[-1].startswith('_'):
             if DEBUG.ValueTransformer:
+                _msg = f'NOT EVALUATING {keychain}'
+                ic(_msg)
+            return True
+        elif keychain and any(list(map(lambda key:key.startswith('))?'),keychain))):
+            if _DEBUG.IGNORE_IFKEYS:
                 _msg = f'NOT EVALUATING {keychain}'
                 ic(_msg)
             return True
