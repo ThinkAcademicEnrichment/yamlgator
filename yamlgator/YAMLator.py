@@ -354,6 +354,9 @@ class YAMLator(YAMLatorObjectDB, Tree):
         Returns:
             None: The method modifies the instance in-place.
         """
+        if _DEBUG.CONFIG_ATTRS:
+            ic()
+
         _is_already_set = dict()
 
         def _depth_first(_node,_keychain):
@@ -430,7 +433,7 @@ class YAMLator(YAMLatorObjectDB, Tree):
 
         Returns:
             dict: A dictionary where keys are the uppercase attribute names
-                (e.g., 'SERVER_HOST') and values are the string
+                (e.g., 'SERVER_HOST') and values are the object
                 representations of the corresponding attribute values.
 
         Examples:
@@ -441,9 +444,12 @@ class YAMLator(YAMLatorObjectDB, Tree):
             {'SERVER_HOST': 'localhost', 'SERVER_PORT': '8080'}
 
         """
+        # make sure we have any settable attrs set
+        # Too slow!
+        # self.set_config_attrs()
         _data = {}
         for _config_datum in list(filter(lambda x:x == x.upper() and not x.startswith('_'),self.__dir__())):
-            _data.update({_config_datum:str(getattr(self,_config_datum))})
+            _data.update({_config_datum:getattr(self,_config_datum)})
         return _data
 
     def validate(self, context_tree=None) -> list:
