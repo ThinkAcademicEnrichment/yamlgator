@@ -13,6 +13,20 @@ class KeyTransformer(KeyChainTransformer):
     def __init__(self, odict_or_tree=None, context_tree=None, allow_tree_subs=False):
         super(KeyTransformer,self).__init__(odict_or_tree, context_tree, False)
 
+    # def _do_not_evaluate(self, value, keychain):
+    #     # do not evaluate inside unevaluated conditionals
+    #     if keychain and keychain[-1].startswith('_'):
+    #         if DEBUG.KeyTransformer:
+    #             _msg = f'NOT EVALUATING {keychain}'
+    #             ic(_msg)
+    #         return True
+    #     elif keychain and any(list(map(lambda key:key.startswith('))?'),keychain))):
+    #         if DEBUG.KeyTransformer:
+    #             _msg = f'NOT EVALUATING {keychain}'
+    #             ic(_msg)
+    #         return True
+    #     return False
+
     def _replace_node_key(self, node, node_key, _transformed_key):
 
         if DEBUG.KeyTransformer:
@@ -50,6 +64,9 @@ class KeyTransformer(KeyChainTransformer):
             ic()
             ic(keychain)
             ic(node.keys())
+
+        if self._do_not_evaluate(node, keychain):
+            return
 
         for _node_key in copy(list(node.keys())):
             _tmp_key = _node_key
