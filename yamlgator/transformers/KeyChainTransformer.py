@@ -21,6 +21,20 @@ class KeyChainTransformer(Transformer):
         self.context = context_tree
         self.allow_tree_subs = allow_tree_subs
 
+    def _do_not_evaluate(self, value, keychain):
+        # do not evaluate inside unevaluated conditionals
+        if keychain and keychain[-1].startswith('_'):
+            if DEBUG.KeyChainTransformer:
+                _msg = f'NOT EVALUATING {keychain}'
+                ic(_msg)
+            return True
+        elif keychain and any(list(map(lambda key:key.startswith('))?'),keychain))):
+            if DEBUG.KeyChainTransformer:
+                _msg = f'NOT EVALUATING {keychain}'
+                ic(_msg)
+            return True
+        return False
+
     def _match(self, line):
         _m = re.match(rf"^(.*?)({self.match_regex})(.*)$", str(line))
 

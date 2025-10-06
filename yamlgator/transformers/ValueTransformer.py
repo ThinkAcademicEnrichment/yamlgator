@@ -17,18 +17,6 @@ class ValueTransformerException(Exception):
 
 class ValueTransformer(KeyChainTransformer):
     name = 'transform_values'
-    def _do_not_evaluate(self, value, keychain):
-        if keychain and keychain[-1].startswith('_'):
-            if DEBUG.ValueTransformer:
-                _msg = f'NOT EVALUATING {keychain}'
-                ic(_msg)
-            return True
-        elif keychain and any(list(map(lambda key:key.startswith('))?'),keychain))):
-            if _DEBUG.IGNORE_IFKEYS:
-                _msg = f'NOT EVALUATING {keychain}'
-                ic(_msg)
-            return True
-        return False
 
     def _value_evaluate(self, value, keychain):
         '''generically transform in-place a multiline value using self._transform()'''

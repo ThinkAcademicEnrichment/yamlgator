@@ -95,6 +95,9 @@ class ImportTransformer(KeyTransformer):
             ic(keychain)
             ic(node.keys())
 
+        if self._do_not_evaluate(node,keychain):
+            return
+
         for _node_key in copy(list(node.keys())):
             _tmp_key = _node_key
 
