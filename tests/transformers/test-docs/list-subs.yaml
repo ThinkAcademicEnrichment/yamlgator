@@ -14,8 +14,13 @@ basic-lists:
       e:
         )){c/d/}[1]
       f: ))a/[2]
+      g: ))a/
   output:
     config:
       b: value_0
       e: value_1
       f: value_2
+      g:
+       - value_0
+       - value_1
+       - value_2

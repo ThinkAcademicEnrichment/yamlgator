@@ -825,6 +825,48 @@ plaintext:
 
 
       All formatting should be preserved.
+
+nested-keys:
+# apply it twice!
+  transformer:
+    - ValueTransformer
+    - ValueTransformer
+  input:
+    a:
+      b: AB 
+      c: AC 
+    d: a
+    e: )){))d//b}
+    f: )){a/b}
+    x-arch: arm
+    x-arm-specialization-list:
+      - raspi3
+      - raspi2
+      - raspi
+
+    specialization-choice: ))x-))x-arch/-specialization-list/
+
+    x-specialization-list:
+      arm: 
+        - raspi3
+        - raspi2
+        - raspi 
+
+    x-specialization-choice: )){))x-arch//}[x-specialization-list]
+
+  output:
+    e: AB
+    f: AB
+    specialization-choice:
+      - raspi3
+      - raspi2
+      - raspi
+    x-specialization-choice:
+      - raspi3
+      - raspi2
+      - raspi
+
+
 #forward-slash:
 #  transformer:
 #    - ValueTransformer
