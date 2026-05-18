@@ -1,6 +1,5 @@
 from ..tree import *
 
-# this has no role yet
 class AbstractEvaluator(Tree):
 
 
