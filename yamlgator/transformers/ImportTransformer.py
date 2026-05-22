@@ -22,38 +22,18 @@ class ImportTransformer(KeyTransformer):
 
     def _replace_node_key(self, node, node_key, _transformed_key):
 
-        if DEBUG.KeyTransformer:
+        if DEBUG.ImportTransformer:
+            ic()
+            ic(node)
             ic(node_key)
             ic(_transformed_key)
-        _node_copy = deepcopy(node)
-        _key_index = list(_node_copy.keys()).index(node_key)
-
-        for _key in list(_node_copy.keys())[:_key_index]:
-            if DEBUG.KeyTransformer:
-                _msg = f'moving {_key}'
-                ic(_msg)
-            _value = node.pop(_key)
-            node[_key] = _value
-
-        if DEBUG.KeyTransformer:
-            _msg = f'replacing {node_key} with {_transformed_key}'
-            ic(_msg)
 
         _value = node.pop(node_key)
-        if DEBUG.KeyTransformer:
-            ic(_value)
+        node = Tree(node).overlay(Tree(_transformed_key)).odict
 
-        for _k,_v in _transformed_key.items():
-            node[_k] = _v
-        # node[_transformed_key] = _value
-
-        for _key in list(_node_copy.keys())[_key_index + 1:]:
-            if DEBUG.KeyTransformer:
-                _msg = f'moving {_key}'
-                ic(_msg)
-            _value = node.pop(_key)
-            node[_key] = _value
-
+        if DEBUG.ImportTransformer:
+            ic(node)
+ 
     def _transform(self, parameters, keychain):
         _node_key, = parameters
         if _node_key[-1] == '/':
@@ -90,7 +70,7 @@ class ImportTransformer(KeyTransformer):
         return _transformed_value
 
     def _pre_evaluate(self, node, keychain):
-        if DEBUG.KeyTransformer:
+        if DEBUG.ImportTransformer:
             ic()
             ic(keychain)
             ic(node.keys())
@@ -102,7 +82,7 @@ class ImportTransformer(KeyTransformer):
             _tmp_key = _node_key
 
             _tokenized_key = self._tokenize(_tmp_key)
-            if DEBUG.KeyTransformer:
+            if DEBUG.ImportTransformer:
                 ic(_tokenized_key)
 
             _transformed_token = None
@@ -116,7 +96,7 @@ class ImportTransformer(KeyTransformer):
                     _transformed_token = _token
                 elif isinstance(_transformed_token, list):
                     raise Exception(f'Are you really trying to turn a list into a key?')
-                if DEBUG.KeyTransformer:
+                if DEBUG.ImportTransformer:
                     ic(_transformed_token)
 
 
