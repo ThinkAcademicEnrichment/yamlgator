@@ -59,8 +59,11 @@ class REGEXES:
     BANG = r'(?:\!.*\))'
     BANG_EXP =r'\!([^)]*?\)$)'
 
-    IMPORT = r'(?:\+.*\)(?:\s|$))'
-    IMPORT_EXP = r'\+.*(?:\s|$)'
+    # potentially allow for a ))= as well as ))+ type import
+    IMPORT = r'(?:\+|\=).*'
+    IMPORT_EXP = r'(?:\+|\=).*'
+
+
     # -----------------------------------
 
     IF = rf'\?{re.escape(KEYCHAIN_LEFT_BOUND)}[^}}]+{re.escape(KEYCHAIN_RIGHT_BOUND)}'
