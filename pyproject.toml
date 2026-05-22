@@ -1,6 +1,6 @@
 [project]
 name = "yamlgator"
-version = "0.2.7"
+version = "0.3.0"
 description = "A macro language for yaml documents."
 authors = [{name="jeff",email="jeff@thinkae.org"}]
 readme = "README.md"
@@ -11,7 +11,7 @@ requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.10"
 pyyaml = "*"
 astor = "*"
 yarl = "*"

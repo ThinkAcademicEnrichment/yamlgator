@@ -48,3 +48,52 @@ test-4:
         ./data/tree-data.yaml
       vv: VV
       ww: VV
+# test overlaying of imported trees
+test-5:
+  input:
+    import-path:
+      ./data/tree-data.yaml
+    ))+some-import-data:
+        ))import-path#u
+    u:
+      v: VV
+      w: WW
+    x:
+      y: Y
+      z: Z
+    uu:
+      vv: ./more-tree-data.yaml#uu/vv/
+      ww: ./more-tree-data.yaml#uu/vv/
+  output:
+    import-path:
+      ./data/tree-data.yaml
+    u:
+      v: V
+      w: W
+    x:
+      y: Y
+      z: Z
+    uu:
+      vv: ./more-tree-data.yaml#uu/vv/
+      ww: ./more-tree-data.yaml#uu/vv/
+  test-6:
+    input:
+      import-path:
+        ./data/tree-data.yaml
+      ))+some-import-data:
+        ))import-path#
+      u: 
+        v: XXX
+    output:
+      import-path:
+        ./data/tree-data.yaml
+      u:
+        v: V
+        w: W
+      x:
+        y: Y
+        z: Z
+      uu:
+        vv: VV
+        ww: VV
+

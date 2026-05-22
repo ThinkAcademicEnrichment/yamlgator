@@ -4,7 +4,6 @@ u:
 x:
   y: Y
   z: Z
-
 uu:
   vv: ./more-tree-data.yaml#uu/vv/
   ww: ./more-tree-data.yaml#uu/vv/
