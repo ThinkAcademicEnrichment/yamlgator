@@ -156,7 +156,7 @@ class TestTransformer(unittest.TestCase):
         with _tests_yaml.open('r') as f:
             _tests_tree = YAMLator.load(f)
         for _test_name in _tests_tree.keys():
-            # print(f"\n{_test_name}")
+            print(f"\n{_test_name}")
             _test_tree = _tests_tree.get(_test_name)
             _skip = _test_tree.uget('skip', 'n')
             if not _skip == 'y':
