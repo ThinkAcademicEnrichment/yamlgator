@@ -88,7 +88,7 @@ class REGEXES:
 
 def bool_factory(x):
     if not re.match(REGEXES.BOOL_VALUE, x):
-        raise f"{x} is not a recognized boolean string"
+        raise Exception(f"{x} is not a recognized boolean string")
     if x in TRUE_VALUES:
         x = True
     elif x in FALSE_VALUES:
