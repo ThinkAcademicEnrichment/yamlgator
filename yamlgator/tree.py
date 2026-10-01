@@ -74,6 +74,7 @@ class Tree:
     def is_empty(self):
         if not self.odict:
             return True
+        return False
 
     def copy(self):
         """Copies the Tree object.
