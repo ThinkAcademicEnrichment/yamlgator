@@ -5,9 +5,9 @@ from .constants import *
 
 
 DEFAULT_UTILITIES= {
+    AtTransformerUtility.name:AtTransformerUtility,
     ValueTransformerUtility.name:ValueTransformerUtility,
     ImportTransformerUtility.name:ImportTransformerUtility,
-    AtTransformerUtility.name:AtTransformerUtility,
     BangTransformerUtility.name:BangTransformerUtility,
     YAMLTransformerUtility.name:YAMLTransformerUtility,
     KeyTransformerUtility.name:KeyTransformerUtility,
