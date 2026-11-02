@@ -112,6 +112,8 @@ class KeyChainTransformer(Transformer):
                 ic(_msg)
 
         elif isinstance(_substitution_value, Tree):
+            # this is too ensure trees are substituted as single line strings so bangs can use them are inputs
+            _substitution_value = repr(_substitution_value)
             if DEBUG.KeyChainTransformer:
                 _msg = 'found a tree substitution'
                 ic(_msg)
