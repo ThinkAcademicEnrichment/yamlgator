@@ -6,12 +6,12 @@ from . import DEBUG
 
 class KeyChainTransformer(Transformer):
     match_regex = \
-        f"{re.escape(KEY_OR_KEYCHAIN_OP)}#?{re.escape(KEYCHAIN_LEFT_BOUND)}?" + \
+        f"{re.escape(KEY_OR_KEYCHAIN_OP)}[#]?{re.escape(KEYCHAIN_LEFT_BOUND)}?" + \
         f"{REGEXES.KEYCHAIN}{REGEXES.KEY}/?{re.escape(KEYCHAIN_RIGHT_BOUND)}?" + \
         f"(?:{re.escape('[')}[^]]*{re.escape(']')})?"
 
     extract_regex = \
-        f"{re.escape(KEY_OR_KEYCHAIN_OP)}(#?){re.escape(KEYCHAIN_LEFT_BOUND)}?" + \
+        f"{re.escape(KEY_OR_KEYCHAIN_OP)}([#]?){re.escape(KEYCHAIN_LEFT_BOUND)}?" + \
         f"({REGEXES.KEYCHAIN}{REGEXES.KEY}/?){re.escape(KEYCHAIN_RIGHT_BOUND)}?" + \
         f"(?:{re.escape('[')}({REGEXES.DATA_INDEX}){re.escape(']')})?"
 
@@ -57,7 +57,12 @@ class KeyChainTransformer(Transformer):
         if DEBUG.KeyChainTransformer:
             ic(parameters)
 
-        _str_op, _keychain_param, _data_index = parameters
+        try:
+            _str_op, _keychain_param, _data_index = parameters
+        except ValueError:
+            _keychain_param, _data_index = parameters
+            _str_op = None
+
 
         _local_context = self if not self.context else self.context
 
