@@ -20,6 +20,9 @@ single-key:
       ))h[:-7]
     j:
       ))h[7:]
+    k:
+      ))#a
+
   output:
     d:
       b: B
@@ -36,6 +39,7 @@ single-key:
       hello
     j:
       world
+    k: '''a:\n  b:\n    B\n  c:\n    C''' 
 
 list-of-trees:
   transformer:
