@@ -66,7 +66,10 @@ class REGEXES:
     # BANG_EXP =r'\!([^)]*?\)$)'
     # FRAGILE! Does not allow multiple bang expressions on one line
     BANG = r'(?:!.*\))'
-    BANG_EXP = r'!([^)]*?\)$)'
+    BANG_EXP = r'(?:!(.*\)))'
+    # BANG_EXP = r'!([^)]*?\)$)'
+    # BANG_EXP = r'!([^)]*?\))$'
+
 
 
     # potentially allow for a ))= as well as ))+ type import
