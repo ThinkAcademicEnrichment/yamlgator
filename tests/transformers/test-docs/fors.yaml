@@ -1,0 +1,35 @@
+test-1:
+  skip: n
+  input:
+    sites:
+      - mcshell
+      - campboom
+    ))${site in sites}:
+      ))site/-openrc:
+        path: |
+          #!/sbin/openrc-run
+
+          name="))site daemon"
+          description="Gunicorn daemon for ))site Wagtail app"
+    allowed-hosts:
+      - www
+
+  output:
+    sites:
+      - mcshell
+      - campboom
+    mcshell-openrc: 
+      path: |
+        #!/sbin/openrc-run
+
+        name="mcshell daemon"
+        description="Gunicorn daemon for mcshell Wagtail app"
+    campboom-openrc: 
+      path: |
+        #!/sbin/openrc-run
+
+        name="campboom daemon"
+        description="Gunicorn daemon for campboom Wagtail app"
+    allowed-hosts:
+      - www
+

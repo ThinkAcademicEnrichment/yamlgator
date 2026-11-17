@@ -39,7 +39,7 @@ single-key:
       hello
     j:
       world
-    k: '''a:\n  b:\n    B\n  c:\n    C''' 
+    k: '''a:\n  b: B\n  c: C\n''' 
 
 list-of-trees:
   transformer:
