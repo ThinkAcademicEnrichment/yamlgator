@@ -152,3 +152,7 @@ class ForTransformer(KeyTransformer):
                 ic(_msg)
             _value = node.pop(_key)
             node[_key] = _value
+
+class ForTransformerUtility(ForTransformer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args,**kwargs)

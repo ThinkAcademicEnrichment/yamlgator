@@ -28,7 +28,7 @@ from .IfTransformer import IfTransformer,IfKeyTransformer,IfKeyTransformerUtilit
 from .BangTransformer import BangTransformerException,BangTransformer,BangTransformerUtility
 from .ImportTransformer import ImportTransformer,ImportTransformerUtility
 from .PlainTextTransformer import PlainTextTransformer,PlainTextTransformerUtility
-from .ForTransformer import ForTransformer
+from .ForTransformer import ForTransformer,ForTransformerUtility
 
 # to eliminate circular imports due to the use of ValueTransformer in ValueValidator
 # eventually all utilities will be here
