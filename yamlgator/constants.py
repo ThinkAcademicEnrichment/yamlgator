@@ -37,6 +37,8 @@ FALSE_VALUES = \
 
 
 class REGEXES:
+
+    
     BOOL_VALUE = r'|'.join(TRUE_VALUES) + r'|' + r'|'.join(FALSE_VALUES)
 
     KEY = r'[a-zA-Z0-9_][a-zA-Z0-9_\.-]*'
@@ -47,21 +49,33 @@ class REGEXES:
     URL_TYPE_KEY = rf'{KEY}-url$'
 
     LIST_INDEX = r'\d+'
-    SLICE = r'\:?\-?\d+\:?'
+    # SLICE = r'\:?\-?\d+\:?'
+    SLICE = r':?-?\d+:?'
     DATA_INDEX = rf'{KEYCHAIN}{KEY}/?|{SLICE}'
     POSIX_RELATIVE = r'\./(?:[^\0/]+/?)*[^#]'
     POSIX_ABSOLUTE = r'/(?:[^\0/]+/?)*[^#]'
 
-    AT = r'@(?:\[\-?\d+\])?'
-    AT_EXP = r'@(?:\[(\-?)(\d+)\])?'
+    AT = r'@(?:\[-?\d+\])?'
+    AT_EXP = r'@(?:\[(-?)(\d+)\])?'
+
+    # AT = r'@(?:\[\-?\d+\])?'
+    # AT_EXP = r'@(?:\[(\-?)(\d+)\])?'
 
     # FRAGILE! Does not allow multiple bang expressions on one line
-    BANG = r'(?:\!.*\))'
-    BANG_EXP =r'\!([^)]*?\)$)'
+    # BANG = r'(?:\!.*\))'
+    # BANG_EXP =r'\!([^)]*?\)$)'
+    # FRAGILE! Does not allow multiple bang expressions on one line
+    BANG = r'(?:!.*\))'
+    BANG_EXP = r'!([^)]*?\)$)'
+
 
     # potentially allow for a ))= as well as ))+ type import
-    IMPORT = r'(?:\+|\=).*'
-    IMPORT_EXP = r'(?:\+|\=).*'
+    # IMPORT = r'(?:\+|\=).*'
+    # IMPORT_EXP = r'(?:\+|\=).*'
+
+    # potentially allow for a ))= as well as ))+ type import
+    IMPORT = r'(?:\+|=).*'
+    IMPORT_EXP = r'(?:\+|=).*'
 
 
     # -----------------------------------
@@ -86,9 +100,13 @@ class REGEXES:
         rf'([^{AND_SEP}{OR_SEP}{CASE_SEP}]+)\s*(?:{CASE_SEP}([^{AND_SEP}{OR_SEP}{CASE_SEP}]+))?\s*{re.escape(KEYCHAIN_RIGHT_BOUND)}'
 
 
+    FOR = rf'\${re.escape(KEYCHAIN_LEFT_BOUND)}[^}}]+{re.escape(KEYCHAIN_RIGHT_BOUND)}'
+    FOR_EXP = rf'\${re.escape(KEYCHAIN_LEFT_BOUND)}\s*(.*?)\s*{re.escape(KEYCHAIN_RIGHT_BOUND)}'
+
+
 def bool_factory(x):
     if not re.match(REGEXES.BOOL_VALUE, x):
-        raise f"{x} is not a recognized boolean string"
+        raise Exception(f"{x} is not a recognized boolean string")
     if x in TRUE_VALUES:
         x = True
     elif x in FALSE_VALUES:

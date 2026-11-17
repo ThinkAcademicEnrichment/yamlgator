@@ -6,12 +6,12 @@ from . import DEBUG
 
 class KeyChainTransformer(Transformer):
     match_regex = \
-        f"{re.escape(KEY_OR_KEYCHAIN_OP)}{re.escape(KEYCHAIN_LEFT_BOUND)}?" + \
+        f"{re.escape(KEY_OR_KEYCHAIN_OP)}[#]?{re.escape(KEYCHAIN_LEFT_BOUND)}?" + \
         f"{REGEXES.KEYCHAIN}{REGEXES.KEY}/?{re.escape(KEYCHAIN_RIGHT_BOUND)}?" + \
         f"(?:{re.escape('[')}[^]]*{re.escape(']')})?"
 
     extract_regex = \
-        f"{re.escape(KEY_OR_KEYCHAIN_OP)}{re.escape(KEYCHAIN_LEFT_BOUND)}?" + \
+        f"{re.escape(KEY_OR_KEYCHAIN_OP)}([#]?){re.escape(KEYCHAIN_LEFT_BOUND)}?" + \
         f"({REGEXES.KEYCHAIN}{REGEXES.KEY}/?){re.escape(KEYCHAIN_RIGHT_BOUND)}?" + \
         f"(?:{re.escape('[')}({REGEXES.DATA_INDEX}){re.escape(']')})?"
 
@@ -57,7 +57,12 @@ class KeyChainTransformer(Transformer):
         if DEBUG.KeyChainTransformer:
             ic(parameters)
 
-        _keychain_param, _data_index = parameters
+        try:
+            _str_op, _keychain_param, _data_index = parameters
+        except ValueError:
+            _keychain_param, _data_index = parameters
+            _str_op = None
+
 
         _local_context = self if not self.context else self.context
 
@@ -112,6 +117,10 @@ class KeyChainTransformer(Transformer):
                 ic(_msg)
 
         elif isinstance(_substitution_value, Tree):
+            # this is too ensure trees are substituted with ))# syntax are subbed as single line strings so bangs can use them are inputs
+            if _str_op:
+                _substitution_value = repr(_substitution_value.print())
+
             if DEBUG.KeyChainTransformer:
                 _msg = 'found a tree substitution'
                 ic(_msg)

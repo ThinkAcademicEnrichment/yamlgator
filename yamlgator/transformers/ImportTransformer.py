@@ -69,11 +69,15 @@ class ImportTransformer(KeyTransformer):
 
         return _transformed_value
 
+    # def _do_not_evaluate(self,node,keychain):
+        # if keychain and not is_variable_token(keychain[-1]):
+        #     return True
+
     def _pre_evaluate(self, node, keychain):
-        if DEBUG.ImportTransformer:
-            ic()
-            ic(keychain)
-            ic(node.keys())
+        # if DEBUG.ImportTransformer:
+        #     ic()
+        #     ic(keychain)
+        #     ic(node.keys())
 
         if self._do_not_evaluate(node,keychain):
             return
@@ -82,8 +86,8 @@ class ImportTransformer(KeyTransformer):
             _tmp_key = _node_key
 
             _tokenized_key = self._tokenize(_tmp_key)
-            if DEBUG.ImportTransformer:
-                ic(_tokenized_key)
+            # if DEBUG.ImportTransformer:
+            #     ic(_tokenized_key)
 
             _transformed_token = None
             for _token in _tokenized_key:
@@ -96,8 +100,8 @@ class ImportTransformer(KeyTransformer):
                     _transformed_token = _token
                 elif isinstance(_transformed_token, list):
                     raise Exception(f'Are you really trying to turn a list into a key?')
-                if DEBUG.ImportTransformer:
-                    ic(_transformed_token)
+                # if DEBUG.ImportTransformer:
+                #     ic(_transformed_token)
 
 
             if isinstance(_transformed_token,OrderedDict):

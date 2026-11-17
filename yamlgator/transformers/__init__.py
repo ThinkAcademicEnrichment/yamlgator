@@ -3,7 +3,7 @@ class DEBUG:
     KeyChainTransformer = False
 
     ValueTransformer = False
-    KeyTransformer = False
+    KeyTransformer = False 
 
     PathValueTransformer = False
     YAMLTransformer = False
@@ -18,6 +18,7 @@ class DEBUG:
     BangTransformer = False
     ImportTransformer = False
 
+    ForTransformer = False 
 
 from .Transformer import Transformer,TransformerException
 from .KeyTransformer import KeyTransformer,KeyTransformerUtility
@@ -27,6 +28,7 @@ from .IfTransformer import IfTransformer,IfKeyTransformer,IfKeyTransformerUtilit
 from .BangTransformer import BangTransformerException,BangTransformer,BangTransformerUtility
 from .ImportTransformer import ImportTransformer,ImportTransformerUtility
 from .PlainTextTransformer import PlainTextTransformer,PlainTextTransformerUtility
+from .ForTransformer import ForTransformer,ForTransformerUtility
 
 # to eliminate circular imports due to the use of ValueTransformer in ValueValidator
 # eventually all utilities will be here

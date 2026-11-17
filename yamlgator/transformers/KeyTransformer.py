@@ -10,6 +10,16 @@ class KeyTransformerException(Exception):
 
 class KeyTransformer(KeyChainTransformer):
     name = 'transform_keys'
+    match_regex = \
+        f"{re.escape(KEY_OR_KEYCHAIN_OP)}{re.escape(KEYCHAIN_LEFT_BOUND)}?" + \
+        f"{REGEXES.KEYCHAIN}{REGEXES.KEY}/?{re.escape(KEYCHAIN_RIGHT_BOUND)}?" + \
+        f"(?:{re.escape('[')}[^]]*{re.escape(']')})?"
+
+    extract_regex = \
+        f"{re.escape(KEY_OR_KEYCHAIN_OP)}{re.escape(KEYCHAIN_LEFT_BOUND)}?" + \
+        f"({REGEXES.KEYCHAIN}{REGEXES.KEY}/?){re.escape(KEYCHAIN_RIGHT_BOUND)}?" + \
+        f"(?:{re.escape('[')}({REGEXES.DATA_INDEX}){re.escape(']')})?"
+
     def __init__(self, odict_or_tree=None, context_tree=None, allow_tree_subs=False):
         super(KeyTransformer,self).__init__(odict_or_tree, context_tree, False)
 

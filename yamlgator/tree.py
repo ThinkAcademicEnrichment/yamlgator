@@ -74,6 +74,7 @@ class Tree:
     def is_empty(self):
         if not self.odict:
             return True
+        return False
 
     def copy(self):
         """Copies the Tree object.
@@ -1052,7 +1053,7 @@ class Tree:
             if isinstance(value, list):
                 # no multiline values in lists
                 for _value in value:
-                    _output.append((_n+1)*TAB+str(_value))
+                    _output.append((_n+1)*TAB+'- '+str(_value))
             else:
                 # possible multiline string print
                 _output.append((_n+1)*TAB+str(value).replace('\n', '\n' + (_n + 1) * TAB))

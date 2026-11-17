@@ -12,7 +12,7 @@ class PathValueTransformer(ValueTransformer):
     ext = None
     # the ? after # is critical. But why?
     match_regex = rf'(?:{REGEXES.POSIX_RELATIVE}|{REGEXES.POSIX_ABSOLUTE})#?{REGEXES.KEYCHAIN}?(?:{REGEXES.KEY})?/?'
-    extract_regex = r'^([^#]*?)#(.*)$'
+    extract_regex = r'^([^#]+?)#([^\'\"]*)$'
 
     def __init__(self, odict_or_tree):
         # if not hasattr(odict_or_tree, 'root_dir'):

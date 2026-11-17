@@ -46,6 +46,7 @@ class TestTree(unittest.TestCase):
         _t = self._tree_factory(_test_odict)
         self.assertEqual(_t,Tree(str(_t)))
 
+
     @debug_on(ZeroDivisionError)
     def test_load(self):
         _yaml_path = self.tests_dir.joinpath('load.yaml')
@@ -1036,6 +1037,35 @@ class TestTree(unittest.TestCase):
         ]
         self.assertEqual(relative_flattened, expected_relative)
 
+    def test_get_list(self):
+        sample_data = OrderedDict(
+            a=[1,2,3],
+            b=OrderedDict(
+                c=[4,5,6]
+            ),
+            d=OrderedDict(
+                e=OrderedDict(
+                    f=[7,8,9]
+                )
+            )
+        )
+        tree = self._tree_factory(sample_data)
+
+        expected_list = [1,2,3]
+        self.assertEqual(tree.get('a/'),expected_list)
+        self.assertEqual(tree.get(['a','']),expected_list)
+        expected_list = [4,5,6]
+        self.assertEqual(tree.get('b/c/'),expected_list)
+        self.assertEqual(tree.get(['b','c','']),expected_list)
+        self.assertEqual(tree.get('c/'),expected_list)
+        self.assertEqual(tree.get(['c','']),expected_list)
+        expected_list = [7,8,9]
+        self.assertEqual(tree.get('d/e/f/'),expected_list)
+        self.assertEqual(tree.get(['d','e','f','']),expected_list)
+        self.assertEqual(tree.get('e/f/'),expected_list)
+        self.assertEqual(tree.get(['e','f','']),expected_list)
+        self.assertEqual(tree.get('f/'),expected_list)
+        self.assertEqual(tree.get(['f','']),expected_list)
 
 if __name__ == '__main__':
     unittest.main()

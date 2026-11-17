@@ -134,7 +134,7 @@ class AbstractValidator(Tree):
         # there are variables like )){@[-1]/c} that look like variables but do not tokenize
         _m = ValueTransformer()._extract(token)
         if _m:
-            _keychain, _data_index = _m.groups()
+            _str_op, _keychain, _data_index = _m.groups()
             if '/' in _keychain:
                 _token =  KEYCHAIN_LEFT_BOUND + _keychain + KEYCHAIN_RIGHT_BOUND
                 _keychain = _keychain.split('/')[-1]
