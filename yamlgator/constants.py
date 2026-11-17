@@ -100,6 +100,10 @@ class REGEXES:
         rf'([^{AND_SEP}{OR_SEP}{CASE_SEP}]+)\s*(?:{CASE_SEP}([^{AND_SEP}{OR_SEP}{CASE_SEP}]+))?\s*{re.escape(KEYCHAIN_RIGHT_BOUND)}'
 
 
+    FOR = rf'\${re.escape(KEYCHAIN_LEFT_BOUND)}[^}}]+{re.escape(KEYCHAIN_RIGHT_BOUND)}'
+    FOR_EXP = rf'\${re.escape(KEYCHAIN_LEFT_BOUND)}\s*(.*?)\s*{re.escape(KEYCHAIN_RIGHT_BOUND)}'
+
+
 def bool_factory(x):
     if not re.match(REGEXES.BOOL_VALUE, x):
         raise Exception(f"{x} is not a recognized boolean string")
