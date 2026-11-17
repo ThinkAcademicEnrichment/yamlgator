@@ -1,3 +1,5 @@
+from yamlgator.transformers import ForTransformerUtility
+from yamlgator.transformers import ForTransformer
 from .tree import *
 from .transformers import *
 from .objdb import *
@@ -5,6 +7,7 @@ from .constants import *
 
 
 DEFAULT_UTILITIES= {
+    ForTransformerUtility.name:ForTransformerUtility, 
     AtTransformerUtility.name:AtTransformerUtility,
     ValueTransformerUtility.name:ValueTransformerUtility,
     ImportTransformerUtility.name:ImportTransformerUtility,

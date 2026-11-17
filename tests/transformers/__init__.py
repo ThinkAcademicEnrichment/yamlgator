@@ -255,5 +255,26 @@ class TestTransformer(unittest.TestCase):
             else:
                 print(f'skipping if-at-vars:{_test_name}')
 
+    @debug_on(Exception)
+    def test_fors(self):
+        _tests_yaml = self.tests_dir.joinpath('fors.yaml')
+        with _tests_yaml.open('r') as f:
+            _tests_tree = YAMLator.load(f)
+
+        for _test_name in _tests_tree.keys():
+            print(f"\ntest_fors:{_test_name}")
+            _test_tree = _tests_tree.get(_test_name)
+            _skip = _test_tree.uget('skip', 'n')
+            if not _skip == 'y':
+                _input_tree = _test_tree.get('input/').copy()
+                _output_tree = _test_tree.get('output/').copy()
+                ForTransformer(_input_tree).evaluate()
+                self.assertEqual(_input_tree.odict, _output_tree.odict)
+                # print(_input_tree)
+                # self._is_confluent_with(_test_tree.get('input/').copy(), _output_tree,transforms=['transform_ats','transform_ifs','transform_values'])
+            else:
+                print(f'skipping: {_test_name}')
+
+
 if __name__ == '__main__':
     unittest.main()
