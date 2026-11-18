@@ -167,6 +167,6 @@ class ForKeyTransformer(KeyTransformer):
             _value = node.pop(_key)
             node[_key] = _value
 
-class ForTransformerUtility(ForKeyTransformer):
+class ForKeyTransformerUtility(ForKeyTransformer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args,**kwargs)
