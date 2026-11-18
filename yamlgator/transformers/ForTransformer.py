@@ -8,15 +8,19 @@ from .KeyTransformer import *
 
 from . import DEBUG
 
+# dict concat
+from functools import reduce
+import operator
+
 class ForTransformerException(Exception):
     pass
 
 
 # TODO: using self.context needs tests
-class ForTransformer(KeyTransformer):
+class ForKeyTransformer(KeyTransformer):
     name = 'transform_fors'
-    match_regex = rf"{re.escape(KEY_OR_KEYCHAIN_OP)}{REGEXES.FOR}"
-    extract_regex = rf'{re.escape(KEY_OR_KEYCHAIN_OP)}{REGEXES.FOR_EXP}'
+    match_regex = rf"{re.escape(KEY_OR_KEYCHAIN_OP)}{REGEXES.FOR_KEY}"
+    extract_regex = rf'{re.escape(KEY_OR_KEYCHAIN_OP)}{REGEXES.FOR_KEY_EXP}'
 
     def __init__(self, odict_or_tree=None, context_tree=None, **kwargs):
         odict_or_tree = OrderedDict() if odict_or_tree is None else odict_or_tree
@@ -28,7 +32,7 @@ class ForTransformer(KeyTransformer):
             ic(context_tree)
 
     def _match(self, line):
-        _m = re.match(rf"^(.*?)({self.match_regex})(.*)$", str(line))
+        _m = re.match(rf"^(.*?)({self.match_regex})(.*?)$", str(line))
         if _m:
             if DEBUG.ForTransformer:
                 ic()
@@ -50,11 +54,11 @@ class ForTransformer(KeyTransformer):
             ic()
             ic(parameters)
             ic(keychain)
-        _exp, = parameters 
+        _exp,_trailing_slash = parameters 
         _loop_var,_list_var = tuple(map(lambda x:x.strip(),_exp.split('in')))
-        _loop_vals = self.get(keychain+[_list_var,''])
-
-        return _loop_var,_loop_vals
+        _loop_vals = self.get([_list_var,''])
+        if not isinstance(_loop_vals,list): _loop_vals = [] 
+        return _loop_var,_loop_vals,_trailing_slash
 
     def _pre_evaluate(self, node, keychain):
         if DEBUG.ForTransformer:
@@ -79,13 +83,13 @@ class ForTransformer(KeyTransformer):
                 _transformed_token = _token
                 _match = self._extract(_token)
                 if _match is not None:
-                    _loop_var, _loop_values = self._transform(_match.groups(), keychain)
+                    _loop_var, _loop_values,_trailing_slash = self._transform(_match.groups(), keychain)
                 else:
                     continue
+                if _loop_values:
+                    self._unroll_node_key(node,_node_key,_loop_var,_loop_values,_trailing_slash)
 
-                self._unroll_node_key(node,_node_key,_loop_var,_loop_values)
-
-    def _unroll_node_key(self, node, node_key, _loop_var, _loop_vals):
+    def _unroll_node_key(self, node, node_key, _loop_var, _loop_vals,_trailing_slash):
 
         if DEBUG.ForTransformer:
             ic()
@@ -93,6 +97,7 @@ class ForTransformer(KeyTransformer):
             ic(node_key)
             ic(_loop_var)
             ic(_loop_vals)
+            ic(_trailing_slash)
 
         _node_copy = deepcopy(node)
         _key_index = list(_node_copy.keys()).index(node_key)
@@ -138,14 +143,23 @@ class ForTransformer(KeyTransformer):
                 ic(_unrolls[-1].print())
                 ic(node)
             
-        # dict concat
-        from functools import reduce
-        import operator
 
-        _roll = reduce(operator.or_,[_unroll.odict for _unroll in _unrolls])
-        for _key,_val in _roll.items():
-            node[_key] = _val
- 
+        if not _trailing_slash:
+            _roll = reduce(operator.or_,[_unroll.odict for _unroll in _unrolls])
+            for _key,_val in _roll.items():
+                node[_key] = _val
+        else:
+            if isinstance(list(_unrolls[0].odict.values())[0],list):
+                # list aggregation
+                [_unrolls[0].aget(*list(_unroll.odict.items())[0]) for _unroll in _unrolls[1:]]
+                for _key,_val in _unrolls[0].odict.items():
+                    node[_key] = _val
+            elif isinstance(list(_unrolls[0].odict.values())[0],str):
+                # str concatenation
+                _aggregate_str = reduce(operator.concat,[list(_unroll.odict.values())[0] for _unroll in _unrolls])
+                _key = list(_unrolls[0].odict.keys())[0]
+                node[_key] = _aggregate_str
+
         for _key in list(_node_copy.keys())[_key_index + 1:]:
             if DEBUG.ForTransformer:
                 _msg = f'rotating {_key}'
@@ -153,6 +167,6 @@ class ForTransformer(KeyTransformer):
             _value = node.pop(_key)
             node[_key] = _value
 
-class ForTransformerUtility(ForTransformer):
+class ForTransformerUtility(ForKeyTransformer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args,**kwargs)
