@@ -37,7 +37,10 @@ class BangTransformer(ValueTransformer):
                 self.keyword_values = list(map(lambda x:astor.to_source(x.value).strip(),node.keywords))
 
         _mp = _MethodParser()
-        _mp.visit(ast.parse(_method_call))
+        try:
+            _mp.visit(ast.parse(_method_call))
+        except SyntaxError:
+            return None
 
         if DEBUG.BangTransformer:
             ic(_mp.method_name)
