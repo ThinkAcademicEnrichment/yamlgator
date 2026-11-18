@@ -2,22 +2,75 @@ test-1:
   skip: n
   input:
     sites:
+      mcshell:
+        top-level-domains:
+          - org 
+          - online
+        proxy-port: 8000
+      campboom:
+        top-level-domains:
+          - ca
+        proxy-port: 8001
+
+    site-list:
       - mcshell
       - campboom
-    ))${site in sites}:
+
+    primary-domains:
+      ))${site in site-list}:
+        ))site:
+          ))site/.))))site//top-level-domains/[0]
+
+    ))${site in site-list}:
       ))site/-openrc:
         path: |
           #!/sbin/openrc-run
 
           name="))site daemon"
           description="Gunicorn daemon for ))site Wagtail app"
-    allowed-hosts:
-      - www
 
+    ))${site-name in site-list}/:
+      caddy-conf: |
+        www.)){primary-domains/))site-name} {
+          import access_log
+          redir https://)){primary-domains/))site-name}{uri} permanent
+        }
+
+        )){primary-domains/))site-name} {
+          import access_log
+
+          handle_path /media/* {
+            root * /var/www/))site-name//media
+            file_server
+          }
+          handle_path /static/* {
+            root * /var/www/))site-name//static
+            file_server
+          }
+          reverse_proxy 127.0.0.1:)){sites/))site-name//proxy-port}
+        }
   output:
     sites:
+      mcshell:
+        top-level-domains:
+          - org 
+          - online
+        proxy-port: 8000
+      campboom:
+        top-level-domains:
+          - ca
+        proxy-port: 8001
+
+    site-list:
       - mcshell
       - campboom
+
+    primary-domains:
+      mcshell:
+        mcshell.org
+      campboom:
+        campboom.ca
+
     mcshell-openrc: 
       path: |
         #!/sbin/openrc-run
@@ -30,6 +83,42 @@ test-1:
 
         name="campboom daemon"
         description="Gunicorn daemon for campboom Wagtail app"
-    allowed-hosts:
-      - www
+
+    caddy-conf: |
+      www.mcshell.org {
+        import access_log
+        redir https://mcshell.org{uri} permanent
+      }
+
+      mcshell.org {
+        import access_log
+
+        handle_path /media/* {
+          root * /var/www/mcshell/media
+          file_server
+        }
+        handle_path /static/* {
+          root * /var/www/mcshell/static
+          file_server
+        }
+        reverse_proxy 127.0.0.1:8000
+      }
+      www.campboom.ca {
+        import access_log
+        redir https://campboom.ca{uri} permanent
+      }
+
+      campboom.ca {
+        import access_log
+
+        handle_path /media/* {
+          root * /var/www/campboom/media
+          file_server
+        }
+        handle_path /static/* {
+          root * /var/www/campboom/static
+          file_server
+        }
+        reverse_proxy 127.0.0.1:8001
+      }
 

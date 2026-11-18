@@ -1,3 +1,4 @@
+from yamlgator.transformers import ValueTransformer
 from tests import *
 
 class TestTransformer(unittest.TestCase):
@@ -148,7 +149,6 @@ class TestTransformer(unittest.TestCase):
                 print(f"Skipping context:{-_test_name}")
 
             self._is_confluent(_test_tree.get('input/').copy(), _output_tree)
-
     @debug_on(Exception)
     def test_import(self):
         _tests_yaml = self.tests_dir.joinpath('imports.yaml')
@@ -268,7 +268,8 @@ class TestTransformer(unittest.TestCase):
             if not _skip == 'y':
                 _input_tree = _test_tree.get('input/').copy()
                 _output_tree = _test_tree.get('output/').copy()
-                ForTransformer(_input_tree).evaluate()
+                ForKeyTransformer(_input_tree).evaluate()
+                ValueTransformer(_input_tree).evaluate()
                 self.assertEqual(_input_tree.odict, _output_tree.odict)
                 # print(_input_tree)
                 # self._is_confluent_with(_test_tree.get('input/').copy(), _output_tree,transforms=['transform_ats','transform_ifs','transform_values'])
